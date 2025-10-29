@@ -205,3 +205,54 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Project-specific ignores for Invoice Forecast Flask App
+# ======================================================
+
+# User uploaded files (invoice images)
+uploads/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+
+# Log files
+*.log
+logs/
+
+# Flask instance folder (contains sensitive config)
+instance/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files (additional)
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env.local
+.env.*.local
+
+# Model files (if any large ML models are downloaded)
+models/
+*.h5
+*.pkl
+*.joblib
