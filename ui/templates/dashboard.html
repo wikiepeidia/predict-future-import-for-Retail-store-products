@@ -1,0 +1,1384 @@
+{% extends "base.html" %}
+
+{% block title %}AI Models Dashboard - Deep Learning System{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        color: #333;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header */
+    .header {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-left h1 {
+        font-size: 24px;
+        color: #1e3c72;
+        margin-bottom: 5px;
+    }
+
+    .header-left p {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 15px;
+        background: #f8f9fa;
+        border-radius: 20px;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: #333;
+    }
+
+    .logout-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .logout-btn:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+    }
+
+    .admin-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .admin-btn:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+
+    /* User Management Panel */
+    .user-management-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+
+    .user-management-overlay.active {
+        display: flex;
+    }
+
+    .user-management-panel {
+        background: white;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 1000px;
+        max-height: 80vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .panel-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .panel-header h2 {
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .close-panel-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: all 0.2s;
+    }
+
+    .close-panel-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: rotate(90deg);
+    }
+
+    .panel-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 30px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .stat-card.green {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    }
+
+    .stat-card.orange {
+        background: linear-gradient(135deg, #fd7e14 0%, #ffc107 100%);
+    }
+
+    .stat-card.blue {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+
+    .stat-number {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .users-table-container {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .users-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .users-table-header h3 {
+        font-size: 18px;
+        color: #333;
+    }
+
+    .search-user-input {
+        padding: 8px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 250px;
+    }
+
+    .users-table {
+        width: 100%;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .users-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .users-table th {
+        background: #f8f9fa;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        font-size: 14px;
+    }
+
+    .users-table td {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .users-table tr:hover {
+        background: #f8f9fa;
+    }
+
+    .user-avatar-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 12px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    .role-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .role-badge.admin {
+        background: #dc3545;
+        color: white;
+    }
+
+    .role-badge.user {
+        background: #28a745;
+        color: white;
+    }
+
+    .action-btn {
+        padding: 5px 12px;
+        border: none;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-right: 5px;
+    }
+
+    .action-btn.edit {
+        background: #007bff;
+        color: white;
+    }
+
+    .action-btn.edit:hover {
+        background: #0056b3;
+    }
+
+    .action-btn.delete {
+        background: #dc3545;
+        color: white;
+    }
+
+    .action-btn.delete:hover {
+        background: #c82333;
+    }
+
+    /* Models Grid */
+    .models-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .model-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .model-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .model-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .model-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .model-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+
+    .model-icon.model1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .model-icon.model2 {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .model-title h2 {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 3px;
+    }
+
+    .model-title p {
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    .model-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        background: #d4edda;
+        color: #155724;
+    }
+
+    /* Input Section */
+    .input-section {
+        margin-bottom: 20px;
+    }
+
+    .input-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .input-field, .input-textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+
+    .input-field:focus, .input-textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .input-file {
+        display: none;
+    }
+
+    .file-upload-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        width: 100%;
+    }
+
+    .file-upload-btn:hover {
+        background: #e9ecef;
+        border-color: #667eea;
+    }
+
+    .file-name {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    /* Prediction Button */
+    .predict-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .predict-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .predict-btn:active {
+        transform: translateY(0);
+    }
+
+    .predict-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Results Section */
+    .results-section {
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .results-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+
+    .result-box {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        min-height: 100px;
+        border-left: 4px solid #667eea;
+    }
+
+    .result-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #333;
+    }
+
+    .no-result {
+        color: #6c757d;
+        font-style: italic;
+        text-align: center;
+        padding: 30px;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Dataset Info */
+    .dataset-info {
+        background: #e7f3ff;
+        border-left: 4px solid #0066cc;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .dataset-info h3 {
+        font-size: 14px;
+        color: #0066cc;
+        margin-bottom: 8px;
+    }
+
+    .dataset-info ul {
+        list-style: none;
+        padding-left: 0;
+        font-size: 13px;
+        color: #333;
+    }
+
+    .dataset-info li {
+        padding: 4px 0;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .dataset-info li:before {
+        content: "•";
+        position: absolute;
+        left: 5px;
+        color: #0066cc;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .models-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .header-right {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <h1>🧠 Deep Learning Models Dashboard</h1>
+            <p>Hệ thống dự đoán văn bản và nhận diện ký tự</p>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar">{{ user.first_name[0].upper() if user.first_name else 'U' }}</div>
+                <span class="user-name">
+                    {{ user.first_name }} {{ user.last_name }}
+                    {% if user.role == 'admin' %}
+                        <span style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px;">ADMIN</span>
+                    {% endif %}
+                </span>
+            </div>
+            {% if user.role == 'admin' %}
+            <button class="admin-btn" onclick="toggleUserManagement()">
+                <i class="fas fa-users-cog"></i>
+                Quản lý User
+            </button>
+            {% endif %}
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Models Grid -->
+    <div class="models-grid">
+        <!-- MODEL 1: Hóa đơn điện tử + Dự đoán số lượng -->
+        <div class="model-card">
+            <div class="model-header">
+                <div class="model-title">
+                    <div class="model-icon model1">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <div>
+                        <h2>MODEL 1: Hóa đơn điện tử</h2>
+                        <p>Dự đoán số lượng kế tiếp</p>
+                    </div>
+                </div>
+                <span class="model-status">
+                    <i class="fas fa-check-circle"></i> Ready
+                </span>
+            </div>
+
+            <div class="input-section">
+                <label class="input-label">
+                    <i class="fas fa-keyboard"></i> Nhập hóa đơn (danh sách sản phẩm)
+                </label>
+                <textarea 
+                    class="input-textarea" 
+                    id="model1Input"
+                    placeholder="Nhập danh sách hóa đơn&#10;Ví dụ:&#10;Hóa đơn giày quận Sơn&#10;Hóa đơn giày quận Tùng"
+                ></textarea>
+            </div>
+
+            <button class="predict-btn" onclick="predictModel1()">
+                <i class="fas fa-brain"></i>
+                Dự đoán số lượng kế tiếp
+            </button>
+
+            <div class="results-section">
+                <div class="results-title">
+                    <i class="fas fa-chart-line"></i> Kết quả dự đoán:
+                </div>
+                <div class="result-box" id="model1Result">
+                    <div class="no-result">Chưa có kết quả. Nhập dữ liệu và nhấn dự đoán.</div>
+                </div>
+            </div>
+
+            <div class="dataset-info">
+                <h3><i class="fas fa-database"></i> Dataset thông tin:</h3>
+                <ul>
+                    <li>Danh sách sản phẩm quận Sơn, Tùng</li>
+                    <li>Hóa đơn điện tử + giấy quận Tùng</li>
+                    <li>70% train, 10% valid, 20% test</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MODEL 2: Text Recognition -->
+        <div class="model-card">
+            <div class="model-header">
+                <div class="model-title">
+                    <div class="model-icon model2">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div>
+                        <h2>MODEL 2: Text Recognition</h2>
+                        <p>Nhận diện ký tự từ ảnh</p>
+                    </div>
+                </div>
+                <span class="model-status">
+                    <i class="fas fa-check-circle"></i> Ready
+                </span>
+            </div>
+
+            <div class="input-section">
+                <label class="input-label">
+                    <i class="fas fa-upload"></i> Tải ảnh lên
+                </label>
+                <label for="imageUpload" class="file-upload-btn">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Click để chọn ảnh hoặc kéo thả vào đây
+                </label>
+                <input 
+                    type="file" 
+                    id="imageUpload" 
+                    class="input-file" 
+                    accept="image/*"
+                    onchange="handleFileSelect(event)"
+                >
+                <div class="file-name" id="fileName"></div>
+            </div>
+
+            <div class="input-section" style="margin-top: 15px;">
+                <label class="input-label">
+                    <i class="fas fa-image"></i> Preview ảnh
+                </label>
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                    <img id="imagePreview" style="max-width: 100%; max-height: 300px; display: none; border-radius: 8px;">
+                    <div id="noImageText" style="color: #6c757d; font-style: italic;">
+                        <i class="fas fa-image" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 10px;"></i>
+                        Chưa có ảnh
+                    </div>
+                </div>
+            </div>
+
+            <button class="predict-btn" onclick="predictModel2()" id="model2Btn" disabled>
+                <i class="fas fa-eye"></i>
+                Nhận diện văn bản
+            </button>
+
+            <div class="results-section">
+                <div class="results-title">
+                    <i class="fas fa-text-width"></i> Văn bản nhận diện:
+                </div>
+                <div class="result-box" id="model2Result">
+                    <div class="no-result">Chưa có kết quả. Tải ảnh lên và nhấn nhận diện.</div>
+                </div>
+            </div>
+
+            <div class="dataset-info">
+                <h3><i class="fas fa-database"></i> Dataset thông tin:</h3>
+                <ul>
+                    <li>Hóa đơn cũ: hóa đơn có trong dataset</li>
+                    <li>Hóa đơn mới: chưa có trong dataset</li>
+                    <li>Sử dụng HPC → HDM</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Panel (Admin Only) -->
+    {% if user.role == 'admin' %}
+    <div class="user-management-overlay" id="userManagementOverlay">
+        <div class="user-management-panel">
+            <div class="panel-header">
+                <h2>
+                    <i class="fas fa-users-cog"></i>
+                    Quản lý người dùng
+                </h2>
+                <button class="close-panel-btn" onclick="toggleUserManagement()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Tổng người dùng</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-number" id="activeUsers">0</div>
+                        <div class="stat-label">Người dùng hoạt động</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-number" id="adminUsers">0</div>
+                        <div class="stat-label">Quản trị viên</div>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="users-table-container">
+                    <div class="users-table-header">
+                        <h3><i class="fas fa-list"></i> Danh sách người dùng</h3>
+                        <input 
+                            type="text" 
+                            class="search-user-input" 
+                            placeholder="🔍 Tìm kiếm người dùng..."
+                            id="searchUserInput"
+                            oninput="filterUsers()"
+                        >
+                    </div>
+                    
+                    <div class="users-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Người dùng</th>
+                                    <th>Email</th>
+                                    <th>Vai trò</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: #6c757d;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+                                        <p style="margin-top: 10px;">Đang tải dữ liệu...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- User Activity Table -->
+                <div class="users-table-container" style="margin-top: 30px;">
+                    <div class="users-table-header">
+                        <h3><i class="fas fa-chart-line"></i> Lượng truy cập & Hoạt động</h3>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="activityFilter" class="search-user-input" style="width: 180px;" onchange="filterActivity()">
+                                <option value="all">Tất cả</option>
+                                <option value="today">Hôm nay</option>
+                                <option value="week">7 ngày qua</option>
+                                <option value="month">30 ngày qua</option>
+                            </select>
+                            <button class="action-btn edit" onclick="refreshActivity()" style="padding: 8px 15px;">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="users-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Người dùng</th>
+                                    <th>Email</th>
+                                    <th><i class="fas fa-sign-in-alt"></i> Số lần đăng nhập</th>
+                                    <th><i class="fas fa-brain"></i> Lần dùng Model 1</th>
+                                    <th><i class="fas fa-image"></i> Lần dùng Model 2</th>
+                                    <th><i class="fas fa-clock"></i> Truy cập cuối</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; padding: 40px; color: #6c757d;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+                                        <p style="margin-top: 10px;">Đang tải dữ liệu hoạt động...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Model 1: Text Prediction
+async function predictModel1() {
+    const input = document.getElementById('model1Input').value.trim();
+    const resultBox = document.getElementById('model1Result');
+    
+    if (!input) {
+        resultBox.innerHTML = '<div class="no-result">Vui lòng nhập dữ liệu hóa đơn.</div>';
+        return;
+    }
+    
+    // Show loading
+    resultBox.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #6c757d;">Đang xử lý dữ liệu...</p>
+        </div>
+    `;
+    
+    try {
+        // Simulate API call - Replace with actual API endpoint
+        const response = await fetch('/api/model1/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: input })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayModel1Result(data);
+        } else {
+            throw new Error('Prediction failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        // Show mock result for demonstration
+        setTimeout(() => {
+            const mockResult = {
+                output1: "Hóa đơn nhập điện tử: 350 đơn vị",
+                output2: "Dự đoán số lượng kế tiếp: 420 đơn vị",
+                confidence: 0.89
+            };
+            displayModel1Result(mockResult);
+        }, 1500);
+    }
+}
+
+function displayModel1Result(data) {
+    const resultBox = document.getElementById('model1Result');
+    resultBox.innerHTML = `
+        <div class="result-text">
+            <strong style="color: #667eea;">📊 Output 1:</strong> ${data.output1}<br>
+            <strong style="color: #f5576c;">📈 Output 2:</strong> ${data.output2}<br>
+            <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 6px; font-size: 13px;">
+                <strong>Độ tin cậy:</strong> 
+                <span style="color: #28a745; font-weight: 600;">${(data.confidence * 100).toFixed(1)}%</span>
+            </div>
+        </div>
+    `;
+}
+
+// Model 2: Text Recognition
+let selectedFile = null;
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        selectedFile = file;
+        
+        // Show file name
+        document.getElementById('fileName').textContent = `📎 ${file.name}`;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            const noImageText = document.getElementById('noImageText');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            noImageText.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+        
+        // Enable button
+        document.getElementById('model2Btn').disabled = false;
+    }
+}
+
+async function predictModel2() {
+    if (!selectedFile) {
+        alert('Vui lòng chọn ảnh trước!');
+        return;
+    }
+    
+    const resultBox = document.getElementById('model2Result');
+    
+    // Show loading
+    resultBox.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #6c757d;">Đang nhận diện văn bản...</p>
+        </div>
+    `;
+    
+    try {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append('image', selectedFile);
+        
+        // Simulate API call - Replace with actual API endpoint
+        const response = await fetch('/api/model2/recognize', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayModel2Result(data);
+        } else {
+            throw new Error('Recognition failed');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        // Show mock result for demonstration
+        setTimeout(() => {
+            const mockResult = {
+                recognized_text: "Y1 hoa don dien tu nhap hang\nY2 TEXT: Hóa đơn số 12345\nSố lượng: 150 đơn vị\nTổng tiền: 4.500.000 VNĐ",
+                confidence: 0.92
+            };
+            displayModel2Result(mockResult);
+        }, 2000);
+    }
+}
+
+function displayModel2Result(data) {
+    const resultBox = document.getElementById('model2Result');
+    resultBox.innerHTML = `
+        <div class="result-text">
+            <div style="white-space: pre-wrap; line-height: 1.8;">
+                ${data.recognized_text}
+            </div>
+            <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 6px; font-size: 13px;">
+                <strong>Độ tin cậy:</strong> 
+                <span style="color: #28a745; font-weight: 600;">${(data.confidence * 100).toFixed(1)}%</span>
+            </div>
+        </div>
+    `;
+}
+
+// Drag and drop support
+const fileUploadBtn = document.querySelector('.file-upload-btn');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    fileUploadBtn.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    fileUploadBtn.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    fileUploadBtn.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight(e) {
+    fileUploadBtn.style.borderColor = '#667eea';
+    fileUploadBtn.style.background = '#e7f3ff';
+}
+
+function unhighlight(e) {
+    fileUploadBtn.style.borderColor = '#dee2e6';
+    fileUploadBtn.style.background = '#f8f9fa';
+}
+
+fileUploadBtn.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length > 0) {
+        document.getElementById('imageUpload').files = files;
+        handleFileSelect({ target: { files: files } });
+    }
+}
+
+// User Management Functions (Admin Only)
+let allUsersData = [];
+let allActivityData = [];
+
+function toggleUserManagement() {
+    const overlay = document.getElementById('userManagementOverlay');
+    if (overlay) {
+        overlay.classList.toggle('active');
+        if (overlay.classList.contains('active')) {
+            loadUsersData();
+            loadActivityData();
+        }
+    }
+}
+
+async function loadUsersData() {
+    try {
+        const response = await fetch('/api/admin/users');
+        if (response.ok) {
+            allUsersData = await response.json();
+            updateUserStats();
+            renderUsersTable();
+        } else {
+            showNotification('Không thể tải dữ liệu người dùng', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading users:', error);
+        showNotification('Lỗi khi tải dữ liệu', 'error');
+    }
+}
+
+async function loadActivityData() {
+    try {
+        const response = await fetch('/api/admin/activity');
+        if (response.ok) {
+            allActivityData = await response.json();
+            renderActivityTable();
+        } else {
+            showNotification('Không thể tải dữ liệu hoạt động', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading activity:', error);
+        showNotification('Lỗi khi tải dữ liệu hoạt động', 'error');
+    }
+}
+
+function updateUserStats() {
+    const totalUsers = allUsersData.length;
+    const adminUsers = allUsersData.filter(u => u.role === 'admin').length;
+    const activeUsers = totalUsers - adminUsers;
+
+    document.getElementById('totalUsers').textContent = totalUsers;
+    document.getElementById('activeUsers').textContent = activeUsers;
+    document.getElementById('adminUsers').textContent = adminUsers;
+}
+
+function renderUsersTable(users = allUsersData) {
+    const tbody = document.getElementById('usersTableBody');
+    
+    if (users.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: #6c757d;">
+                    <i class="fas fa-users-slash" style="font-size: 36px; opacity: 0.3;"></i>
+                    <p style="margin-top: 10px;">Không tìm thấy người dùng</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = users.map(user => `
+        <tr>
+            <td>
+                <div class="user-avatar-small">${(user.first_name || user.email)[0].toUpperCase()}</div>
+                <strong>${user.first_name || ''} ${user.last_name || ''}</strong>
+            </td>
+            <td>${user.email}</td>
+            <td>
+                <span class="role-badge ${user.role || 'user'}">
+                    ${user.role === 'admin' ? '👑 ADMIN' : '👤 USER'}
+                </span>
+            </td>
+            <td>${formatDate(user.created_at)}</td>
+            <td>
+                <button class="action-btn edit" onclick="editUser(${user.id})">
+                    <i class="fas fa-edit"></i> Sửa
+                </button>
+                <button class="action-btn delete" onclick="deleteUser(${user.id}, '${user.email}')">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function filterUsers() {
+    const searchTerm = document.getElementById('searchUserInput').value.toLowerCase();
+    
+    if (!searchTerm) {
+        renderUsersTable(allUsersData);
+        return;
+    }
+
+    const filtered = allUsersData.filter(user => 
+        (user.first_name && user.first_name.toLowerCase().includes(searchTerm)) ||
+        (user.last_name && user.last_name.toLowerCase().includes(searchTerm)) ||
+        user.email.toLowerCase().includes(searchTerm) ||
+        (user.role && user.role.toLowerCase().includes(searchTerm))
+    );
+
+    renderUsersTable(filtered);
+}
+
+function editUser(userId) {
+    const user = allUsersData.find(u => u.id === userId);
+    if (!user) return;
+
+    const newRole = user.role === 'admin' ? 'user' : 'admin';
+    const confirmMsg = `Bạn có chắc muốn thay đổi vai trò của ${user.email} thành ${newRole.toUpperCase()}?`;
+    
+    if (confirm(confirmMsg)) {
+        // TODO: Implement actual API call
+        showNotification(`Đã cập nhật vai trò cho ${user.email}`, 'success');
+        
+        // Update local data
+        user.role = newRole;
+        updateUserStats();
+        renderUsersTable();
+    }
+}
+
+function deleteUser(userId, email) {
+    const confirmMsg = `⚠️ BẠN CÓ CHẮC CHẮN muốn XÓA người dùng ${email}?\n\nHành động này KHÔNG THỂ HOÀN TÁC!`;
+    
+    if (confirm(confirmMsg)) {
+        // TODO: Implement actual API call
+        showNotification(`Đã xóa người dùng ${email}`, 'success');
+        
+        // Update local data
+        allUsersData = allUsersData.filter(u => u.id !== userId);
+        updateUserStats();
+        renderUsersTable();
+    }
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+// Close overlay when clicking outside
+document.addEventListener('click', function(e) {
+    const overlay = document.getElementById('userManagementOverlay');
+    if (overlay && e.target === overlay) {
+        toggleUserManagement();
+    }
+});
+
+// Close with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const overlay = document.getElementById('userManagementOverlay');
+        if (overlay && overlay.classList.contains('active')) {
+            toggleUserManagement();
+        }
+    }
+});
+
+// Activity Management Functions
+function renderActivityTable(activities = allActivityData) {
+    const tbody = document.getElementById('activityTableBody');
+    
+    if (activities.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 40px; color: #6c757d;">
+                    <i class="fas fa-chart-line" style="font-size: 36px; opacity: 0.3;"></i>
+                    <p style="margin-top: 10px;">Chưa có dữ liệu hoạt động</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = activities.map(activity => {
+        const isOnline = isUserOnline(activity.last_access);
+        const loginCountClass = getActivityClass(activity.login_count);
+        const model1Class = getActivityClass(activity.model1_usage);
+        const model2Class = getActivityClass(activity.model2_usage);
+        
+        return `
+            <tr>
+                <td>
+                    <div class="user-avatar-small">${(activity.first_name || activity.email)[0].toUpperCase()}</div>
+                    <strong>${activity.first_name || ''} ${activity.last_name || ''}</strong>
+                </td>
+                <td>${activity.email}</td>
+                <td><span class="activity-count ${loginCountClass}">${activity.login_count || 0}</span></td>
+                <td><span class="activity-count ${model1Class}">${activity.model1_usage || 0}</span></td>
+                <td><span class="activity-count ${model2Class}">${activity.model2_usage || 0}</span></td>
+                <td>${formatDateTime(activity.last_access)}</td>
+                <td>
+                    <span class="${isOnline ? 'status-online' : 'status-offline'}">
+                        ${isOnline ? 'Online' : 'Offline'}
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function getActivityClass(count) {
+    if (!count) return 'low';
+    if (count >= 10) return 'high';
+    if (count >= 5) return 'medium';
+    return 'low';
+}
+
+function isUserOnline(lastAccess) {
+    if (!lastAccess) return false;
+    const lastAccessTime = new Date(lastAccess);
+    const now = new Date();
+    const diffMinutes = (now - lastAccessTime) / (1000 * 60);
+    return diffMinutes < 5; // Online if accessed within last 5 minutes
+}
+
+function formatDateTime(dateString) {
+    if (!dateString) return 'Chưa truy cập';
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMinutes = Math.floor((now - date) / (1000 * 60));
+    
+    if (diffMinutes < 1) return 'Vừa xong';
+    if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+    
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours} giờ trước`;
+    
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) return `${diffDays} ngày trước`;
+    
+    return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function filterActivity() {
+    const filter = document.getElementById('activityFilter').value;
+    const now = new Date();
+    let filtered = allActivityData;
+    
+    if (filter !== 'all') {
+        filtered = allActivityData.filter(activity => {
+            if (!activity.last_access) return false;
+            
+            const lastAccess = new Date(activity.last_access);
+            const diffDays = (now - lastAccess) / (1000 * 60 * 60 * 24);
+            
+            switch(filter) {
+                case 'today':
+                    return diffDays < 1;
+                case 'week':
+                    return diffDays < 7;
+                case 'month':
+                    return diffDays < 30;
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    renderActivityTable(filtered);
+}
+
+function refreshActivity() {
+    loadActivityData();
+    showNotification('Đã cập nhật dữ liệu hoạt động', 'success');
+}
+
+</script>
+{% endblock %}

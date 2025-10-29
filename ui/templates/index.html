@@ -1,0 +1,2916 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <html lang="en">
+    <!DOCTYPE html>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <head>
+
+        <title>Invoice Forecast - Deep Learning Demo</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <meta charset="UTF-8">
+        <html lang="en">
+
+        <style>
+            * {
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"><html lang="en">margin: 0;
+
+                padding: 0;
+                <title>Invoice Forecast - Deep Learning Demo</title>box-sizing: border-box;
+
+            }
+
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><head>body {
+
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                <style>background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+
+                min-height: 100vh;
+
+                * {
+                    <head>color: #333;
+
+                }
+
+                margin: 0;
+
+                .container {
+
+                    max-width: 1400px;
+                    padding: 0;
+                    <meta charset="UTF-8">margin: 0 auto;
+
+                    padding: 20px;
+                    box-sizing: border-box;
+                    <meta charset="UTF-8">
+                }
+
+                .header {}
+
+                background: white;
+
+                border-radius: 12px;
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">padding: 20px 30px;
+
+                margin-bottom: 30px;
+
+                body {
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                }
+
+                font-family: 'Inter',
+                -apple-system,
+                BlinkMacSystemFont,
+                'Segoe UI',
+                Roboto,
+                sans-serif;
+
+                .header h1 {
+
+                    font-size: 24px;
+                    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                    <title>Invoice Forecast - Deep Learning Demo</title>color: #1e3c72;
+
+                    margin-bottom: 5px;
+                    min-height: 100vh;
+                    <title>Invoice Forecast - Deep Learning Demo</title>
+                }
+
+                .header p {
+                    color: #333;
+
+                    color: #6c757d;
+
+                    font-size: 14px;
+                }
+
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+            }
+
+            .models-grid {
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">display: grid;
+
+                grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+
+                .container {
+
+                    gap: 30px;
+
+                    margin-bottom: 30px;
+                    max-width: 1400px;
+                    <style>
+                }
+
+                .model-card {
+                    margin: 0 auto;
+
+                    <style>* {
+
+                        background: white;
+
+                        border-radius: 12px;
+                        padding: 20px;
+
+                        * {
+
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                            overflow: hidden;
+                        }
+
+                        transition: all 0.3s ease;
+
+                    }
+
+                    margin: 0;
+
+                    .model-card:hover {
+
+                        transform: translateY(-5px);
+                        /* Header */
+                        margin: 0;
+
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+                    }
+
+                    .header {
+
+                        .model-header {
+
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            background: white;
+                            padding: 0;
+
+                            color: white;
+
+                            padding: 25px;
+                            border-radius: 12px;
+                            padding: 0;
+
+                            display: flex;
+
+                            justify-content: space-between;
+                            padding: 20px 30px;
+
+                            align-items: flex-start;
+
+                        }
+
+                        margin-bottom: 30px;
+                        box-sizing: border-box;
+
+                        .model-title h2 {
+
+                            font-size: 20px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            box-sizing: border-box;
+
+                            margin-bottom: 5px;
+
+                        }
+                    }
+
+                    .model-title p {
+
+                        font-size: 14px;
+                    }
+
+                    opacity: 0.9;
+
+                }
+
+                .header h1 {}
+
+                .model-icon {
+
+                    font-size: 40px;
+                    font-size: 24px;
+
+                    opacity: 0.8;
+
+                }
+
+                color: #1e3c72;
+
+                .model-body {
+
+                    padding: 25px;
+                    margin-bottom: 5px;
+
+                }
+
+                .input-section {}
+
+                body {
+
+                    margin-bottom: 20px;
+
+                }
+
+                body {
+
+                    .input-label {
+
+                        display: block;
+
+                        .header p {
+
+                            font-weight: 600;
+
+                            color: #333;
+                            color: #6c757d;
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+                            margin-bottom: 10px;
+
+                            font-size: 14px;
+                            font-size: 14px;
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+                        }
+
+                        .input-field,
+                        .input-textarea {}
+
+                        width: 100%;
+
+                        padding: 12px 15px;
+                        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+
+                        border: 1px solid #dee2e6;
+
+                        border-radius: 6px;
+                        /* Models Grid */
+                        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+
+                        font-family: inherit;
+
+                        font-size: 14px;
+
+                        .models-grid {
+
+                            transition: all 0.2s;
+
+                        }
+
+                        display: grid;
+                        min-height: 100vh;
+
+                        .input-field:focus,
+                        .input-textarea:focus {
+
+                            outline: none;
+                            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+                            min-height: 100vh;
+
+                            border-color: #667eea;
+
+                            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                            gap: 30px;
+
+                        }
+
+                        .input-textarea {
+                            margin-bottom: 30px;
+                            color: #333;
+
+                            resize: vertical;
+
+                            min-height: 100px;
+                        }
+
+                        color: #333;
+
+                    }
+
+                    .file-upload-btn {
+
+                        background: #f8f9fa;
+
+                        border: 2px dashed #dee2e6;
+
+                        .model-card {}
+
+                        padding: 15px 20px;
+
+                        border-radius: 6px;
+                        background: white;
+                    }
+
+                    cursor: pointer;
+
+                    transition: all 0.2s;
+                    border-radius: 12px;
+
+                    width: 100%;
+
+                    text-align: center;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                    font-weight: 500;
+
+                    color: #667eea;
+                    overflow: hidden;
+
+                }
+
+                .file-upload-btn:hover {
+                    transition: all 0.3s ease;
+
+                    .container {
+
+                        background: #e7f3ff;
+
+                        border-color: #667eea;
+                    }
+
+                    .container {}
+
+                    .file-upload-btn.dragging {
+
+                        background: #e7f3ff;
+
+                        border-color: #667eea;
+
+                        .model-card:hover {
+                            max-width: 1400px;
+
+                        }
+
+                        #fileInput {
+                            transform: translateY(-5px);
+                            max-width: 1400px;
+
+                            display: none;
+
+                        }
+
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+                        .file-name {
+
+                            font-size: 12px;
+                        }
+
+                        margin: 0 auto;
+
+                        color: #6c757d;
+
+                        margin-top: 5px;
+                        margin: 0 auto;
+
+                    }
+
+                    .predict-btn {
+                        .model-header {
+
+                            width: 100%;
+
+                            padding: 12px 20px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            padding: 20px;
+
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+                            color: white;
+                            color: white;
+                            padding: 20px;
+
+                            border: none;
+
+                            border-radius: 6px;
+                            padding: 25px;
+
+                            font-weight: 600;
+
+                            font-size: 14px;
+                            display: flex;
+                        }
+
+                        cursor: pointer;
+
+                        transition: all 0.2s;
+                        justify-content: space-between;
+                    }
+
+                    margin-top: 10px;
+
+                }
+
+                align-items: flex-start;
+
+                .predict-btn:hover {
+
+                    transform: translateY(-2px);
+                }
+
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+
+            }
+
+            .predict-btn:disabled {
+
+                opacity: 0.6;
+
+                .model-title h2 {
+                    /* Header */
+
+                    cursor: not-allowed;
+
+                }
+
+                font-size: 20px;
+                /* Header */
+
+                .results-section {
+
+                    margin-top: 20px;
+                    margin-bottom: 5px;
+
+                    max-height: 0;
+
+                    overflow: hidden;
+                }
+
+                .header {
+
+                    transition: max-height 0.3s ease;
+
+                }
+
+                .header {
+
+                    .results-section.show {
+
+                        max-height: 500px;
+
+                        .model-title p {}
+
+                        .results-title {
+                            font-size: 14px;
+                            background: white;
+
+                            font-weight: 600;
+
+                            color: #333;
+                            opacity: 0.9;
+                            background: white;
+
+                            margin-bottom: 10px;
+
+                            font-size: 14px;
+                        }
+
+                    }
+
+                    .result-box {
+                        border-radius: 12px;
+
+                        background: #f0f7ff;
+
+                        border-left: 4px solid #667eea;
+
+                        .model-icon {
+                            border-radius: 12px;
+
+                            padding: 15px;
+
+                            border-radius: 6px;
+                            font-size: 40px;
+
+                        }
+
+                        .result-text {
+                            opacity: 0.8;
+                            padding: 20px 30px;
+
+                            color: #333;
+
+                            line-height: 1.6;
+                        }
+
+                        padding: 20px 30px;
+
+                        font-size: 14px;
+
+                    }
+
+                    .result-confidence {
+
+                        color: #28a745;
+
+                        .model-body {
+                            margin-bottom: 30px;
+
+                            font-weight: 600;
+
+                            margin-top: 8px;
+                            padding: 25px;
+                            margin-bottom: 30px;
+
+                            font-size: 13px;
+
+                        }
+                    }
+
+                    .no-result {
+
+                        background: #f8f9fa;
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                        border-left: 4px solid #6c757d;
+
+                        padding: 15px;
+
+                        .input-section {
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+                            border-radius: 6px;
+
+                            color: #6c757d;
+                            margin-bottom: 20px;
+
+                            font-size: 14px;
+
+                            text-align: center;
+                        }
+                    }
+
+                }
+
+                .loading {
+
+                    display: none;
+
+                    text-align: center;
+
+                    .input-label {
+                        display: flex;
+
+                        margin: 20px 0;
+
+                    }
+
+                    display: block;
+
+                    .loading.show {
+
+                        display: block;
+                        font-weight: 600;
+                        justify-content: space-between;
+
+                    }
+
+                    .spinner {
+                        color: #333;
+
+                        border: 3px solid #f3f3f3;
+
+                        border-top: 3px solid #667eea;
+                        margin-bottom: 10px;
+
+                        .header h1 {
+
+                            border-radius: 50%;
+
+                            width: 35px;
+                            font-size: 14px;
+                            align-items: center;
+
+                            height: 35px;
+
+                            animation: spin 1s linear infinite;
+                        }
+
+                        margin: 0 auto 10px;
+
+                    }
+
+                    font-size: 24px;
+
+                    @keyframes spin {
+
+                        0% {
+                            transform: rotate(0deg);
+                        }
+
+                        .input-field,
+                        .input-textarea {}
+
+                        100% {
+                            transform: rotate(360deg);
+                        }
+
+                    }
+
+                    width: 100%;
+
+                    .spinner-text {
+
+                        color: #667eea;
+                        padding: 12px 15px;
+                        color: #1e3c72;
+
+                        font-size: 14px;
+
+                        font-weight: 500;
+                        border: 1px solid #dee2e6;
+
+                    }
+
+                    .info-section {
+                        border-radius: 6px;
+                        margin-bottom: 5px;
+
+                        background: white;
+
+                        border-radius: 12px;
+                        font-family: inherit;
+
+                        padding: 25px;
+
+                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                        font-size: 14px;
+
+                        .header-left h1 {}
+
+                        margin-top: 30px;
+
+                    }
+
+                    transition: all 0.2s;
+
+                    .info-section h3 {
+
+                        color: #1e3c72;
+                    }
+
+                    font-size: 24px;
+
+                    margin-bottom: 15px;
+
+                    font-size: 16px;
+
+                }
+
+                .info-section ul {
+
+                    .input-field:focus,
+                    .input-textarea:focus {
+                        color: #1e3c72;
+
+                        list-style: none;
+
+                    }
+
+                    outline: none;
+
+                    .info-section li {
+
+                        padding: 8px 0;
+                        border-color: #667eea;
+
+                        .header p {
+
+                            color: #555;
+
+                            font-size: 14px;
+                            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                            margin-bottom: 5px;
+
+                            display: flex;
+
+                            align-items: center;
+                        }
+
+                        gap: 10px;
+
+                    }
+
+                    color: #6c757d;
+
+                    .info-section li:before {
+
+                        content: '[+]';
+
+                        .input-textarea {}
+
+                        color: #667eea;
+
+                        font-weight: 600;
+                        resize: vertical;
+
+                        font-size: 12px;
+
+                    }
+
+                    min-height: 100px;
+                    font-size: 14px;
+
+                    @media (max-width: 1024px) {
+
+                        .models-grid {}
+
+                        grid-template-columns: 1fr;
+
+                    }
+                }
+
+            }
+        </style> .file-upload-section {
+
+    </head>
+
+<body> display: flex; .header-left p {
+
+    <div class="container">
+
+        <div class="header"> align-items: center;
+
+            <h1>[Invoice] Forecast - Deep Learning</h1>
+
+            <p>Predict retail store imports using CNN and LSTM models</p> gap: 10px; color: #6c757d;
+
+        </div>
+
+        }
+
+        <div class="models-grid">
+
+            <div class="model-card"> /* Models Grid */
+
+                <div class="model-header">
+
+                    <div class="model-title"> .file-upload-btn { font-size: 14px;
+
+                        <h2>Model 1: CNN</h2>
+
+                        <p>Invoice Text Prediction</p> background: #f8f9fa;
+
+                    </div>
+
+                    <div class="model-icon">[AI]</div> border: 2px dashed #dee2e6; .models-grid {}
+
+                </div>
+
+                <div class="model-body"> padding: 15px 20px;
+
+                    <div class="input-section">
+
+                        <label class="input-label">[Text] Invoice Details</label> border-radius: 6px; display: grid;
+
+                        <textarea class="input-textarea" id="model1Input"
+                            placeholder="Enter invoice data line by line..."></textarea>
+
+                    </div> cursor: pointer;
+
+
+
+                    <button class="predict-btn" onclick="predictModel1()" id="predictBtn1"> transition: all 0.2s;
+                        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+
+                        <i class="fas fa-magic"></i> Predict Quantities
+
+                    </button> flex: 1; /* Models Grid */
+
+
+
+                    <div class="loading" id="loading1"> text-align: center;
+
+                        <div class="spinner"></div>
+
+                        <p class="spinner-text">Processing with CNN...</p> font-weight: 500; gap: 30px;
+
+                    </div>
+
+                    color: #667eea;
+
+                    <div class="results-section" id="results1">
+
+                        <div class="results-title">[Results] Prediction</div> } .models-grid {
+
+                        <div class="result-box" id="resultBox1">
+
+                            <div class="no-result">No results yet</div>
+
+                        </div>
+
+                    </div> .file-upload-btn:hover { margin-bottom: 30px;
+
+                </div>
+
+            </div> background: #e7f3ff; display: grid;
+
+
+
+            <div class="model-card"> border-color: #667eea;
+
+                <div class="model-header">
+
+                    <div class="model-title"> } }
+
+                        <h2>Model 2: LSTM</h2>
+
+                        <p>Invoice Image Recognition</p>
+
+                    </div>
+
+                    <div class="model-icon">[IMG]</div> .file-upload-btn.dragging { grid-template-columns:
+                    repeat(auto-fit, minmax(500px, 1fr));
+
+                </div>
+
+                <div class="model-body"> background: #e7f3ff;
+
+                    <div class="input-section">
+
+                        <label class="input-label">[Upload] Invoice Image</label> border-color: #667eea; gap: 30px;
+
+                        <div class="file-upload-btn" id="fileUploadBtn">
+
+                            <i class="fas fa-cloud-upload-alt"></i> Click or drag image }
+
+                        </div>
+
+                        <input type="file" id="fileInput" accept="image/*,.pdf"> .model-card {
+
+                        <div class="file-name" id="fileName"></div>
+
+                    </div> #fileInput { margin-bottom: 30px;
+
+
+
+                    <button class="predict-btn" onclick="predictModel2()" id="predictBtn2"> display: none;
+
+                        <i class="fas fa-magic"></i> Recognize Text (OCR)
+
+                    </button> } background: white;
+
+
+
+                    <div class="loading" id="loading2"> }
+
+                        <div class="spinner"></div>
+
+                        <p class="spinner-text">Processing with LSTM...</p> .file-name {
+
+                    </div>
+
+                    font-size: 12px; border-radius: 12px;
+
+                    <div class="results-section" id="results2">
+
+                        <div class="results-title">[Results] Recognition</div> color: #6c757d;
+
+                        <div class="result-box" id="resultBox2">
+
+                            <div class="no-result">No results yet</div> margin-top: 5px; box-shadow: 0 2px 10px rgba(0,
+                            0, 0, 0.1);
+
+                        </div>
+
+                    </div> }
+
+                </div>
+
+            </div> .model-card {
+
+        </div>
+
+        .predict-btn {
+
+        <div class="info-section">
+
+            <h3>[Info] How It Works</h3> width: 100%; overflow: hidden;
+
+            <ul>
+
+                <li><strong>Model 1 (CNN):</strong> Analyzes invoice text to extract quantities</li> padding: 12px 20px;
+                background: white;
+
+                <li><strong>Model 2 (LSTM):</strong> Recognizes and extracts text from images</li>
+
+                <li><strong>Forecasting:</strong> Predicts future import requirements</li> background:
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+                <li><strong>Real-time:</strong> Instant results with confidence scores</li>
+
+            </ul> color: white; transition: all 0.3s ease;
+
+        </div>
+
+    </div> border: none; border-radius: 12px;
+
+
+
+    <script>            border - radius: 6px;
+
+        let selectedFile = null;
+
+        font - weight: 600;                }
+
+        async function predictModel1() {
+
+            const input = document.getElementById('model1Input').value.trim(); font - size: 14px;
+
+            const resultBox = document.getElementById('resultBox1');
+
+            const loading = document.getElementById('loading1'); cursor: pointer; box - shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+            const resultsSection = document.getElementById('results1');
+
+            const btn = document.getElementById('predictBtn1'); transition: all 0.2s;
+
+
+
+            if (!input) {
+                margin - top: 10px; overflow: hidden;
+
+                resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Please enter invoice data</div>';
+
+                resultsSection.classList.add('show');
+            }
+
+            return;
+
+        }                .model - card:hover {
+
+
+
+            loading.classList.add('show');        .predict - btn:hover {
+                transition: all 0.3s ease;
+
+                btn.disabled = true;
+
+                transform: translateY(-2px);
+
+                try {
+
+                    const response = await fetch('/api/model1/predict', { box- shadow: 0 5px 15px rgba(102, 126, 234, 0.3); transform: translateY(-5px);
+
+                    method: 'POST',
+
+                        headers: { 'Content-Type': 'application/json' },
+                }                }
+
+            body: JSON.stringify({ text: input })
+
+        });
+
+
+
+        const data = await response.json();        .predict - btn:active {
+            box - shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+            loading.classList.remove('show');
+
+            transform: translateY(0);
+
+            if (data.success === false) {
+
+                resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">' + data.message + '</div>';
+            }
+        }
+
+                } else {
+
+            resultBox.innerHTML = '<div class="result-text"><strong>' + data.output1 + '</strong><br><br>' + data.output2 + '</div><div class="result-confidence">Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>';
+
+        }
+
+        resultsSection.classList.add('show');        .predict - btn:disabled {            .model - card:hover {
+
+        } catch (error) {
+
+            loading.classList.remove('show'); opacity: 0.6;
+
+            resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Error: ' + error.message + '</div>';
+
+            resultsSection.classList.add('show'); cursor: not - allowed; transform: translateY(-5px);
+
+        } finally {
+
+                btn.disabled = false; transform: none;
+
+            }
+
+        }        }                .model - header {
+
+
+
+            const fileUploadBtn = document.getElementById('fileUploadBtn'); box - shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+            const fileInput = document.getElementById('fileInput');
+
+            const fileName = document.getElementById('fileName');        /* Results Section */
+
+
+
+            fileUploadBtn.addEventListener('click', function () {        .results - section {
+                background: linear - gradient(135deg, #667eea 0 %, #764ba2 100 %);
+
+                fileInput.click();
+
+            }); margin - top: 20px;
+        }
+
+
+
+        fileInput.addEventListener('change', function (e) {
+            max - height: 0;
+
+            selectedFile = e.target.files[0];
+
+            if (selectedFile) {
+                overflow: hidden; color: white;
+
+                fileName.textContent = 'Selected: ' + selectedFile.name;
+
+            } transition: max - height 0.3s ease;
+
+        });
+
+        }                padding: 25px;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
+
+            fileUploadBtn.addEventListener(eventName, function (e) {
+
+                e.preventDefault();
+
+                e.stopPropagation();        .results - section.show {                .model - header {
+
+                }, false);
+
+        }); max - height: 500px;
+
+
+
+        ['dragenter', 'dragover'].forEach(function (eventName) { }                    display: flex;
+
+        fileUploadBtn.addEventListener(eventName, function () {
+
+            fileUploadBtn.classList.add('dragging'); background: linear - gradient(135deg, #667eea 0 %, #764ba2 100 %);
+
+        }, false);
+
+        });        .results - title {
+
+
+
+            ['dragleave', 'drop'].forEach(function (eventName) {
+                font - weight: 600; justify - content: space - between;
+
+                fileUploadBtn.addEventListener(eventName, function () {
+
+                    fileUploadBtn.classList.remove('dragging'); color: #333; color: white;
+
+                }, false);
+
+            }); margin - bottom: 10px;
+
+
+
+            fileUploadBtn.addEventListener('drop', function (e) {
+                font - size: 14px; align - items: flex - start;
+
+                var files = e.dataTransfer.files;
+
+                if (files.length > 0) { } padding: 25px;
+
+                selectedFile = files[0];
+
+                fileInput.files = files;
+
+                fileName.textContent = 'Selected: ' + selectedFile.name;
+
+            }.result - box {}
+
+        }, false);
+
+        background: #f0f7ff;
+
+        async function predictModel2() {
+
+            if (!selectedFile) {
+                border - left: 4px solid #667eea; display: flex;
+
+                document.getElementById('resultBox2').innerHTML = '<div class="result-text" style="color: #dc3545;">Please select an image first</div>';
+
+                document.getElementById('results2').classList.add('show'); padding: 15px;
+
+                return;
+
+            } border - radius: 6px; justify - content: space - between;
+
+
+
+            var loading = document.getElementById('loading2');
+        }
+
+        var resultsSection = document.getElementById('results2');
+
+        var resultBox = document.getElementById('resultBox2');                .model - title h2 {
+
+            var btn = document.getElementById('predictBtn2');
+
+        .result - text {
+                align - items: flex - start;
+
+                loading.classList.add('show');
+
+                btn.disabled = true; color: #333;
+
+
+
+                try {
+                    line - height: 1.6; font - size: 20px;
+
+                    var formData = new FormData();
+
+                    formData.append('image', selectedFile); font - size: 14px;
+                }
+
+
+
+                var response = await fetch('/api/model2/recognize', {}
+
+                    method: 'POST',
+
+                    body: formData                margin - bottom: 5px;
+
+            });
+
+        .result - confidence {
+
+                var data = await response.json();
+
+                loading.classList.remove('show'); color: #28a745;
+            }
+
+
+
+            if (data.success === false) {
+                font - weight: 600;
+
+                resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">' + data.message + '</div>';
+
+            } else {
+                margin - top: 8px;            .model - title h2 {
+
+                    var text = data.recognized_text || 'No text recognized';
+
+                    resultBox.innerHTML = '<div class="result-text"><strong>[Document] Recognized Text:</strong><br><br>' + text.replace(/\n/g, '<br>') + '</div><div class="result-confidence">Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>'; font - size: 13px;
+
+                }
+
+                resultsSection.classList.add('show');
+            } font - size: 20px;
+
+        } catch (error) {
+
+            loading.classList.remove('show');
+
+            resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Error: ' + error.message + '</div>';
+
+            resultsSection.classList.add('show');        .no - result {                .model - title p {
+
+            } finally {
+
+                btn.disabled = false; background: #f8f9fa; margin - bottom: 5px;
+
+            }
+
+            } border - left: 4px solid #6c757d;
+
+
+
+            document.getElementById('model1Input').addEventListener('keydown', function (e) {
+                padding: 15px; font - size: 14px;
+
+                if (e.ctrlKey && e.key === 'Enter') {
+
+                    predictModel1(); border - radius: 6px;
+                }
+
+            }
+
+        }); color: #6c757d;
+
+    </script>
+
+</body> font-size: 14px; opacity: 0.9;
+
+</html>
+
+text-align: center;
+
+} }
+
+
+
+/* Loading Spinner */ .model-title p {
+
+.loading {
+
+display: none; font-size: 14px;
+
+text-align: center;
+
+margin: 20px 0; .model-icon {
+
+} opacity: 0.9;
+
+
+
+.loading.show { font-size: 40px;
+
+display: block; }
+
+}
+
+opacity: 0.8;
+
+.spinner {
+
+border: 3px solid #f3f3f3; }
+
+border-top: 3px solid #667eea;
+
+border-radius: 50%; .model-icon {
+
+width: 35px;
+
+height: 35px; font-size: 40px;
+
+animation: spin 1s linear infinite;
+
+margin: 0 auto 10px; .model-body {
+
+} opacity: 0.8;
+
+
+
+@keyframes spin { padding: 25px;
+
+0% { transform: rotate(0deg); } }
+
+100% { transform: rotate(360deg); }
+
+} }
+
+
+
+.spinner-text { .model-body {
+
+color: #667eea;
+
+font-size: 14px; .input-section {
+
+font-weight: 500; padding: 25px;
+
+}
+
+margin-bottom: 20px;
+
+/* Info Section */ }
+
+.info-section {
+
+background: white; }
+
+border-radius: 12px;
+
+padding: 25px; .input-section {
+
+box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+margin-top: 30px; .input-label {
+
+} margin-bottom: 20px;
+
+
+
+.info-section h3 { display: block;
+
+color: #1e3c72; }
+
+margin-bottom: 15px;
+
+font-size: 16px; font-weight: 600;
+
+}
+
+color: #333;
+
+.info-section ul {
+
+list-style: none; .input-label {
+
+}
+
+margin-bottom: 10px;
+
+.info-section li { display: block;
+
+padding: 8px 0;
+
+color: #555; font-size: 14px;
+
+font-size: 14px; font-weight: 600;
+
+display: flex;
+
+align-items: center; }
+
+gap: 10px;
+
+} color: #333;
+
+
+
+.info-section li:before { margin-bottom: 10px;
+
+content: '[OK]';
+
+color: #667eea; .input-field,
+
+font-weight: 600; .input-textarea {
+
+font-size: 12px; font-size: 14px;
+
+width: auto;
+
+display: inline-block; width: 100%;
+
+} }
+
+
+
+/* Responsive */ padding: 12px 15px;
+
+@media (max-width: 1024px) {
+
+.models-grid { border: 1px solid #dee2e6;
+
+grid-template-columns: 1fr;
+
+} .input-field,
+
+} .input-textarea {
+
+
+
+@media (max-width: 768px) { border-radius: 6px;
+
+.header { width: 100%;
+
+padding: 15px 20px;
+
+} font-family: inherit;
+
+padding: 12px 15px;
+
+.header h1 {
+
+font-size: 20px; font-size: 14px;
+
+} border: 1px solid #dee2e6;
+
+
+
+.model-header { transition: all 0.2s;
+
+flex-direction: column; border-radius: 6px;
+
+gap: 10px;
+
+} }
+
+
+
+.model-icon { font-family: inherit;
+
+font-size: 30px;
+
+} font-size: 14px;
+
+}
+
+</style> .input-field:focus,
+
+</head> .input-textarea:focus {
+
+<body> transition: all 0.2s;
+
+    <div class="container">
+
+        <!-- Header --> outline: none;
+
+        <div class="header"> }
+
+            <h1>[Chart] Invoice Forecast - Deep Learning</h1>
+
+            <p>Predict retail store imports using CNN and LSTM models</p> border-color: #667eea;
+
+        </div>
+
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+
+        <!-- Models Grid -->
+
+        <div class="models-grid"> .input-field:focus,
+
+            <!-- Model 1: Text Prediction --> .input-textarea:focus {}
+
+            <div class="model-card">
+
+                <div class="model-header"> outline: none;
+
+                    <div class="model-title">
+
+                        <h2>Model 1: CNN</h2> border-color: #667eea;
+
+                        <p>Invoice Text Prediction</p>
+
+                    </div> .input-textarea {
+
+                    <div class="model-icon">[AI]</div> box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+
+                </div>
+
+                <div class="model-body"> resize: vertical;
+
+                    <div class="input-section"> }
+
+                        <label class="input-label">[Text] Invoice Details</label>
+
+                        <textarea class="input-textarea" id="model1Input"
+                            placeholder="Enter invoice data line by line..."></textarea> min-height: 100px;
+
+                    </div>
+
+                    }
+
+                    <button class="predict-btn" onclick="predictModel1()" id="predictBtn1">
+
+                        <i class="fas fa-magic"></i> Predict Quantities .input-textarea {
+
+                    </button>
+
+                    resize: vertical;
+
+                    <!-- Loading -->
+
+                    <div class="loading" id="loading1"> .file-upload-section {
+
+                        <div class="spinner"></div> min-height: 100px;
+
+                        <p class="spinner-text">Processing with CNN...</p>
+
+                    </div> display: flex;
+
+                    }
+
+                    <!-- Results -->
+
+                    <div class="results-section" id="results1"> align-items: center;
+
+                        <div class="results-title">[Results] Prediction Results</div>
+
+                        <div class="result-box" id="resultBox1"> gap: 10px;
+
+                            <div class="no-result">No results yet</div>
+
+                        </div> .file-upload-section {}
+
+                    </div>
+
+                </div> display: flex;
+
+            </div>
+
+            align-items: center;
+
+            <!-- Model 2: Image Recognition -->
+
+            <div class="model-card"> .file-upload-btn {
+
+                <div class="model-header"> gap: 10px;
+
+                    <div class="model-title">
+
+                        <h2>Model 2: LSTM</h2> background: #f8f9fa;
+
+                        <p>Invoice Image Recognition</p> }
+
+                    </div>
+
+                    <div class="model-icon">[Image]</div> border: 2px dashed #dee2e6;
+
+                </div>
+
+                <div class="model-body"> padding: 15px 20px;
+
+                    <div class="input-section">
+
+                        <label class="input-label">[Upload] Invoice Image</label> .file-upload-btn {
+
+                        <div class="file-upload-section">
+
+                            <div class="file-upload-btn" id="fileUploadBtn"> border-radius: 6px;
+
+                                <i class="fas fa-cloud-upload-alt"></i> Click or drag image background: #f8f9fa;
+
+                            </div>
+
+                            <input type="file" id="fileInput" accept="image/*,.pdf"> cursor: pointer;
+
+                        </div> border: 2px dashed #dee2e6;
+
+                        <div class="file-name" id="fileName"></div>
+
+                    </div> transition: all 0.2s;
+
+                    padding: 15px 20px;
+
+                    <button class="predict-btn" onclick="predictModel2()" id="predictBtn2">
+
+                        <i class="fas fa-magic"></i> Recognize Text (OCR) flex: 1;
+
+                    </button> border-radius: 6px;
+
+
+
+                    <!-- Loading --> text-align: center;
+
+                    <div class="loading" id="loading2"> cursor: pointer;
+
+                        <div class="spinner"></div>
+
+                        <p class="spinner-text">Processing with LSTM...</p> font-weight: 500;
+
+                    </div> transition: all 0.2s;
+
+
+
+                    <!-- Results --> color: #667eea;
+
+                    <div class="results-section" id="results2"> flex: 1;
+
+                        <div class="results-title">[Results] Recognition Results</div>
+
+                        <div class="result-box" id="resultBox2"> }
+
+                            <div class="no-result">No results yet</div>
+
+                        </div> text-align: center;
+
+                    </div>
+
+                </div> font-weight: 500;
+
+            </div>
+
+        </div> .file-upload-btn:hover {
+
+        color: #667eea;
+
+        <!-- Info Section -->
+
+        <div class="info-section"> background: #e7f3ff;
+
+            <h3>[Info] How It Works</h3> }
+
+            <ul>
+
+                <li><strong>Model 1 (CNN):</strong> Analyzes invoice text to extract product quantities and details</li>
+                border-color: #667eea;
+
+                <li><strong>Model 2 (LSTM):</strong> Recognizes and extracts text from invoice images using OCR</li>
+
+                <li><strong>Forecasting:</strong> Combines both models to predict future import requirements</li> }
+
+                <li><strong>Real-time Processing:</strong> Instant results with confidence scores</li>
+
+            </ul> .file-upload-btn:hover {
+
+        </div>
+
+    </div> background: #e7f3ff;
+
+
+
+    <script>                .file - upload - btn.dragging {
+
+            let selectedFile = null; border - color: #667eea;
+
+
+
+            // Model 1: Text Prediction                    background: #e7f3ff;
+
+            async function predictModel1() { }
+
+            const input = document.getElementById('model1Input').value.trim();
+
+            const resultBox = document.getElementById('resultBox1'); border - color: #667eea;
+
+            const loading = document.getElementById('loading1');
+
+            const resultsSection = document.getElementById('results1');
+        }
+
+        const btn = document.getElementById('predictBtn1');
+
+            .file - upload - btn.dragging {
+
+            if (!input) {
+
+                resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Please enter invoice data</div>'; background: #e7f3ff;
+
+                resultsSection.classList.add('show');
+
+                return; #fileInput {
+
+                } border - color: #667eea;
+
+
+
+                loading.classList.add('show'); display: none;
+
+                btn.disabled = true;
+            }
+
+
+
+            try { }
+
+                const response = await fetch('/api/model1/predict', {
+
+                method: 'POST', #fileInput {
+
+                    headers: { 'Content-Type': 'application/json' },
+
+                    body: JSON.stringify({ text: input }).file - name {
+
+            }); display: none;
+
+
+
+            const data = await response.json(); font - size: 12px;
+
+            loading.classList.remove('show');
+        }
+
+
+
+        if (data.success === false) {
+            color: #6c757d;
+
+            resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">' + data.message + '</div>';
+
+        } else {
+            margin - top: 5px;
+
+            resultBox.innerHTML = '<div class="result-text"><strong>' + data.output1 + '</strong><br><br>' + data.output2 + '</div><div class="result-confidence">OK Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>';
+
+        }                .file - name { }
+
+        resultsSection.classList.add('show');
+
+            } catch (error) {
+            font - size: 12px;
+
+            loading.classList.remove('show');
+
+            resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Error: ' + error.message + '</div>'; color: #6c757d;
+
+            resultsSection.classList.add('show');
+
+        } finally {                .predict - btn {
+
+            btn.disabled = false; margin - top: 5px;
+
+        }
+
+        } width: 100 %;
+
+                }
+
+        // File Upload Handling
+
+        const fileUploadBtn = document.getElementById('fileUploadBtn'); padding: 12px 20px;
+
+        const fileInput = document.getElementById('fileInput');
+
+        const fileName = document.getElementById('fileName'); background: linear - gradient(135deg, #667eea 0 %, #764ba2 100 %);
+
+
+
+        fileUploadBtn.addEventListener('click', function () {                .predict - btn {
+
+            fileInput.click();
+
+        }); color: white;
+
+        width: 100 %;
+
+        fileInput.addEventListener('change', function (e) {
+
+            selectedFile = e.target.files[0]; border: none;
+
+            if (selectedFile) {
+                padding: 12px 20px;
+
+                fileName.textContent = 'OK Selected: ' + selectedFile.name;
+
+            } border - radius: 6px;
+
+        }); background: linear - gradient(135deg, #667eea 0 %, #764ba2 100 %);
+
+
+
+        // Drag and drop                    font-weight: 600;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(function (eventName) {
+            color: white;
+
+            fileUploadBtn.addEventListener(eventName, preventDefaults, false);
+
+        }); font - size: 14px;
+
+        border: none;
+
+        function preventDefaults(e) {
+
+            e.preventDefault(); cursor: pointer;
+
+            e.stopPropagation(); border - radius: 6px;
+
+        }
+
+        transition: all 0.2s;
+
+        ['dragenter', 'dragover'].forEach(function (eventName) {
+            font - weight: 600;
+
+            fileUploadBtn.addEventListener(eventName, function () {
+
+                fileUploadBtn.classList.add('dragging'); margin - top: 10px;
+
+            }, false); font - size: 14px;
+
+        });
+
+                }
+
+        ['dragleave', 'drop'].forEach(function (eventName) {
+
+            fileUploadBtn.addEventListener(eventName, function () {
+                cursor: pointer;
+
+                fileUploadBtn.classList.remove('dragging');
+
+            }, false); transition: all 0.2s;
+
+        });
+
+                .predict - btn:hover {
+
+            fileUploadBtn.addEventListener('drop', function (e) {
+                margin - top: 10px;
+
+                var files = e.dataTransfer.files;
+
+                if (files.length > 0) {
+                    transform: translateY(-2px);
+
+                    selectedFile = files[0];
+                }
+
+                fileInput.files = files;
+
+                fileName.textContent = 'OK Selected: ' + selectedFile.name; box - shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+
+            }
+
+        }, false);            }
+
+
+
+        // Model 2: Image Recognition            .predict-btn:hover {
+
+        async function predictModel2() {
+
+            if (!selectedFile) {
+                transform: translateY(-2px);
+
+                document.getElementById('resultBox2').innerHTML = '<div class="result-text" style="color: #dc3545;">Please select an image first</div>';
+
+                document.getElementById('results2').classList.add('show');                .predict - btn:active {
+
+                    return; box - shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+
+                }
+
+                transform: translateY(0);
+
+                var loading = document.getElementById('loading2');
+            }
+
+            var resultsSection = document.getElementById('results2');
+
+            var resultBox = document.getElementById('resultBox2');
+        }
+
+        var btn = document.getElementById('predictBtn2');
+
+            .predict - btn:active {
+
+            loading.classList.add('show');
+
+            btn.disabled = true;                .predict - btn:disabled {
+
+                transform: translateY(0);
+
+                try {
+
+                    var formData = new FormData(); opacity: 0.6;
+
+                    formData.append('image', selectedFile);
+                }
+
+
+
+                var response = await fetch('/api/model2/recognize', {
+                    cursor: not - allowed;
+
+                    method: 'POST',
+
+                    body: formData                transform: none;
+
+                });
+
+                .predict - btn:disabled { }
+
+                var data = await response.json();
+
+                loading.classList.remove('show'); opacity: 0.6;
+
+
+
+                if (data.success === false) {
+                    cursor: not - allowed;
+
+                    resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">' + data.message + '</div>';
+
+                } else {                /* Results Section */
+
+                    var text = data.recognized_text || 'No text recognized'; transform: none;
+
+                    resultBox.innerHTML = '<div class="result-text"><strong>[Document] Recognized Text:</strong><br><br>' + text.replace(/\n/g, '<br>') + '</div><div class="result-confidence">OK Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>';
+
+                }                .results - section { }
+
+                resultsSection.classList.add('show');
+
+            } catch (error) {
+                margin - top: 20px;
+
+                loading.classList.remove('show');
+
+                resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Error: ' + error.message + '</div>'; max - height: 0;
+
+                resultsSection.classList.add('show');                /* Results Section */
+
+            } finally {
+
+                btn.disabled = false; overflow: hidden;
+
+            }
+
+        }                .results - section {
+
+
+
+            // Enter key support for Model 1                    transition: max-height 0.3s ease;
+
+            document.getElementById('model1Input').addEventListener('keydown', function (e) {
+                margin - top: 20px;
+
+                if (e.ctrlKey && e.key === 'Enter') {
+
+                    predictModel1();
+                }
+
+            }
+
+        }); max - height: 0;
+
+    </script>
+
+</body> overflow: hidden;
+
+</html>
+
+.results-section.show {
+transition: max-height 0.3s ease;
+
+max-height: 500px;
+}
+
+}
+
+.results-section.show {
+
+.results-title {
+max-height: 500px;
+
+font-weight: 600;
+}
+
+color: #333;
+
+margin-bottom: 10px;
+
+.results-title {
+
+font-size: 14px;
+font-weight: 600;
+
+}
+
+color: #333;
+
+margin-bottom: 10px;
+
+.result-box {
+font-size: 14px;
+
+background: #f0f7ff;
+}
+
+border-left: 4px solid #667eea;
+
+padding: 15px;
+
+.result-box {
+
+border-radius: 6px;
+background: #f0f7ff;
+
+}
+
+border-left: 4px solid #667eea;
+
+padding: 15px;
+
+.result-text {
+border-radius: 6px;
+
+color: #333;
+}
+
+line-height: 1.6;
+
+font-size: 14px;
+
+.result-text {}
+
+color: #333;
+
+line-height: 1.6;
+
+.result-confidence {
+font-size: 14px;
+
+color: #28a745;
+}
+
+font-weight: 600;
+
+margin-top: 8px;
+
+.result-confidence {
+
+font-size: 13px;
+color: #28a745;
+
+}
+
+font-weight: 600;
+
+margin-top: 8px;
+
+.no-result {
+font-size: 13px;
+
+background: #f8f9fa;
+}
+
+border-left: 4px solid #6c757d;
+
+padding: 15px;
+
+.no-result {
+
+border-radius: 6px;
+background: #f8f9fa;
+
+color: #6c757d;
+border-left: 4px solid #6c757d;
+
+font-size: 14px;
+padding: 15px;
+
+text-align: center;
+border-radius: 6px;
+
+}
+
+color: #6c757d;
+
+font-size: 14px;
+
+/* Loading Spinner */
+text-align: center;
+
+.loading {}
+
+display: none;
+
+text-align: center;
+/* Loading Spinner */
+
+margin: 20px 0;
+
+.loading {}
+
+display: none;
+
+text-align: center;
+
+.loading.show {
+margin: 20px 0;
+
+display: block;
+}
+
+}
+
+.loading.show {
+
+.spinner {
+display: block;
+
+border: 3px solid #f3f3f3;
+}
+
+border-top: 3px solid #667eea;
+
+border-radius: 50%;
+
+.spinner {
+
+width: 35px;
+border: 3px solid #f3f3f3;
+
+height: 35px;
+border-top: 3px solid #667eea;
+
+animation: spin 1s linear infinite;
+border-radius: 50%;
+
+margin: 0 auto 10px;
+width: 35px;
+
+}
+
+height: 35px;
+
+animation: spin 1s linear infinite;
+
+@keyframes spin {
+margin: 0 auto 10px;
+
+0% {
+transform: rotate(0deg);
+}
+}
+
+100% {
+transform: rotate(360deg);
+}
+
+}
+
+@keyframes spin {
+
+0% {
+transform: rotate(0deg);
+}
+
+.spinner-text {
+100% {
+transform: rotate(360deg);
+}
+
+color: #667eea;
+}
+
+font-size: 14px;
+
+font-weight: 500;
+
+.spinner-text {}
+
+color: #667eea;
+
+font-size: 14px;
+
+/* Info Section */
+font-weight: 500;
+
+.info-section {}
+
+background: white;
+
+border-radius: 12px;
+/* Info Section */
+
+padding: 25px;
+
+.info-section {
+
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+background: white;
+
+margin-top: 30px;
+border-radius: 12px;
+
+}
+
+padding: 25px;
+
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+.info-section h3 {
+margin-top: 30px;
+
+color: #1e3c72;
+}
+
+margin-bottom: 15px;
+
+font-size: 16px;
+
+.info-section h3 {}
+
+color: #1e3c72;
+
+margin-bottom: 15px;
+
+.info-section ul {
+font-size: 16px;
+
+list-style: none;
+}
+
+}
+
+.info-section ul {
+
+.info-section li {
+list-style: none;
+
+padding: 8px 0;
+}
+
+color: #555;
+
+font-size: 14px;
+
+.info-section li {
+
+display: flex;
+padding: 8px 0;
+
+align-items: center;
+color: #555;
+
+gap: 10px;
+font-size: 14px;
+
+}
+
+display: flex;
+
+align-items: center;
+
+.info-section li:before {
+gap: 10px;
+
+content: '?';
+}
+
+color: #667eea;
+
+font-weight: 600;
+
+.info-section li:before {
+
+width: 20px;
+content: '?';
+
+display: inline-block;
+color: #667eea;
+
+}
+
+font-weight: 600;
+
+width: 20px;
+
+/* Responsive */
+display: inline-block;
+
+@media (max-width: 1024px) {}
+
+.models-grid {
+
+grid-template-columns: 1fr;
+/* Responsive */
+
+}
+
+@media (max-width: 1024px) {}
+
+.models-grid {
+
+grid-template-columns: 1fr;
+
+@media (max-width: 768px) {}
+
+.header {}
+
+padding: 15px 20px;
+
+}
+
+@media (max-width: 768px) {
+
+.header {
+
+.header h1 {
+flex-direction: column;
+
+font-size: 20px;
+gap: 15px;
+
+}
+
+align-items: flex-start;
+
+}
+
+.model-header {
+
+flex-direction: column;
+
+.header-left h1 {
+
+gap: 10px;
+font-size: 20px;
+
+}
+}
+
+
+
+.model-icon {
+.model-header {
+
+font-size: 30px;
+flex-direction: column;
+
+}
+
+gap: 10px;
+
+}
+}
+</style>
+
+</head> .model-icon {
+
+<body> font-size: 30px;
+
+    <div class="container"> }
+
+        <!-- Header --> }
+
+        <div class="header">
+            </style>
+
+            <h1>?? Invoice Forecast - Deep Learning</h1>
+            </head>
+
+            <p>Predict retail store imports using CNN & LSTM models</p>
+
+            <body>
+
+        </div>
+        <div class="container">
+
+            <h1>ÌæØ Invoice Import Forecast - Deep Learning Demo</h1>
+
+            <!-- Models Grid -->
+
+            <div class="models-grid">
+                <div class="info-box">
+
+                    <!-- Model 1: Text Prediction --> <strong>Project Focus:</strong> Predict future retail store
+                    imports using CNN (invoice detection)
+
+                    <div class="model-card"> and LSTM (quantity forecasting) models.
+
+                        <div class="model-header"> </div>
+
+                        <div class="model-title">
+
+                            <h2>Model 1: CNN</h2> <!-- Step 1: Upload Invoice -->
+
+                            <p>Invoice Text Prediction</p>
+                            <h2>Step 1: Upload Invoice Image</h2>
+
+                        </div>
+                        <p>Upload a scanned purchase invoice image (JPG, PNG, or PDF). The system will extract product
+                            details using Model 1 (CNN).</p>
+
+                        <div class="model-icon">??</div>
+
+                    </div>
+                    <div class="upload-section" id="uploadArea">
+
+                        <div class="model-body">
+                            <p>Ì≥Å <strong>Click to select or drag-and-drop invoice image</strong></p>
+
+                            <div class="input-section"> <small>Supported formats: JPG, PNG, PDF (Max 16MB)</small>
+
+                                <label class="input-label">?? Invoice Details</label>
+                            </div>
+
+                            <textarea class="input-textarea" id="model1Input"
+                                placeholder="Enter invoice data line by line..."></textarea> <input type="file"
+                                id="invoiceInput" accept=".jpg,.jpeg,.png,.pdf">
+
+                        </div>
+                        <div class="file-name" id="fileName"></div>
+
+
+
+                        <button class="predict-btn" onclick="predictModel1()" id="predictBtn1">
+                            <div class="error" id="error"></div>
+
+                            <i class="fas fa-magic"></i> Predict Quantities <div class="success" id="success"></div>
+
+                        </button>
+
+                        <!-- Loading spinner -->
+
+                        <!-- Loading -->
+                        <div class="loading" id="loading">
+
+                            <div class="loading" id="loading1">
+                                <div class="spinner"></div>
+
+                                <div class="spinner"></div>
+                                <p>Processing invoice with Model 1 (CNN)...</p>
+
+                                <p class="spinner-text">Processing with CNN...</p>
+                            </div>
+
+                        </div>
+
+                        <!-- Step 2: Invoice Results -->
+
+                        <!-- Results -->
+                        <div class="results" id="invoiceResults">
+
+                            <div class="results-section" id="results1">
+                                <h3>‚úÖ Invoice Processing Results (Model 1 - CNN)</h3>
+
+                                <div class="results-title">?? Prediction Results</div>
+                                <table id="invoiceTable">
+
+                                    <div class="result-box" id="resultBox1">
+                                        <thead>
+
+                                            <div class="no-result">No results yet</div>
+                                            <tr>
+
+                                    </div>
+                                    <th>SKU</th>
+
+                            </div>
+                            <th>Product Name</th>
+
+                        </div>
+                        <th>Quantity</th>
+
+                    </div>
+                    <th>Unit Price</th>
+
+                    </tr>
+
+                    <!-- Model 2: Image Recognition --> </thead>
+
+                    <div class="model-card">
+                        <tbody id="invoiceTbody"></tbody>
+
+                        <div class="model-header">
+                            </table>
+
+                            <div class="model-title"> </div>
+
+                            <h2>Model 2: LSTM</h2>
+
+                            <p>Invoice Image Recognition</p> <!-- Step 3: Forecast Button -->
+
+                        </div>
+                        <div id="forecastSection" style="display: none; margin-top: 20px;">
+
+                            <div class="model-icon">???</div>
+                            <h2>Step 2: Generate Forecast</h2>
+
+                        </div>
+                        <p>Click below to forecast future import quantities using Model 2 (LSTM).</p>
+
+                        <div class="model-body"> <button id="forecastBtn">Ì¥Æ Forecast Import Quantities (Model 2 -
+                                LSTM)</button>
+
+                            <div class="input-section"> </div>
+
+                            <label class="input-label">??? Upload Invoice Image</label>
+
+                            <div class="file-upload-section"> <!-- Loading spinner for forecast -->
+
+                                <div class="file-upload-btn" id="fileUploadBtn">
+                                    <div class="loading" id="loadingForecast">
+
+                                        <i class="fas fa-cloud-upload-alt"></i> Click or drag image <div
+                                            class="spinner"></div>
+
+                                    </div>
+                                    <p>Forecasting quantities with Model 2 (LSTM)...</p>
+
+                                    <input type="file" id="fileInput" accept="image/*,.pdf">
+                                </div>
+
+                            </div>
+
+                            <div class="file-name" id="fileName"></div> <!-- Step 4: Forecast Results -->
+
+                        </div>
+                        <div class="results" id="forecastResults">
+
+                            <h3>Ì≥ä Forecast Results (Model 2 - LSTM)</h3>
+
+                            <button class="predict-btn" onclick="predictModel2()" id="predictBtn2">
+                                <p><em>Recommended import quantities for next period:</em></p>
+
+                                <i class="fas fa-magic"></i> Recognize Text (OCR) <table id="forecastTable">
+
+                            </button>
+                            <thead>
+
+                                <tr>
+
+                                    <!-- Loading -->
+                                    <th>SKU</th>
+
+                                    <div class="loading" id="loading2">
+                                        <th>Product Name</th>
+
+                                        <div class="spinner"></div>
+                                        <th>Current Qty</th>
+
+                                        <p class="spinner-text">Processing with LSTM...</p>
+                                        <th>Predicted Qty</th>
+
+                                    </div>
+                                    <th>Recommendation</th>
+
+                                </tr>
+
+                                <!-- Results -->
+                            </thead>
+
+                            <div class="results-section" id="results2">
+                                <tbody id="forecastTbody"></tbody>
+
+                                <div class="results-title">?? Recognition Results</div>
+                                </table>
+
+                                <div class="result-box" id="resultBox2"> </div>
+
+                                <div class="no-result">No results yet</div>
+
+                            </div> <!-- Model Info -->
+
+                        </div>
+                        <div class="info-box" style="margin-top: 40px;">
+
+                        </div> <strong>Ì≥ö Models Used:</strong>
+
+                    </div>
+                    <ul>
+
+                </div>
+                <li><strong>Model 1 (CNN):</strong> Extracts product items from invoice images</li>
+
+                <li><strong>Model 2 (LSTM):</strong> Predicts next-period import quantities based on historical patterns
+                </li>
+
+                <!-- Info Section --> </ul>
+
+                <div class="info-section"> </div>
+
+                <h3>?? How It Works</h3>
+            </div>
+
+            <ul>
+
+                <li><strong>Model 1 (CNN):</strong> Analyzes invoice text to extract product quantities and details</li>
+                <script>
+
+                    <li><strong>Model 2 (LSTM):</strong> Recognizes and extracts text from invoice images using OCR</li>        const uploadArea = document.getElementById('uploadArea');
+
+                    <li><strong>Forecasting:</strong> Combines both models to predict future import requirements</li>        const invoiceInput = document.getElementById('invoiceInput');
+
+                    <li><strong>Real-time Processing:</strong> Instant results with confidence scores</li>        const fileName = document.getElementById('fileName');
+
+            </ul >        const error = document.getElementById('error');
+
+        </div >        const success = document.getElementById('success');
+
+    </div >        const loading = document.getElementById('loading');
+
+                    const invoiceResults = document.getElementById('invoiceResults');
+
+                    <script>        const forecastSection = document.getElementById('forecastSection');
+
+                        let selectedFile = null;        const loadingForecast = document.getElementById('loadingForecast');
+
+                        const forecastResults = document.getElementById('forecastResults');
+
+                        // Model 1: Text Prediction        const forecastBtn = document.getElementById('forecastBtn');
+
+                        async function predictModel1() {
+
+            const input = document.getElementById('model1Input').value.trim();        let currentInvoiceData = null;
+
+                        const resultBox = document.getElementById('resultBox1');
+
+                        const loading = document.getElementById('loading1');        // Drag and drop
+
+            const resultsSection = document.getElementById('results1');        uploadArea.addEventListener('dragover', (e) => {
+
+            const btn = document.getElementById('predictBtn1');            e.preventDefault();
+
+                        uploadArea.style.background = '#f0f7ff';
+
+                        if (!input) { });
+
+                        resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">Please enter invoice data</div>';
+
+                resultsSection.classList.add('show');        uploadArea.addEventListener('dragleave', () => {
+
+                return;            uploadArea.style.background = '';
+
+            }        });
+
+
+
+            loading.classList.add('show');        uploadArea.addEventListener('drop', (e) => {
+
+                            btn.disabled = true;            e.preventDefault();
+
+                        uploadArea.style.background = '';
+
+                        try {invoiceInput.files = e.dataTransfer.files;
+
+                        const response = await fetch('/api/model1/predict', {handleFileSelect();
+
+                    method: 'POST',        });
+
+                        headers: {'Content-Type': 'application/json' },
+
+                        body: JSON.stringify({text: input })        uploadArea.addEventListener('click', () => {
+
+                        });            invoiceInput.click();
+
+        });
+
+                        const data = await response.json();
+
+                        loading.classList.remove('show');        invoiceInput.addEventListener('change', handleFileSelect);
+
+
+
+                        if (data.success === false) {function handleFileSelect() {
+
+                            resultBox.innerHTML = `<div class="result-text" style="color: #dc3545;">${data.message}</div>`; const file = invoiceInput.files[0];
+
+                        } else {            if (!file) return;
+
+                        resultBox.innerHTML = `
+
+                        <div class="result-text">            // Check file size
+
+                            <strong>${data.output1}</strong><br><br>            if (file.size > 16 * 1024 * 1024) {
+
+                                ${data.output2}                showError('File size too large. Maximum 16MB.');
+
+                            </div>                return;
+
+                                <div class="result-confidence">? Confidence: ${(data.confidence * 100).toFixed(1)}%</div>            }
+
+                                `;
+
+                }            // Check file type
+
+                                resultsSection.classList.add('show');            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            } catch (error) {            if (!allowedTypes.includes(file.type)) {
+
+                                    loading.classList.remove('show');                showError('Invalid file type. Use JPG, PNG, or PDF.');
+
+                                resultBox.innerHTML = `<div class="result-text" style="color: #dc3545;">Error: ${error.message}</div>`;                return;
+
+                resultsSection.classList.add('show');            }
+
+            } finally {
+
+                                    btn.disabled = false;            fileName.textContent = `‚úì Selected: ${file.name}`;
+
+            }            uploadInvoice(file);
+
+        }        }
+
+
+
+        // File Upload Handling        function uploadInvoice(file) {
+
+        const fileUploadBtn = document.getElementById('fileUploadBtn');            const formData = new FormData();
+
+                                const fileInput = document.getElementById('fileInput');            formData.append('invoice_image', file);
+
+                                const fileName = document.getElementById('fileName');
+
+                                showLoading(true);
+
+        fileUploadBtn.addEventListener('click', () => fileInput.click());            clearMessages();
+
+
+
+        fileInput.addEventListener('change', (e) => {fetch('/api/upload_invoice', {
+
+                                    selectedFile = e.target.files[0]; method: 'POST',
+
+                                    if(selectedFile) {
+                                        body: formData
+
+                                        fileName.textContent = `? Selected: ${selectedFile.name}`;
+                                    })
+
+                                }            .then(response => response.json())
+
+        });            .then(data => {
+
+                                    showLoading(false);
+
+        // Drag and drop                if (data.success) {
+
+                                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                                        currentInvoiceData = data.invoice_data;
+
+                                        fileUploadBtn.addEventListener(eventName, preventDefaults, false); displayInvoiceResults(data.invoice_data);
+
+                                    });                    forecastSection.style.display = 'block';
+
+                                showSuccess('Invoice processed successfully! Now forecast quantities.');
+
+                                function preventDefaults(e) { } else {
+
+                                    e.preventDefault();                    showError(data.message || 'Error processing invoice');
+
+            e.stopPropagation();                }
+
+        }            })
+
+            .catch(err => {
+
+                                    ['dragenter', 'dragover'].forEach(eventName => {
+                                        showLoading(false);
+
+                                        fileUploadBtn.addEventListener(eventName, () => {
+                                            showError('Error: ' + err.message);
+
+                                            fileUploadBtn.classList.add('dragging');
+                                        });
+
+                                    }, false);        }
+
+        });
+
+                                function displayInvoiceResults(invoice) {
+
+                                    ['dragleave', 'drop'].forEach(eventName => {
+                                        const tbody = document.getElementById('invoiceTbody');
+
+                                        fileUploadBtn.addEventListener(eventName, () => {
+                                            tbody.innerHTML = '';
+
+                                            fileUploadBtn.classList.remove('dragging');
+
+                                        }, false); invoice.items.forEach(item => {
+
+                                        }); const row = document.createElement('tr');
+
+                                        row.innerHTML = `
+
+        fileUploadBtn.addEventListener('drop', (e) => {                    <td>${item.sku}</td>
+
+            const files = e.dataTransfer.files;                    <td>${item.product_name}</td>
+
+            if (files.length > 0) {                    <td>${item.quantity}</td>
+
+                selectedFile = files[0];                    <td>${item.unit_price.toLocaleString()}</td>
+
+                fileInput.files = files;                `;
+
+                                        fileName.textContent = `? Selected: ${selectedFile.name}`; tbody.appendChild(row);
+
+                                    }            });
+
+        }, false);
+
+                                invoiceResults.classList.add('show');
+
+                                // Model 2: Image Recognition        }
+
+                                async function predictModel2() {
+
+            if (!selectedFile) {forecastBtn.addEventListener('click', generateForecast);
+
+                                document.getElementById('resultBox2').innerHTML = '<div class="result-text" style="color: #dc3545;">Please select an image first</div>';
+
+                                document.getElementById('results2').classList.add('show');        function generateForecast() {
+
+                return;            if (!currentInvoiceData) {
+
+                                }                showError('Please upload an invoice first');
+
+                                return;
+
+            const loading = document.getElementById('loading2');            }
+
+                                const resultsSection = document.getElementById('results2');
+
+                                const resultBox = document.getElementById('resultBox2');            const payload = {
+
+            const btn = document.getElementById('predictBtn2');                invoice_data: currentInvoiceData,
+
+                                inventory_snapshot: { }
+
+            loading.classList.add('show');            };
+
+                                btn.disabled = true;
+
+                                showLoadingForecast(true);
+
+                                try {clearMessages();
+
+                                const formData = new FormData();
+
+                                formData.append('image', selectedFile);            fetch('/api/forecast_imports', {
+
+                                    method: 'POST',
+
+                                const response = await fetch('/api/model2/recognize', {headers: {
+
+                                    method: 'POST',                    'Content-Type': 'application/json',
+
+                    body: formData                },
+
+                });                body: JSON.stringify(payload)
+
+            })
+
+                const data = await response.json();            .then(response => response.json())
+
+                loading.classList.remove('show');            .then(data => {
+
+                                    showLoadingForecast(false);
+
+                                if (data.success === false) {                if (data.success) {
+
+                                    resultBox.innerHTML = `<div class="result-text" style="color: #dc3545;">${data.message}</div>`;                    displayForecastResults(data.forecasts);
+
+                } else {showSuccess('Forecast generated successfully!');
+
+                    const text = data.recognized_text || 'No text recognized';                } else {
+
+                                    resultBox.innerHTML = `                    showError(data.message || 'Error generating forecast');
+
+                        <div class="result-text">                }
+
+                            <strong>?? Recognized Text:</strong><br><br>            })
+
+                            ${text.replace(/\n/g, '<br>')}            .catch(err => {
+
+                        </div>                showLoadingForecast(false);
+
+                        <div class="result-confidence">? Confidence: ${(data.confidence * 100).toFixed(1)}%</div>                showError('Error: ' + err.message);
+
+                    `;            });
+
+                }        }
+
+                                resultsSection.classList.add('show');
+
+            } catch (error) {function displayForecastResults(forecasts) {
+
+                                    loading.classList.remove('show'); const tbody = document.getElementById('forecastTbody');
+
+                                    resultBox.innerHTML = `<div class="result-text" style="color: #dc3545;">Error: ${error.message}</div>`; tbody.innerHTML = '';
+
+                                    resultsSection.classList.add('show');
+
+                                } finally {forecasts.forEach(forecast => {
+
+                                    btn.disabled = false; const row = document.createElement('tr');
+
+                                }                row.innerHTML = `
+
+        }                    <td>${forecast.sku}</td>
+
+                    <td>${forecast.product_name}</td>
+
+        // Enter key support for Model 1                    <td>${forecast.current_quantity}</td>
+
+        document.getElementById('model1Input').addEventListener('keydown', (e) => {                    <td><strong>${forecast.predicted_quantity}</strong></td>
+
+            if (e.ctrlKey && e.key === 'Enter') {                    <td>${forecast.recommendation}</td>
+
+                predictModel1();                `;
+
+            }                tbody.appendChild(row);
+
+        });            });
+
+                </script>
+
+</body> forecastResults.classList.add('show');
+
+</html> }
+
+
+function showLoading(show) {
+loading.classList.toggle('show', show);
+}
+
+function showLoadingForecast(show) {
+loadingForecast.classList.toggle('show', show);
+}
+
+function showError(msg) {
+error.textContent = msg;
+error.classList.add('show');
+}
+
+function showSuccess(msg) {
+success.textContent = msg;
+success.classList.add('show');
+}
+
+function clearMessages() {
+error.classList.remove('show');
+success.classList.remove('show');
+}
+</script>
+</body>
+
+</html>
