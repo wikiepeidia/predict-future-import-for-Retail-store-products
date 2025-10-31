@@ -1,0 +1,106 @@
+{
+  "son": [
+    {
+      "id": "SON001",
+      "name": "Cà phê đen",
+      "price": 15000
+    },
+    {
+      "id": "SON002",
+      "name": "Cà phê sữa",
+      "price": 18000
+    },
+    {
+      "id": "SON003",
+      "name": "Bánh mì thịt",
+      "price": 20000
+    },
+    {
+      "id": "SON004",
+      "name": "Nước cam",
+      "price": 25000
+    },
+    {
+      "id": "SON005",
+      "name": "Trà đá",
+      "price": 5000
+    },
+    {
+      "id": "SON006",
+      "name": "Sữa Brand A",
+      "price": 12000
+    },
+    {
+      "id": "SON007",
+      "name": "Bánh ngọt",
+      "price": 30000
+    },
+    {
+      "id": "SON008",
+      "name": "Nước suối",
+      "price": 10000
+    },
+    {
+      "id": "SON009",
+      "name": "Snack",
+      "price": 15000
+    },
+    {
+      "id": "SON010",
+      "name": "Kẹo",
+      "price": 8000
+    }
+  ],
+  "tung": [
+    {
+      "id": "TUNG001",
+      "name": "Sữa Brand A",
+      "price": 50000
+    },
+    {
+      "id": "TUNG002",
+      "name": "Sản phẩm Thai sản Brand B",
+      "price": 120000
+    },
+    {
+      "id": "TUNG003",
+      "name": "Bỉm trẻ em",
+      "price": 85000
+    },
+    {
+      "id": "TUNG004",
+      "name": "Sữa bột",
+      "price": 350000
+    },
+    {
+      "id": "TUNG005",
+      "name": "Tã giấy",
+      "price": 45000
+    },
+    {
+      "id": "TUNG006",
+      "name": "Vitamin tổng hợp",
+      "price": 150000
+    },
+    {
+      "id": "TUNG007",
+      "name": "Kem dưỡng da",
+      "price": 95000
+    },
+    {
+      "id": "TUNG008",
+      "name": "Dầu gội",
+      "price": 65000
+    },
+    {
+      "id": "TUNG009",
+      "name": "Sữa tắm",
+      "price": 55000
+    },
+    {
+      "id": "TUNG010",
+      "name": "Khăn giấy",
+      "price": 25000
+    }
+  ]
+}

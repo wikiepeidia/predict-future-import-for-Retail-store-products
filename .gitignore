@@ -5,6 +5,9 @@ __pycache__/
 
 # C extensions
 *.so
+#TRAINED STUFFS
+/data/images/*
+data/invoices/*
 
 # Distribution / packaging
 .Python
@@ -81,7 +84,9 @@ target/
 # IPython
 profile_default/
 ipython_config.py
-
+# backup
+*.bak
+*.backup
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is
 #   intended to run in multiple environments; otherwise, check them in:
@@ -252,7 +257,7 @@ Thumbs.db
 .env.*.local
 
 # Model files (if any large ML models are downloaded)
-models/
+*.hdf5
 *.h5
 *.pkl
 *.joblib

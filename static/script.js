@@ -28,7 +28,7 @@ async function predictModel1() {
             const formData = new FormData();
             formData.append('image', selectedFiles[i]);
 
-            const response = await fetch('/api/model1/predict', {
+            const response = await fetch('/api/model1/detect', {
                 method: 'POST',
                 body: formData
             });
@@ -284,10 +284,10 @@ async function predictModel2() {
     btn.disabled = true;
 
     try {
-        const response = await fetch('/api/model2/recognize', {
+        const response = await fetch('/api/model2/forecast', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: input })
+            body: JSON.stringify({ invoice_data: input })
         });
 
         const data = await response.json();
