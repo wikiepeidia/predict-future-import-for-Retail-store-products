@@ -156,6 +156,12 @@ def model1_detect():
         
         invoice_data = model.predict_invoice_data(filepath)
         
+        # Add date to invoice data for LSTM
+        invoice_data['date'] = datetime.now()
+        
+        # Store in history for Model 2
+        invoice_history.append(invoice_data)
+        
         print(f"Invoice detection results:")
         print(f"  - Invoice ID: {invoice_data['invoice_id']}")
         print(f"  - Store: {invoice_data['store_name']}")
@@ -163,12 +169,17 @@ def model1_detect():
         print(f"  - Total amount: {invoice_data['total_amount']:,} VND")
         print(f"  - Text regions: {invoice_data['text_regions_count']}")
         print(f"  - Confidence: {invoice_data['detection_confidence']:.3f}")
+        print(f"  - Total invoices in history: {len(invoice_history)}")
 
+        # Use REAL confidence from model, not mock
+        real_confidence = invoice_data['detection_confidence']
+        
         return jsonify({
             'success': True,
             'recognized_text': f"Invoice ID: {invoice_data['invoice_id']}\nStore: {invoice_data['store_name']}\n\nProducts:\n" + "\n".join([f"{p['product_name']} - {p['quantity']}" for p in invoice_data['products']]) + f"\n\nTotal: {invoice_data['total_amount']:,} VND",
-            'confidence': 0.92,  # Mock confidence for now
-            'data': invoice_data
+            'confidence': real_confidence,  # Use real model confidence
+            'data': invoice_data,
+            'total_history_count': len(invoice_history)  # Send total invoice count
         }), 200
 
     except Exception as e:

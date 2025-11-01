@@ -7,9 +7,9 @@
     <title>Invoice Forecast - Deep Learning Demo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
-    <link rel="icon" href="/images/webicon.svg" type="image/svg+xml">
-    <link rel="shortcut icon" href="/images/webicon.svg">
-    <link rel="apple-touch-icon" href="/images/webicon.svg">
+    <link rel="icon" href="/static/images/webicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/images/webicon.svg">
+    <link rel="apple-touch-icon" href="/static/images/webicon.svg">
     <meta name="theme-color" content="#ffffff">
 </head>
 
@@ -95,16 +95,7 @@
                         <div class="result-box" id="resultBox2">
                             <div class="no-result">No results yet</div>
                         </div>
-                        <div class="prediction-result-section"
-                            style="margin-top: 15px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px;">
-                            <h4 style="margin: 0 0 10px 0; color: #856404; font-size: 14px;">🔮 Prediction Result
-                                (Coming Soon)</h4>
-                            <p style="margin: 0; color: #856404; font-size: 13px; line-height: 1.4;">
-                                This section will display the LSTM model's prediction for future import quantities based
-                                on historical data patterns.
-                                <br><em>Backend implementation in progress...</em>
-                            </p>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -124,6 +115,10 @@
 
                 <div id="recognizedProductTable">
                     <!-- Product table will be injected here -->
+                </div>
+
+                <div id="recognizedPagination" class="recognized-pagination">
+                    <!-- Pagination controls will be injected here -->
                 </div>
 
                 <div class="recognized-ready">

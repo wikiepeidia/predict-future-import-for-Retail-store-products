@@ -1,5 +1,6 @@
 import requests
 import os
+import sys  # Added for sys.exit()
 
 # Test the CNN model with an invoice image
 url = 'http://localhost:5000/api/model1/detect'
@@ -13,7 +14,7 @@ if os.path.exists(image_path):
         with open(image_path, 'rb') as f:
             files = {'file': f}
             print("Sending request to CNN model...")
-            response = requests.post(url, files=files)
+            response = requests.post(url, files=files, timeout=10)  # Added timeout of 10 seconds
             print(f'Status Code: {response.status_code}')
             if response.status_code == 200:
                 result = response.json()
@@ -28,6 +29,12 @@ if os.path.exists(image_path):
                     print("No data in response")
             else:
                 print(f"Error response: {response.text}")
+    except requests.exceptions.Timeout:
+        print("Request timed out. Terminating.")
+        sys.exit(1)
+    except requests.exceptions.ConnectionError:
+        print("URL unreachable. Terminating.")
+        sys.exit(1)
     except Exception as e:
         print(f"Error: {e}")
 else:

@@ -155,13 +155,53 @@ class LSTMTextRecognizer:
         # Take last sequence_length invoices
         recent_invoices = recent_invoices[-self.sequence_length:]
         
+        # Calculate historical metrics for better prediction
+        historical_avg = self._calculate_avg_quantity(recent_invoices)
+        trend = self._analyze_trend(recent_invoices)
+        
+        print(f"   📊 Historical Analysis:")
+        print(f"      Average quantity: {historical_avg:.1f} products")
+        print(f"      Trend: {trend}")
+        
         # Extract features
         sequence = [self._extract_features(inv) for inv in recent_invoices]
         X = np.array([sequence])
         
-        # Predict
-        predicted_quantity = self.model.predict(X, verbose=0)[0][0]
-        predicted_quantity = max(0, predicted_quantity * 1000)  # Denormalize and ensure positive
+        # Predict with model
+        raw_prediction = self.model.predict(X, verbose=0)[0][0]
+        raw_prediction = max(0, raw_prediction * 1000)  # Denormalize
+        
+        print(f"      Raw model output: {raw_prediction:.1f}")
+        
+        # IMPROVED: Adjust prediction based on data if model is untrained
+        # If prediction is way off from historical data, use statistical approach
+        prediction_error_ratio = abs(raw_prediction - historical_avg) / max(historical_avg, 1)
+        
+        print(f"      Error ratio: {prediction_error_ratio:.2f}x")
+        
+        if prediction_error_ratio > 0.5:  # Prediction is more than 50% off
+            # Model is likely untrained, use statistical prediction
+            print(f"   ⚠️  Model prediction differs significantly from historical avg")
+            print(f"   Using statistical forecast instead...")
+            
+            if trend == 'increasing':
+                predicted_quantity = historical_avg * 1.15  # 15% increase
+            elif trend == 'decreasing':
+                predicted_quantity = historical_avg * 0.85  # 15% decrease  
+            else:
+                predicted_quantity = historical_avg  # Stable
+            
+            # Add trend-based variation
+            last_3_avg = self._calculate_avg_quantity(recent_invoices[-3:])
+            predicted_quantity = (predicted_quantity * 0.7) + (last_3_avg * 0.3)
+            
+            print(f"   Statistical forecast: {predicted_quantity:.0f} products")
+        else:
+            # Model prediction seems reasonable
+            predicted_quantity = raw_prediction
+            print(f"   Using model prediction: {predicted_quantity:.0f} products")
+        
+        predicted_quantity = max(10, int(predicted_quantity))  # Ensure positive and reasonable
         
         # Generate recommendation text
         recommendation = self._generate_recommendation_text(
@@ -170,29 +210,64 @@ class LSTMTextRecognizer:
         )
         
         return {
-            'predicted_quantity': int(predicted_quantity),
+            'predicted_quantity': predicted_quantity,
             'recommendation_text': recommendation,
             'confidence': self._calculate_confidence(recent_invoices),
-            'historical_avg': self._calculate_avg_quantity(recent_invoices),
-            'trend': self._analyze_trend(recent_invoices)
+            'historical_avg': int(historical_avg),
+            'trend': trend
         }
     
     def _pad_invoice_history(self, invoices):
         """Pad invoice history with synthetic data if insufficient"""
         if not invoices:
-            # Create dummy invoice
+            # Create dummy invoice with realistic quantities
             invoices = [{
                 'total_amount': 5000000,
                 'products': [
-                    {'quantity': 100, 'unit_price': 50000}
+                    {'product_name': 'Product A', 'quantity': 100, 'unit_price': 50000}
                 ],
-                'date': datetime.now() - timedelta(days=30)
+                'date': datetime.now()  # Use datetime object, not string
             }]
         
-        # Duplicate oldest invoice to fill sequence
+        # If we have invoices, calculate average quantity to maintain consistency
+        if invoices:
+            avg_qty = self._get_total_quantity(invoices[0])
+        else:
+            avg_qty = 100
+        
+        # Duplicate oldest invoice to fill sequence, maintaining quantity scale
         while len(invoices) < self.sequence_length:
-            oldest = invoices[0].copy()
-            oldest['date'] = oldest.get('date', datetime.now()) - timedelta(days=7)
+            # Deep copy to avoid mutation
+            import copy
+            oldest = copy.deepcopy(invoices[0])
+            
+            # Vary quantity slightly to avoid identical data
+            for product in oldest.get('products', []):
+                variation = np.random.uniform(0.8, 1.2)
+                product['quantity'] = int(product.get('quantity', avg_qty) * variation)
+            
+            # FIX: Handle date properly - always ensure it's a datetime object
+            old_date = oldest.get('date')
+            if old_date is None:
+                old_date = datetime.now()
+            elif isinstance(old_date, str):
+                try:
+                    # Try parsing ISO format
+                    old_date = datetime.fromisoformat(old_date.replace('Z', '+00:00'))
+                except:
+                    try:
+                        # Try parsing common formats
+                        from dateutil import parser
+                        old_date = parser.parse(old_date)
+                    except:
+                        old_date = datetime.now()
+            elif not isinstance(old_date, datetime):
+                old_date = datetime.now()
+            
+            # Now we can safely subtract timedelta
+            oldest['date'] = old_date - timedelta(days=7)
+            oldest['total_amount'] = sum(p.get('quantity', 0) * p.get('unit_price', 50000) 
+                                        for p in oldest.get('products', []))
             invoices.insert(0, oldest)
         
         return invoices
