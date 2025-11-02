@@ -18,6 +18,7 @@ A **simplified deep learning demonstration project** for retail inventory manage
 ## 🚀 Quick Start
 
 ### 1. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -25,16 +26,19 @@ pip install -r requirements.txt
 **Windows users:** Also install [Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki)
 
 ### 2. Train Models
+
 ```bash
 python train_models.py
 ```
 
 ### 3. Verify Installation
+
 ```bash
 python verify_installation.py
 ```
 
 ### 4. Run Application
+
 ```bash
 python app.py
 ```
@@ -48,6 +52,7 @@ Open browser: `http://localhost:5000`
 ## 🧠 Model Architecture
 
 ### Model 1: CNN for Invoice OCR
+
 - **Architecture:** 4-layer CNN with BatchNorm and Dropout
 - **Input:** Invoice images (224x224x3)
 - **Output:** Extracted text and structured invoice data
@@ -58,6 +63,7 @@ Open browser: `http://localhost:5000`
   - Invoice parsing (number, date, quantities, amounts)
 
 ### Model 2: LSTM for Forecasting
+
 - **Architecture:** 3-layer LSTM with Dense layers
 - **Input:** 30 timesteps × 5 features
 - **Output:** Predicted import quantity
@@ -69,6 +75,7 @@ Open browser: `http://localhost:5000`
   - ~2.5% MAPE on test data
 
 **Features used:**
+
 - Historical import quantities
 - Unit prices
 - Sales data
@@ -123,7 +130,11 @@ Open browser: `http://localhost:5000`
 ├── models/
 │   ├── cnn_invoice_ocr.py   # CNN implementation
 │   ├── lstm_forecast.py     # LSTM implementation
-│   └── saved/               # Trained models (.h5 files)
+│   └── cnn_model.py         # MobileNetV2 transfer learning
+│
+├── saved_models/            # Trained model weights (.weights.h5)
+│   ├── cnn_invoice_detector.weights.h5
+│   └── lstm_text_recognizer.weights.h5
 │
 ├── ui/templates/
 │   └── index.html           # Web interface
@@ -141,9 +152,11 @@ Open browser: `http://localhost:5000`
 ## 🎯 API Endpoints
 
 ### POST `/api/model1/predict`
+
 **LSTM Forecasting from Text Input**
 
 Request:
+
 ```json
 {
   "text": "100\n120\n135\n150"
@@ -151,6 +164,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "output1": "Invoice quantity extracted: 505 units (4 items)",
@@ -162,11 +176,13 @@ Response:
 ```
 
 ### POST `/api/model2/recognize`
+
 **CNN OCR from Image**
 
 Request: `multipart/form-data` with image file
 
 Response:
+
 ```json
 {
   "recognized_text": "Invoice #12345\nQuantity: 150...",
@@ -183,12 +199,14 @@ Response:
 ## 📈 Model Performance
 
 ### LSTM Model (Trained on 500 samples)
+
 - **Test MAE:** ~0.05
 - **Test MAPE:** ~2.5%
 - **Training:** 70% train, 10% val, 20% test
 - **Epochs:** 50 (with early stopping)
 
 ### CNN Model
+
 - **OCR Accuracy:** Depends on image quality
 - **Preprocessing:** Denoising + Thresholding
 - **Classification:** 10 invoice categories
@@ -226,7 +244,8 @@ Response:
 
 ## 📚 For Deep Learning Exam
 
-### Key Concepts Demonstrated:
+### Key Concepts Demonstrated
+
 1. **CNN Architecture** - Convolutional layers, pooling, dropout
 2. **LSTM Architecture** - Recurrent layers, time-series processing
 3. **Data Pipeline** - Preprocessing, normalization, augmentation
@@ -234,7 +253,8 @@ Response:
 5. **Model Integration** - Two models working together
 6. **Real-world Application** - Practical business problem
 
-### Exam Presentation Tips:
+### Exam Presentation Tips
+
 - ✓ Explain why CNN for images (spatial features)
 - ✓ Explain why LSTM for time-series (temporal dependencies)
 - ✓ Show model architecture diagrams
@@ -253,6 +273,7 @@ MIT License - See [LICENSE](LICENSE) file
 ## 🤝 Contributing
 
 This is an educational project. Feel free to:
+
 - Add more sophisticated models
 - Improve OCR accuracy
 - Add more features (product recognition, etc.)

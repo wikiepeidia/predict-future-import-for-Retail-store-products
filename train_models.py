@@ -93,13 +93,11 @@ def train_lstm_model():
     
     # Save model
     print("\n8. Saving model...")
-    # Save to BOTH locations for compatibility
-    save_path_1 = 'models/saved/lstm_text_recognizer.weights.h5'
-    save_path_2 = 'saved_models/lstm_text_recognizer.weights.h5'
-    model.save_model(save_path_1)
-    model.save_model(save_path_2)
-    print(f"   Saved to: {save_path_1}")
-    print(f"   Saved to: {save_path_2}")
+    # Save ONLY to saved_models/ (used by collab.py)
+    save_path = 'saved_models/lstm_text_recognizer.weights.h5'
+    os.makedirs('saved_models', exist_ok=True)
+    model.save_model(save_path)
+    print(f"   Saved to: {save_path}")
     
     # Test prediction
     print("\n9. Testing prediction...")
@@ -138,13 +136,11 @@ def train_cnn_model():
     
     # Save initial model
     print("\n3. Saving initial model...")
-    # Save to BOTH locations for compatibility
-    save_path_1 = 'models/saved/cnn_invoice_detector.weights.h5'
-    save_path_2 = 'saved_models/cnn_invoice_detector.weights.h5'
-    model.save_model(save_path_1)
-    model.save_model(save_path_2)
-    print(f"   Saved to: {save_path_1}")
-    print(f"   Saved to: {save_path_2}")
+    # Save ONLY to saved_models/ (used by collab.py)
+    save_path = 'saved_models/cnn_invoice_detector.weights.h5'
+    os.makedirs('saved_models', exist_ok=True)
+    model.save_model(save_path)
+    print(f"   Saved to: {save_path}")
     
     print("\n" + "="*60)
     print("CNN Model Initialized!")
@@ -166,9 +162,8 @@ def main():
     print("=" + "="*58 + "=")
     print("\n")
     
-    # Create directories
-    os.makedirs('models/saved', exist_ok=True)
-    os.makedirs('saved_models', exist_ok=True)  # Also create for collab.py
+    # Create directory
+    os.makedirs('saved_models', exist_ok=True)
     
     try:
         # Train LSTM model
@@ -180,8 +175,9 @@ def main():
         print("\n" + "="*60)
         print("[OK] ALL MODELS READY!")
         print("="*60)
-        print("\nModel files saved to: models/saved/")
-        print("- lstm_text_recognizer.h5  (LSTM forecasting model)")
+        print("\nModel files saved to: saved_models/")
+        print("- lstm_text_recognizer.weights.h5  (LSTM forecasting model)")
+        print("- cnn_invoice_detector.weights.h5  (CNN invoice detector)")
         print("- lstm_text_recognizer_scaler.pkl  (data scaler)")
         print("- cnn_invoice_detector.h5  (CNN OCR model)")
         
