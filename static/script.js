@@ -410,20 +410,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function handleFiles(files) {
             const incomingFiles = Array.from(files);
+            const MAX_FILES = 3;
             
             // Merge with existing selection while avoiding duplicates
             const existingKeys = new Set(selectedFiles.map(f => `${f.name}-${f.size}-${f.lastModified}`));
+            let duplicatesDetected = 0;
+            let limitReached = false;
 
             incomingFiles.forEach(file => {
                 const key = `${file.name}-${file.size}-${file.lastModified}`;
-                if (!existingKeys.has(key)) {
-                    selectedFiles.push(file);
-                    existingKeys.add(key);
+                
+                // Check for duplicates
+                if (existingKeys.has(key)) {
+                    duplicatesDetected++;
+                    return;
                 }
+                
+                // Check file limit
+                if (selectedFiles.length >= MAX_FILES) {
+                    limitReached = true;
+                    return;
+                }
+                
+                selectedFiles.push(file);
+                existingKeys.add(key);
             });
 
+            // Show warnings for duplicates or limit
+            if (duplicatesDetected > 0) {
+                alert(`${duplicatesDetected} duplicate file(s) rejected.`);
+            }
+            if (limitReached) {
+                alert(`Maximum ${MAX_FILES} images allowed. Additional files ignored.`);
+            }
+
             if (selectedFiles.length > 0) {
-                fileName.textContent = `Selected: ${selectedFiles.length} file(s)`;
+                fileName.textContent = `Selected: ${selectedFiles.length} file(s) (max ${MAX_FILES})`;
                 displayPreviews();
             } else {
                 fileName.textContent = '';
@@ -442,6 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     container.innerHTML = `
                         <img src="${e.target.result}" class="preview-image" alt="${file.name}">
                         <button class="remove-image" onclick="removeFile(${index})" title="Remove">×</button>
+                        <div class="file-label">${file.name}</div>
                     `;
                     filePreview.appendChild(container);
                 };
@@ -522,7 +545,33 @@ async function predictModel2() {
         if (data.success === false) {
             resultBox.innerHTML = '<div class="result-text" style="color: #dc3545;">' + data.message + '</div>';
         } else {
-            resultBox.innerHTML = '<div class="result-text"><strong>Predicted Import Quantities (Y2):</strong><br><br>' + data.output1 + '<br><br>' + data.output2 + '</div><div class="result-confidence">Prediction Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>';
+            // Format output with proper line breaks and structure
+            let formattedOutput = '<div class="result-text"><strong>Predicted Import Quantities (Y2):</strong><br><br>';
+            formattedOutput += '<div style="margin-bottom: 15px; font-size: 1.1em; color: #2ecc71;">' + data.output1 + '</div>';
+            
+            // Format the Vietnamese recommendation text with proper line breaks
+            if (data.output2) {
+                const lines = data.output2.split('\n').filter(line => line.trim());
+                formattedOutput += '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; line-height: 1.8;">';
+                lines.forEach(line => {
+                    const trimmed = line.trim();
+                    if (trimmed.startsWith('📈') || trimmed.startsWith('📉') || trimmed.startsWith('➡️')) {
+                        formattedOutput += '<div style="margin: 10px 0; font-weight: bold; color: #3498db;">' + trimmed + '</div>';
+                    } else if (trimmed.startsWith('Khuyến nghị:') || trimmed.startsWith('Dự đoán')) {
+                        formattedOutput += '<div style="margin: 8px 0; color: #e74c3c; font-weight: 600;">' + trimmed + '</div>';
+                    } else if (trimmed.startsWith('🏆')) {
+                        formattedOutput += '<div style="margin: 12px 0 8px 0; font-weight: bold; color: #f39c12;">' + trimmed + '</div>';
+                    } else if (trimmed.match(/^\d+\./)) {
+                        formattedOutput += '<div style="margin: 5px 0 5px 20px; color: #555;">' + trimmed + '</div>';
+                    } else {
+                        formattedOutput += '<div style="margin: 8px 0;">' + trimmed + '</div>';
+                    }
+                });
+                formattedOutput += '</div>';
+            }
+            
+            formattedOutput += '</div><div class="result-confidence">Prediction Confidence: ' + (data.confidence * 100).toFixed(1) + '%</div>';
+            resultBox.innerHTML = formattedOutput;
         }
         resultsSection.classList.add('show');
     } catch (error) {

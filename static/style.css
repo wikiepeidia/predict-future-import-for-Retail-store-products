@@ -543,6 +543,8 @@ body {
     position: relative;
     display: inline-block;
     margin: 5px;
+    text-align: center;
+    max-width: 120px;
 }
 
 .preview-image {
@@ -558,6 +560,17 @@ body {
 .preview-image:hover {
     border-color: #667eea;
     transform: scale(1.05);
+}
+
+.file-label {
+    margin-top: 5px;
+    font-size: 11px;
+    color: #6c757d;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
 }
 
 .remove-image {
