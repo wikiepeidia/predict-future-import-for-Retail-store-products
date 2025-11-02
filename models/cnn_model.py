@@ -322,7 +322,7 @@ class CNNInvoiceDetector:
     
     def _detect_store_name(self, invoice_type):
         """Map invoice type to store name"""
-        stores = ['Quán Sơn', 'Quán Tùng', 'Quán Hòa']
+        stores = ['Quán Sơn', 'Quán Tùng']
         return stores[invoice_type % len(stores)]
     
     def _load_product_catalogs(self):
