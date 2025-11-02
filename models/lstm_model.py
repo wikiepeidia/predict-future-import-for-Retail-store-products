@@ -209,10 +209,13 @@ class LSTMTextRecognizer:
             recent_invoices
         )
         
+        confidence = self._calculate_confidence(recent_invoices)
+        
         return {
+            'success': True,
             'predicted_quantity': predicted_quantity,
             'recommendation_text': recommendation,
-            'confidence': self._calculate_confidence(recent_invoices),
+            'confidence': confidence,
             'historical_avg': int(historical_avg),
             'trend': trend
         }

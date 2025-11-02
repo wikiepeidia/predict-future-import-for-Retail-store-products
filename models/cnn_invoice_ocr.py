@@ -4,6 +4,11 @@ CNN Model for Invoice OCR and Text Extraction
 Uses pre-trained OCR + Custom CNN for invoice structure recognition
 """
 import os
+import logging
+import shutil
+from pathlib import Path
+from typing import Optional
+
 import numpy as np
 import cv2
 from PIL import Image
@@ -12,8 +17,37 @@ from tensorflow import keras
 from tensorflow.keras import layers, models
 import pytesseract
 
-# Optional: Set tesseract path if needed (Windows)
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+LOGGER = logging.getLogger(__name__)
+
+
+def configure_tesseract() -> Optional[str]:
+    """Resolve and configure the Tesseract executable for pytesseract."""
+    # 1. Explicit environment variable wins
+    env_cmd = os.environ.get('TESSERACT_CMD') or os.environ.get('TESSERACT_PATH')
+    if env_cmd:
+        env_path = Path(env_cmd).expanduser()
+        if env_path.exists():
+            pytesseract.pytesseract.tesseract_cmd = str(env_path)
+            return str(env_path)
+        LOGGER.warning("TESSERACT_CMD is set to '%s' but the file does not exist", env_cmd)
+
+    # 2. Try to locate via PATH
+    discovered = shutil.which('tesseract')
+    if discovered:
+        pytesseract.pytesseract.tesseract_cmd = discovered
+        return discovered
+
+    # 3. Common Windows install locations
+    fallback_paths = [
+        Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe"),
+        Path(r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe")
+    ]
+    for candidate in fallback_paths:
+        if candidate.exists():
+            pytesseract.pytesseract.tesseract_cmd = str(candidate)
+            return str(candidate)
+
+    return None
 
 
 class InvoiceOCRModel:
@@ -24,6 +58,15 @@ class InvoiceOCRModel:
         self.model = None
         self.img_height = 224
         self.img_width = 224
+        self.tesseract_cmd = configure_tesseract()
+
+        if self.tesseract_cmd:
+            LOGGER.info("Using Tesseract executable at %s", self.tesseract_cmd)
+        else:
+            LOGGER.warning(
+                "Tesseract executable not found. Set the TESSERACT_CMD environment variable to the full path, "
+                "for example 'C:/Program Files/Tesseract-OCR/tesseract.exe'."
+            )
         
         if model_path and os.path.exists(model_path):
             self.load_model(model_path)
@@ -109,6 +152,12 @@ class InvoiceOCRModel:
     def extract_text_ocr(self, image_path):
         """Extract text from invoice using Tesseract OCR"""
         try:
+            if not self.tesseract_cmd:
+                raise RuntimeError(
+                    "Tesseract executable is missing. Install Tesseract OCR or set TESSERACT_CMD to its path. "
+                    "Download: https://github.com/UB-Mannheim/tesseract/wiki"
+                )
+
             preprocessed, original = self.preprocess_image(image_path)
             if preprocessed is None:
                 return ""
