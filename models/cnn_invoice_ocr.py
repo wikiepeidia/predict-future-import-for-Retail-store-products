@@ -277,15 +277,15 @@ class InvoiceOCRModel:
         return history
     
     def save_model(self, path='models/saved/cnn_invoice_model.h5'):
-        """Save trained model"""
+        """Save trained model weights"""
         os.makedirs(os.path.dirname(path), exist_ok=True)
-        self.model.save(path)
-        print(f"Model saved to {path}")
+        self.model.save_weights(path)
+        print(f"Model weights saved to {path}")
     
     def load_model(self, path):
-        """Load pre-trained model"""
-        self.model = keras.models.load_model(path)
-        print(f"Model loaded from {path}")
+        """Load pre-trained model weights"""
+        self.model.load_weights(path)
+        print(f"Model weights loaded from {path}")
 
 
 # Convenience function for quick inference

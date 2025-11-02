@@ -345,15 +345,18 @@ class LSTMTextRecognizer:
             return 'stable'
     
     def save_model(self, path='saved_models/lstm_text_recognizer.h5'):
-        """Save trained model"""
+        """Save trained model weights"""
         if self.model:
-            self.model.save(path)
-            print(f"Model saved to {path}")
+            self.model.save_weights(path)
+            print(f"Model weights saved to {path}")
     
     def load_model(self, path='saved_models/lstm_text_recognizer.h5'):
-        """Load trained model"""
-        self.model = keras.models.load_model(path)
-        print(f"Model loaded from {path}")
+        """Load trained model - build first then load weights"""
+        # Build model architecture
+        self.build_model()
+        # Load weights only (not full model)
+        self.model.load_weights(path)
+        print(f"Model weights loaded from {path}")
 
 
 # Example usage

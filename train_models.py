@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from models.cnn_invoice_ocr import InvoiceOCRModel
-from models.lstm_forecast import ImportForecastLSTM, generate_sample_data
+from models.lstm_forecast import ImportForecastLSTM, generate_sample_data, generate_invoice_based_data
 
 
 def train_lstm_model():
@@ -23,18 +23,40 @@ def train_lstm_model():
     print("="*60)
     
     # Generate sample data
-    print("\n1. Generating sample time-series data...")
-    df = generate_sample_data(n_samples=500)
-    print(f"   Generated {len(df)} data points")
+    print("\n1. Loading REAL invoice data (not synthetic!)...")
+    try:
+        df = generate_invoice_based_data('data/invoices/train.json')
+        print(f"   [OK] Loaded {len(df)} real invoice records")
+    except Exception as e:
+        print(f"   [!] Failed to load invoice data: {e}")
+        print(f"   Falling back to synthetic data...")
+        df = generate_sample_data(n_samples=500)
+    
     print(f"   Columns: {list(df.columns)}")
     
     # Initialize model
     print("\n2. Initializing LSTM model...")
     model = ImportForecastLSTM(lookback=30, features=5)
     
-    # Preprocess data
+    # Preprocess data - SELECT EXACTLY 5 FEATURES
     print("\n3. Preprocessing data...")
-    normalized_data = model.preprocess_data(df.drop('date', axis=1), fit_scaler=True)
+    # 🔥 FIX: Select the 5 most important features for forecasting
+    feature_columns = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
+    
+    # Check if we have all required columns
+    available_features = [col for col in feature_columns if col in df.columns]
+    
+    if len(available_features) < 5:
+        print(f"   ⚠️  Warning: Only {len(available_features)} features available: {available_features}")
+        print(f"   Available columns: {list(df.columns)}")
+        # Fallback: use whatever numeric columns we have
+        numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
+        feature_columns = [col for col in numeric_cols if col != 'date'][:5]
+        print(f"   Using fallback features: {feature_columns}")
+    
+    df_features = df[feature_columns]
+    normalized_data = model.preprocess_data(df_features, fit_scaler=True)
+    print(f"   Selected features: {feature_columns}")
     print(f"   Normalized data shape: {normalized_data.shape}")
     
     # Create sequences
@@ -71,8 +93,13 @@ def train_lstm_model():
     
     # Save model
     print("\n8. Saving model...")
-    save_path = 'models/saved/lstm_forecast_model.h5'
-    model.save_model(save_path)
+    # Save to BOTH locations for compatibility
+    save_path_1 = 'models/saved/lstm_text_recognizer.weights.h5'
+    save_path_2 = 'saved_models/lstm_text_recognizer.weights.h5'
+    model.save_model(save_path_1)
+    model.save_model(save_path_2)
+    print(f"   Saved to: {save_path_1}")
+    print(f"   Saved to: {save_path_2}")
     
     # Test prediction
     print("\n9. Testing prediction...")
@@ -80,11 +107,11 @@ def train_lstm_model():
     result = model.predict_next_quantity(test_df)
     
     if result['success']:
-        print(f"   ✓ Predicted quantity: {result['predicted_quantity']:.2f}")
-        print(f"   ✓ Confidence: {result['confidence']:.2%}")
-        print(f"   ✓ Trend: {result['trend']}")
+        print(f"   [OK] Predicted quantity: {result['predicted_quantity']:.2f}")
+        print(f"   [OK] Confidence: {result['confidence']:.2%}")
+        print(f"   [OK] Trend: {result['trend']}")
     else:
-        print(f"   ✗ Prediction failed: {result['message']}")
+        print(f"   [X] Prediction failed: {result['message']}")
     
     print("\n" + "="*60)
     print("LSTM Model Training Complete!")
@@ -99,7 +126,7 @@ def train_cnn_model():
     print("Initializing CNN Model for Invoice OCR")
     print("="*60)
     
-    print("\nNote: CNN model uses pre-trained Tesseract OCR + custom architecture")
+    print("\nNote: CNN model uses MobileNetV2 transfer learning + custom architecture")
     print("For full training, you would need a labeled dataset of invoice images.")
     
     # Initialize model
@@ -111,8 +138,13 @@ def train_cnn_model():
     
     # Save initial model
     print("\n3. Saving initial model...")
-    save_path = 'models/saved/cnn_invoice_model.h5'
-    model.save_model(save_path)
+    # Save to BOTH locations for compatibility
+    save_path_1 = 'models/saved/cnn_invoice_detector.weights.h5'
+    save_path_2 = 'saved_models/cnn_invoice_detector.weights.h5'
+    model.save_model(save_path_1)
+    model.save_model(save_path_2)
+    print(f"   Saved to: {save_path_1}")
+    print(f"   Saved to: {save_path_2}")
     
     print("\n" + "="*60)
     print("CNN Model Initialized!")
@@ -128,14 +160,15 @@ def train_cnn_model():
 def main():
     """Main training pipeline"""
     print("\n")
-    print("╔" + "="*58 + "╗")
-    print("║" + " "*10 + "DEEP LEARNING MODEL TRAINING" + " "*20 + "║")
-    print("║" + " "*10 + "Retail Inventory Management" + " "*21 + "║")
-    print("╚" + "="*58 + "╝")
+    print("=" + "="*58 + "=")
+    print(" "*10 + "DEEP LEARNING MODEL TRAINING" + " "*20)
+    print(" "*10 + "Retail Inventory Management" + " "*21)
+    print("=" + "="*58 + "=")
     print("\n")
     
     # Create directories
     os.makedirs('models/saved', exist_ok=True)
+    os.makedirs('saved_models', exist_ok=True)  # Also create for collab.py
     
     try:
         # Train LSTM model
@@ -145,18 +178,19 @@ def main():
         cnn_model = train_cnn_model()
         
         print("\n" + "="*60)
-        print("✓ ALL MODELS READY!")
+        print("[OK] ALL MODELS READY!")
         print("="*60)
         print("\nModel files saved to: models/saved/")
-        print("- lstm_forecast_model.h5")
-        print("- lstm_forecast_model_scaler.pkl")
-        print("- cnn_invoice_model.h5")
+        print("- lstm_text_recognizer.h5  (LSTM forecasting model)")
+        print("- lstm_text_recognizer_scaler.pkl  (data scaler)")
+        print("- cnn_invoice_detector.h5  (CNN OCR model)")
         
         print("\nYou can now run the Flask app with:")
         print("  python app.py")
+        print("  python collab.py  (for Google Colab)")
         
     except Exception as e:
-        print(f"\n✗ Error during training: {e}")
+        print(f"\n[X] Error during training: {e}")
         import traceback
         traceback.print_exc()
 

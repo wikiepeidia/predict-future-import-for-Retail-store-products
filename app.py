@@ -624,7 +624,7 @@ def models_info():
                 'name': 'Invoice OCR Model (CNN + OCR)',
                 'input': 'x1 - Hóa đơn giấy (invoice image)',
                 'output': 'Y1 - Hóa đơn điện tử nhập hàng',
-                'architecture': 'Custom CNN feature extractor + Tesseract OCR',
+                'architecture': 'MobileNetV2 Transfer Learning + Custom Detection Head',
                 'status': 'Ready' if cnn_model and getattr(cnn_model, 'model', None) else 'Not loaded',
                 'image_size': f"{cnn_model.img_height}x{cnn_model.img_width}" if cnn_model else 'Not loaded',
                 'weights': str(CNN_MODEL_PATH) if CNN_MODEL_PATH.exists() else 'In-memory'

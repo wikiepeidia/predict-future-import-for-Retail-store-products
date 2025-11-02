@@ -77,13 +77,13 @@ async function predictModel1() {
         
         loading.classList.remove('show');
 
-        // Display summary
+        // Display summary (ultra compact format - no <br> tags)
         resultBox.innerHTML = `
             <div class="result-text">
-                <strong>✅ Processed ${selectedFiles.length} invoice(s)</strong><br>
-                <strong>📊 Total products extracted: ${allProducts.length}</strong><br>
-                <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
-                    ${invoiceResults.map(r => `${r.filename}: ${(r.confidence * 100).toFixed(1)}% confidence`).join('<br>')}
+                <div><strong>✅ Processed ${selectedFiles.length} invoice(s)</strong></div>
+                <div><strong>📊 Total products extracted: ${allProducts.length}</strong></div>
+                <div style="margin-top: 6px; font-size: 12px; color: #6c757d;">
+                    ${invoiceResults.map(r => `<div style="margin: 2px 0;">${r.filename}: ${(r.confidence * 100).toFixed(1)}% confidence</div>`).join('')}
                 </div>
             </div>
         `;

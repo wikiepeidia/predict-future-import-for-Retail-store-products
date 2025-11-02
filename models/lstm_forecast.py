@@ -97,24 +97,46 @@ class ImportForecastLSTM:
         Preprocess dataframe for LSTM
         
         Args:
-            df: Pandas DataFrame with columns:
-                - quantity: import quantity
-                - price: unit price
-                - sales: historical sales
-                - stock: current stock level
-                - demand: demand indicator
+            df: Pandas DataFrame with numeric features
+                Can be either:
+                - OLD format: quantity, price, sales, stock, demand
+                - NEW format: quantity, price, total_amount, num_products, max_product_qty
         
         Returns:
             Normalized array
         """
-        # Select features
-        feature_cols = ['quantity', 'price', 'sales', 'stock', 'demand']
-        available_cols = [col for col in feature_cols if col in df.columns]
-        
-        if not available_cols:
-            raise ValueError(f"DataFrame must contain at least one of {feature_cols}")
-        
-        data = df[available_cols].values
+        # 🔥 FIX: Select only NUMERIC columns, exclude strings like invoice_id, store_name
+        if isinstance(df, pd.DataFrame):
+            # Get only numeric columns
+            numeric_df = df.select_dtypes(include=[np.number])
+            
+            # CRITICAL: Ensure we ALWAYS have exactly 5 features in the correct order
+            expected_features = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
+            
+            # Create a new DataFrame with exactly 5 columns
+            result_df = pd.DataFrame()
+            
+            for feature in expected_features:
+                if feature in numeric_df.columns:
+                    result_df[feature] = numeric_df[feature]
+                else:
+                    # Fill missing features with calculated or default values
+                    if feature == 'total_amount' and 'quantity' in numeric_df.columns and 'price' in numeric_df.columns:
+                        result_df[feature] = numeric_df['quantity'] * numeric_df['price']
+                    elif feature == 'num_products':
+                        result_df[feature] = 1  # Default to 1 product
+                    elif feature == 'max_product_qty' and 'quantity' in numeric_df.columns:
+                        result_df[feature] = numeric_df['quantity']  # Use quantity as proxy
+                    elif feature == 'quantity':
+                        result_df[feature] = 100  # Default quantity
+                    elif feature == 'price':
+                        result_df[feature] = 50000  # Default price
+                    else:
+                        result_df[feature] = 0  # Last resort default
+            
+            data = result_df.values
+        else:
+            data = df
         
         # Normalize data
         if fit_scaler:
@@ -129,22 +151,47 @@ class ImportForecastLSTM:
         Predict next import quantity based on historical data
         
         Args:
-            historical_data: DataFrame or dict with historical data
+            historical_data: DataFrame, dict, or list of dicts with historical data
         
         Returns:
             Dictionary with prediction results
         """
         try:
-            # Convert to DataFrame if dict
-            if isinstance(historical_data, dict):
+            # Convert to DataFrame based on input type
+            if isinstance(historical_data, list):
+                # List of dictionaries
+                if not historical_data:
+                    return {'success': False, 'message': 'No historical data provided'}
                 df = pd.DataFrame(historical_data)
+            elif isinstance(historical_data, dict):
+                # Single dictionary
+                df = pd.DataFrame([historical_data])
             else:
+                # Already a DataFrame
                 df = historical_data.copy()
+            
+            # 🔥 CRITICAL: Ensure df has the 5 required features BEFORE padding
+            # This creates missing columns with defaults
+            required_features = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
+            for feature in required_features:
+                if feature not in df.columns:
+                    if feature == 'total_amount' and 'quantity' in df.columns and 'price' in df.columns:
+                        df[feature] = df['quantity'] * df['price']
+                    elif feature == 'num_products':
+                        df[feature] = 1
+                    elif feature == 'max_product_qty' and 'quantity' in df.columns:
+                        df[feature] = df['quantity']
+                    elif feature == 'quantity':
+                        df[feature] = 100
+                    elif feature == 'price':
+                        df[feature] = 50000
+                    else:
+                        df[feature] = 0
             
             # Ensure minimum data points
             if len(df) < self.lookback:
                 # Pad with mean values if insufficient data
-                mean_values = df.mean()
+                mean_values = df.mean(numeric_only=True)
                 padding_rows = self.lookback - len(df)
                 padding_df = pd.DataFrame([mean_values] * padding_rows)
                 df = pd.concat([padding_df, df], ignore_index=True)
@@ -236,23 +283,26 @@ class ImportForecastLSTM:
         return history
     
     def save_model(self, path='models/saved/lstm_forecast_model.h5'):
-        """Save trained model and scaler"""
+        """Save trained model weights and scaler"""
         os.makedirs(os.path.dirname(path), exist_ok=True)
         
-        # Save model
-        self.model.save(path)
+        # Save model weights only
+        self.model.save_weights(path)
         
         # Save scaler
         scaler_path = path.replace('.h5', '_scaler.pkl')
         with open(scaler_path, 'wb') as f:
             pickle.dump(self.scaler, f)
         
-        print(f"Model saved to {path}")
+        print(f"Model weights saved to {path}")
         print(f"Scaler saved to {scaler_path}")
     
     def load_model(self, path):
-        """Load pre-trained model and scaler"""
-        self.model = keras.models.load_model(path)
+        """Load pre-trained model weights and scaler"""
+        # Build model first
+        self.build_model()
+        # Load weights
+        self.model.load_weights(path)
         
         # Load scaler
         scaler_path = path.replace('.h5', '_scaler.pkl')
@@ -260,11 +310,17 @@ class ImportForecastLSTM:
             with open(scaler_path, 'rb') as f:
                 self.scaler = pickle.load(f)
         
-        print(f"Model loaded from {path}")
+        print(f"Model weights loaded from {path}")
 
 
 def generate_sample_data(n_samples=500):
-    """Generate sample time-series data for demonstration"""
+    """
+    DEPRECATED: Old function using synthetic sine waves
+    Use generate_invoice_based_data() instead for real invoice data
+    """
+    print("⚠️  WARNING: Using synthetic sine wave data (not realistic!)")
+    print("   Consider using generate_invoice_based_data() instead")
+    
     np.random.seed(42)
     
     # Generate time-based features
@@ -292,6 +348,86 @@ def generate_sample_data(n_samples=500):
     })
     
     return df
+
+
+def generate_invoice_based_data(invoice_json_path='data/invoices/train.json'):
+    """
+    🔥 IMPROVED: Generate time-series from ACTUAL invoice data
+    This fixes the critical data mismatch issue!
+    
+    Args:
+        invoice_json_path: Path to invoice JSON file (train/valid/test)
+    
+    Returns:
+        DataFrame with daily aggregated invoice features
+    """
+    import json
+    from datetime import datetime
+    
+    print(f"[*] Loading invoice data from: {invoice_json_path}")
+    
+    try:
+        with open(invoice_json_path, 'r', encoding='utf-8') as f:
+            invoices = json.load(f)
+    except FileNotFoundError:
+        print(f"[X] Invoice file not found: {invoice_json_path}")
+        print("   Falling back to synthetic data...")
+        return generate_sample_data()
+    
+    print(f"   Loaded {len(invoices)} invoices")
+    
+    # Extract features from each invoice
+    records = []
+    for inv in invoices:
+        # Parse date
+        date = datetime.fromisoformat(inv['date'])
+        
+        # Calculate totals
+        total_quantity = sum(p['quantity'] for p in inv['products'])
+        total_amount = inv['total_amount']
+        num_products = len(inv['products'])
+        avg_price = total_amount / total_quantity if total_quantity > 0 else 0
+        
+        # Get max quantity product (most important item)
+        max_qty_product = max(inv['products'], key=lambda p: p['quantity'])
+        
+        records.append({
+            'date': date,
+            'quantity': total_quantity,
+            'price': avg_price,
+            'num_products': num_products,
+            'total_amount': total_amount,
+            'max_product_qty': max_qty_product['quantity'],
+            'store_type': inv.get('store_type', 'unknown')
+        })
+    
+    # Create DataFrame and sort by date
+    df = pd.DataFrame(records)
+    df = df.sort_values('date').reset_index(drop=True)
+    
+    # Group by date (in case multiple invoices per day)
+    df_daily = df.groupby('date').agg({
+        'quantity': 'sum',
+        'price': 'mean',
+        'num_products': 'sum',
+        'total_amount': 'sum',
+        'max_product_qty': 'max'
+    }).reset_index()
+    
+    # Calculate demand indicator (quantity growth rate)
+    df_daily['quantity_change'] = df_daily['quantity'].pct_change().fillna(0)
+    
+    # Add seasonal features
+    df_daily['day_of_week'] = df_daily['date'].dt.dayofweek
+    df_daily['is_weekend'] = (df_daily['day_of_week'] >= 5).astype(int)
+    df_daily['month'] = df_daily['date'].dt.month
+    
+    print(f"[OK] Generated {len(df_daily)} daily records")
+    print(f"   Date range: {df_daily['date'].min()} to {df_daily['date'].max()}")
+    print(f"   Avg daily quantity: {df_daily['quantity'].mean():.1f}")
+    print(f"   Features: {list(df_daily.columns)}")
+    
+    return df_daily
 
 
 if __name__ == "__main__":

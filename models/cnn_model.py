@@ -262,7 +262,7 @@ class CNNInvoiceDetector:
         text_regions = self.extract_text_regions(image_input)
         
         # Step 3: Simulate structured invoice output
-        # In real implementation, this would use OCR (Tesseract, PaddleOCR, etc.)
+        # In real implementation, this would use advanced OCR techniques
         store_name = self._detect_store_name(detection_result['invoice_type'])
         seed = self._calculate_invoice_seed(detection_result.get('features'), text_regions)
 
@@ -466,20 +466,18 @@ class CNNInvoiceDetector:
         return products
     
     def save_model(self, path='saved_models/cnn_invoice_detector.h5'):
-        """Save trained model"""
+        """Save trained model weights"""
         if self.model:
-            self.model.save(path)
-            print(f"Model saved to {path}")
+            self.model.save_weights(path)
+            print(f"Model weights saved to {path}")
     
     def load_model(self, path='saved_models/cnn_invoice_detector.h5'):
-        """Load trained model"""
-        self.model = keras.models.load_model(path)
-        # Recreate feature extractor
-        self.feature_extractor = keras.Model(
-            inputs=self.model.input,
-            outputs=self.model.get_layer('invoice_features').output
-        )
-        print(f"Model loaded from {path}")
+        """Load trained model - build first then load weights"""
+        # Build model architecture
+        self.build_model()
+        # Load weights only (not full model)
+        self.model.load_weights(path)
+        print(f"Model weights loaded from {path}")
 
 
 # Example usage
