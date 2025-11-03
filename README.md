@@ -1,61 +1,124 @@
-# Deep Learning Project Report Final Examination Report
-  
-**Topic:** Predicting Future Imports Using Deep Learning on Retail Store Products  
+# 🏪 Dự Đoán Nhập Hàng Thông Minh
 
----
+**Hệ thống AI dự đoán số lượng nhập hàng cho cửa hàng bán lẻ sử dụng Deep Learning**
 
-## Group Members
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.10+-orange.svg)](https://tensorflow.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-| No. | Name | Student ID | Major | Email |
-|:--:|:---------------------------|:------------:|:------:|:------------------------------------|
-| 1 | **Hà Thái Sơn** | 23BI14386 | ICT | <sonht.23bi14386@usth.edu.vn> |
-| 2 | **Nguyễn Duy Ngọc** | 23BI14342 | ICT | <ngocnd.23bi14342@usth.edu.vn> |
-| 3 | **Trần Quốc Thái** | 23BI14396 | ICT | <thaitq.23bi14396@usth.edu.vn> |
-| 4 | **Phạm Thế Minh** | 23BI14279 | ICT | <minhpt.23bi14279@usth.edu.vn> |
-| 5 | **Nguyễn Mạnh Khánh An** | 23BI14003 | ICT | <annmk.23bi14003@usth.edu.vn> |
-| 6 | **Phạm Ngọc Tùng** | 23BI14444 | ICT | <tungpn.23bi14444@usth.edu.vn> |
+## 📋 Tổng Quan
 
----
+Dự án sử dụng 2 mô hình Deep Learning:
+- **Model 1 (CNN)**: Nhận diện hóa đơn giấy → Chuyển thành dữ liệu điện tử
+- **Model 2 (LSTM)**: Phân tích lịch sử → Dự đoán số lượng nhập hàng
 
-## Source code
+## 🗂️ Cấu Trúc Thư Mục
 
-- Our source code is available at: <https://github.com/wikiepeidia/predict-future-import-for-Retail-store-products>.
+```
+predict-future-import-for-Retail-store-products/
+├── app.py                    # Flask web application
+├── config.py                 # Cấu hình tập trung
+├── train_models.py           # Script huấn luyện
+├── test.py                   # Script kiểm tra
+│
+├── models/                   # Deep Learning Models
+│   ├── cnn_model.py         # CNN Invoice Detector
+│   ├── lstm_model.py        # LSTM Forecaster
+│   └── saved/               # Trained weights
+│
+├── utils/                    # Utilities
+│   ├── data_processor.py    # Data processing
+│   └── invoice_processor.py # Invoice handling
+│
+├── data/                     # Data files
+│   ├── product_catalogs.json
+│   └── generate_dataset.py
+│
+├── ui/templates/             # Web UI
+├── static/                   # CSS, JS
+└── docs/                     # Documentation
+    ├── SETUP.md             # Setup guide
+    ├── API_GUIDE.md         # API documentation
+    └── MODEL_DOCS.md        # Model details
+```
 
----
+## ⚡ Cài Đặt Nhanh
 
-## Input Values
+```bash
+# 1. Cài đặt dependencies
+pip install -r requirements.txt
 
-- placeholder
+# 2. Tạo dataset mẫu
+python data/generate_dataset.py
 
-## Output values
+# 3. Train models (optional)
+python train_models.py
 
-- place hodler
+# 4. Chạy ứng dụng
+python app.py
+```
 
----
+Mở trình duyệt: **http://localhost:5000**
 
-## Dataset
+## 🎯 API Sử Dụng
 
-- We use our own dataset, collected from a retail store, ....
-- The download link is <https://example.com/dataset>.
+### 1. Nhận diện hóa đơn (CNN)
+```python
+import requests
 
----
+url = "http://localhost:5000/api/model1/detect"
+files = {'image': open('invoice.jpg', 'rb')}
+response = requests.post(url, files=files)
+print(response.json())
+```
 
-## Flowchart method
+### 2. Dự đoán số lượng (LSTM)
+```python
+url = "http://localhost:5000/api/model2/forecast"
+response = requests.post(url, json={})
+print(response.json())
+```
 
-- place holder
+Xem chi tiết: [docs/API_GUIDE.md](docs/API_GUIDE.md)
 
----
+## 🧠 Kiến Trúc Models
 
-## Code Explaination
+### Model 1: CNN Invoice Detector
+- **Base**: MobileNetV2 (Transfer Learning)
+- **Input**: Image 224x224x3
+- **Output**: Structured invoice data (JSON)
 
-### User interface
+### Model 2: LSTM Forecaster
+- **Architecture**: Stacked LSTM + Attention
+- **Input**: Sequence of 10 invoices (10, 5)
+- **Output**: Predicted quantity + recommendations
 
-- place holder
+## 📚 Tài Liệu
 
-### Backend
+- [SETUP.md](docs/SETUP.md) - Hướng dẫn cài đặt chi tiết
+- [API_GUIDE.md](docs/API_GUIDE.md) - API documentation đầy đủ
+- [MODEL_DOCS.md](docs/MODEL_DOCS.md) - Chi tiết kiến trúc models
 
-- aa
+## 🔧 Cấu Hình
 
-### Models
+Chỉnh sửa `config.py`:
+```python
+IMG_HEIGHT = 224
+IMG_WIDTH = 224
+LSTM_SEQUENCE_LENGTH = 10
+EPOCHS = 50
+BATCH_SIZE = 32
+```
 
-- place hodler
+## 📊 Dataset
+
+- **Product Catalogs**: 100+ sản phẩm từ 2 cửa hàng
+- **Sample Dataset**: 1000 bản ghi hóa đơn
+
+## 📝 License
+
+MIT License - See [LICENSE](LICENSE)
+
+## 👥 Authors
+
+Deep Learning Project 2025
