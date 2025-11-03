@@ -1,0 +1,111 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" version="28.2.9">
+  <diagram id="InvoiceForecastFlow" name="Invoice Forecast System">
+    <mxGraphModel dx="1381" dy="769" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="&amp;nbsp;INVOICE FORECAST SYSTEM FLOW CHART" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="240" y="30" width="680" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="PREDICT FUTURE IMPORTS WITH 2 MODELS&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="240" y="65" width="680" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="dataset_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="80" y="120" width="320" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dataset_title" value="DATASET" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="90" y="130" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="PB4CUd_hOM1xwh0ePn2S-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="dataset_box" target="model2_box">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="290" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PB4CUd_hOM1xwh0ePn2S-5" value="x2,x3: Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=light-dark(#0033ff, #006f6f);" vertex="1" connectable="0" parent="PB4CUd_hOM1xwh0ePn2S-4">
+          <mxGeometry x="-0.0971" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="dataset_content" value="• Danh sách sản phẩm quán Sơn&lt;br&gt;• Danh sách sản phẩm quán Tùng&lt;br&gt;• Hóa đơn&lt;br&gt;&lt;br&gt;Inputs:&lt;br&gt;• x1: Hóa đơn giấy (Images)&lt;br&gt;• x2: Hóa đơn hiện tại&lt;br&gt;• x3: Hóa đơn lịch sử" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="100" y="160" width="280" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="model1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="680" y="120" width="320" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="model1_title" value="MODEL 1: CNN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#2D7016;" parent="1" vertex="1">
+          <mxGeometry x="690" y="130" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="model1_subtitle" value="Image Detection (Paper Invoice--&amp;gt;Electric Invoice)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="690" y="160" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="model1_content" value="Input: x1 (Invoice Images)&lt;br&gt;&lt;br&gt;Architecture:&lt;br&gt;• MobileNetV2 (Transfer Learning)&lt;br&gt;• Custom Detection Head&lt;br&gt;• OpenCV Text Extraction&lt;br&gt;&lt;br&gt;Output: Y1 (Electronic Invoice JSON)&lt;div&gt;&lt;br&gt;&lt;div&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="700" y="180" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="db_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="680" y="380" width="320" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="db_title" value="INVOICE HISTORY DATABASE" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="690" y="389" width="300" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="db_content" value="Y1 + x2 + x3 (Combined)&lt;br&gt;• Store last 50 invoices&lt;br&gt;• Create time-series sequences" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="700" y="414" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="model2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" parent="1" vertex="1">
+          <mxGeometry x="80" y="330" width="320" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="model2_title" value="MODEL 2: LSTM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#A02C2C;" parent="1" vertex="1">
+          <mxGeometry x="90" y="340" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="model2_subtitle" value="Quantity Forecasting" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="90" y="370" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="model2_content" value="Input: Y1 + x2 + x3 (Time Series)&lt;br&gt;&lt;br&gt;Architecture:&lt;br&gt;• Stacked LSTM (128 + 64)&lt;br&gt;• Attention Mechanism&lt;br&gt;• Trend Analysis&lt;br&gt;&lt;br&gt;Output: Y2 TEXT (Forecast)&lt;br&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="100" y="389" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="output_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="80" y="670" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="output_title" value="FINAL OUTPUT / UI" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="90" y="670" width="300" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="output_content" value="• Y1: Extracted Products&lt;br&gt;• Y2: Predicted Quantities&lt;br&gt;• Confidence Scores + Trends" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+          <mxGeometry x="100" y="695" width="280" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" source="dataset_box" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow1_label" value="x1: Images" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=#3399FF;" parent="arrow1" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" source="model1_box" target="db_box" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2_label" value="Y1 Output" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=#2D7016;" parent="arrow2" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-35" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" source="db_box" target="model2_box" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3_label" value="Y1 + x2 + x3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=light-dark(#8a7a15, #252500);" parent="arrow3" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-40" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" source="model2_box" target="output_box" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4_label" value="Y2 Output" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=#A02C2C;" parent="arrow4" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-35" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
