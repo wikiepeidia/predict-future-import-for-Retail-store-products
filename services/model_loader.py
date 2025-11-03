@@ -9,8 +9,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 from models.cnn_model import CNNInvoiceDetector
-from models.lstm_model import LSTMTextRecognizer
-from config import CNN_MODEL_PATH, LSTM_MODEL_PATH
+from models.lstm_model import ImportForecastLSTM
+from config import CNN_MODEL_PATH, LSTM_MODEL_PATH, LSTM_SEQUENCE_LENGTH, LSTM_NUM_FEATURES
 
 # Global model instances
 cnn_model = None
@@ -42,22 +42,20 @@ def initialize_models():
         cnn_model.compile_model()
     
     # Model 2: LSTM
-    print("Loading Model 2: LSTM Text Recognizer...")
+    print("Loading Model 2: LSTM Forecasting...")
     global lstm_model
     try:
-        lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+        lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
         if LSTM_MODEL_PATH.exists():
             lstm_model.load_model(str(LSTM_MODEL_PATH))
             print(f"   [OK] Loaded LSTM weights from {LSTM_MODEL_PATH.name}")
         else:
             lstm_model.build_model()
-            lstm_model.compile_model()
             print("   [WARNING] Pre-trained LSTM weights not found; using freshly initialized model")
     except Exception as exc:
-        print(f"   [WARNING] Unable to load LSTMTextRecognizer: {exc}")
-        lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+        print(f"   [WARNING] Unable to load ImportForecastLSTM: {exc}")
+        lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
         lstm_model.build_model()
-        lstm_model.compile_model()
     
     print("="*60)
     print("MODELS INITIALIZED - READY TO BUILD ON DEMAND")
@@ -88,19 +86,17 @@ def get_lstm_model():
     """Lazy load LSTM model"""
     global lstm_model
     if lstm_model is None:
-        print("Loading LSTMTextRecognizer on demand...")
+        print("Loading ImportForecastLSTM on demand...")
         try:
-            lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+            lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
             if LSTM_MODEL_PATH.exists():
                 lstm_model.load_model(str(LSTM_MODEL_PATH))
             else:
                 lstm_model.build_model()
-                lstm_model.compile_model()
         except Exception as exc:
-            print(f"   [WARNING] Fallback to fresh LSTMTextRecognizer due to: {exc}")
-            lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+            print(f"   [WARNING] Fallback to fresh ImportForecastLSTM due to: {exc}")
+            lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
             lstm_model.build_model()
-            lstm_model.compile_model()
     return lstm_model
 
 
