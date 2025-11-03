@@ -12,7 +12,7 @@ import os
 import sys
 import warnings
 import logging
-
+from pathlib import Path
 # Suppress TensorFlow warnings and logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Only show errors
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Disable oneDNN optimizations warning
@@ -30,42 +30,30 @@ import json
 import pandas as pd
 import re
 import unicodedata
-from pathlib import Path
 
 # Add models to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'models'))
 
-# Import Deep Learning Models
+# Import config (centralized settings!)
+from config import (
+    UPLOAD_DIR, ALLOWED_EXTENSIONS, CNN_MODEL_PATH, LSTM_MODEL_PATH,
+    CATALOG_PATH, STORE_NAME_LOOKUP, TEMPLATE_DIR, STATIC_DIR,
+    IMG_HEIGHT, IMG_WIDTH, FLASK_DEBUG, FLASK_HOST, FLASK_PORT,
+    MAX_INVOICE_HISTORY
+)
+
+# Import CONSOLIDATED Deep Learning Models (no more duplicates!)
 from models.cnn_model import CNNInvoiceDetector
-from models.lstm_model import LSTMTextRecognizer
+from models.lstm_model import ImportForecastLSTM
 
 # Create Flask app with UTF-8
 app = Flask(
     __name__,
-    template_folder='ui/templates',
-    static_folder='static'
+    template_folder=str(TEMPLATE_DIR),
+    static_folder=str(STATIC_DIR)
 )
 app.config['JSON_AS_ASCII'] = False
 app.config['ENCODING'] = 'utf-8'
-
-# Config
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs('saved_models', exist_ok=True)
-
-BASE_DIR = Path(__file__).resolve().parent
-MODEL_SAVE_DIR = BASE_DIR / 'models' / 'saved'
-MODEL_SAVE_DIR.mkdir(parents=True, exist_ok=True)
-
-CNN_MODEL_PATH = MODEL_SAVE_DIR / 'cnn_invoice_detector.h5'
-LSTM_MODEL_PATH = MODEL_SAVE_DIR / 'lstm_text_recognizer.h5'
-CATALOG_PATH = BASE_DIR / 'data' / 'product_catalogs.json'
-
-STORE_NAME_LOOKUP = {
-    'son': 'Quán Sơn',
-    'tung': 'Quán Tùng'
-}
 
 
 def load_product_catalogs(catalog_file: Path):
@@ -337,7 +325,7 @@ print("="*60)
 print("Loading Model 1: CNN Invoice Detector...")
 cnn_model = None
 try:
-    cnn_model = CNNInvoiceDetector(img_height=224, img_width=224)
+    cnn_model = CNNInvoiceDetector(img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
     if CNN_MODEL_PATH.exists():
         cnn_model.load_model(str(CNN_MODEL_PATH))
         print(f"   ✅ Loaded CNN weights from {CNN_MODEL_PATH.name}")
@@ -347,27 +335,27 @@ try:
         print("   ⚠️  Pre-trained CNN weights not found; using freshly initialized model")
 except Exception as exc:
     print(f"   ⚠️  Unable to load CNNInvoiceDetector: {exc}")
-    cnn_model = CNNInvoiceDetector(img_height=224, img_width=224)
+    cnn_model = CNNInvoiceDetector(img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
     cnn_model.build_model()
     cnn_model.compile_model()
 
 # Model 2: LSTM for Quantity Forecasting
-print("Loading Model 2: LSTM Text Recognizer...")
+print("Loading Model 2: LSTM Forecasting...")
 lstm_model = None
 try:
-    lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+    from config import LSTM_SEQUENCE_LENGTH, LSTM_NUM_FEATURES
+    lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
     if LSTM_MODEL_PATH.exists():
         lstm_model.load_model(str(LSTM_MODEL_PATH))
         print(f"   ✅ Loaded LSTM weights from {LSTM_MODEL_PATH.name}")
     else:
         lstm_model.build_model()
-        lstm_model.compile_model()
         print("   ⚠️  Pre-trained LSTM weights not found; using freshly initialized model")
 except Exception as exc:
-    print(f"   ⚠️  Unable to load LSTMTextRecognizer: {exc}")
-    lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+    print(f"   ⚠️  Unable to load ImportForecastLSTM: {exc}")
+    from config import LSTM_SEQUENCE_LENGTH, LSTM_NUM_FEATURES
+    lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
     lstm_model.build_model()
-    lstm_model.compile_model()
 
 print("="*60)
 print("MODELS INITIALIZED - READY TO BUILD ON DEMAND")
@@ -382,7 +370,7 @@ def get_cnn_model():
     if cnn_model is None:
         print("Loading CNNInvoiceDetector on demand...")
         try:
-            cnn_model = CNNInvoiceDetector(img_height=224, img_width=224)
+            cnn_model = CNNInvoiceDetector(img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
             if CNN_MODEL_PATH.exists():
                 cnn_model.load_model(str(CNN_MODEL_PATH))
             else:
@@ -390,7 +378,7 @@ def get_cnn_model():
                 cnn_model.compile_model()
         except Exception as exc:
             print(f"   ⚠️  Fallback to fresh CNNInvoiceDetector due to: {exc}")
-            cnn_model = CNNInvoiceDetector(img_height=224, img_width=224)
+            cnn_model = CNNInvoiceDetector(img_height=IMG_HEIGHT, img_width=IMG_WIDTH)
             cnn_model.build_model()
             cnn_model.compile_model()
     return cnn_model
@@ -400,19 +388,19 @@ def get_lstm_model():
     """Lazy load LSTM forecast model"""
     global lstm_model
     if lstm_model is None:
-        print("Loading LSTMTextRecognizer on demand...")
+        print("Loading ImportForecastLSTM on demand...")
         try:
-            lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+            from config import LSTM_SEQUENCE_LENGTH, LSTM_NUM_FEATURES
+            lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
             if LSTM_MODEL_PATH.exists():
                 lstm_model.load_model(str(LSTM_MODEL_PATH))
             else:
                 lstm_model.build_model()
-                lstm_model.compile_model()
         except Exception as exc:
-            print(f"   ⚠️  Fallback to fresh LSTMTextRecognizer due to: {exc}")
-            lstm_model = LSTMTextRecognizer(sequence_length=10, num_features=5)
+            print(f"   ⚠️  Fallback to fresh ImportForecastLSTM due to: {exc}")
+            from config import LSTM_SEQUENCE_LENGTH, LSTM_NUM_FEATURES
+            lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
             lstm_model.build_model()
-            lstm_model.compile_model()
     return lstm_model
 
 def allowed_file(filename):
@@ -448,7 +436,7 @@ def model1_detect():
 
         # Save uploaded file
         filename = secure_filename(file.filename or 'invoice')
-        filepath = os.path.join(UPLOAD_FOLDER, f"{datetime.now().timestamp()}_{filename}")
+        filepath = os.path.join(UPLOAD_DIR, f"{datetime.now().timestamp()}_{filename}")
         file.save(filepath)
 
         print(f"\nProcessing invoice image: {filename}")
@@ -459,7 +447,7 @@ def model1_detect():
         invoice_data['date'] = datetime.now().isoformat()
         
         invoice_history.append(invoice_data)
-        if len(invoice_history) > 300:
+        if len(invoice_history) > MAX_INVOICE_HISTORY:
             invoice_history.pop(0)
 
         print("Invoice detection results:")
@@ -560,8 +548,8 @@ def model2_forecast():
         print(f"\nForecasting with LSTM using {len(forecast_data)} invoice records...")
         model = get_lstm_model()
         
-        # Call the correct method from lstm_model.py
-        prediction = model.predict_quantity(forecast_data)
+        # Call the correct method: predict_next_quantity (from ImportForecastLSTM)
+        prediction = model.predict_next_quantity(forecast_data)
         
         if not prediction.get('success', True):
             return jsonify({
@@ -662,7 +650,7 @@ if __name__ == '__main__':
     print("Model 1: CNN - Image Detection (Hoa don giay -> Hoa don dien tu)")
     print("Model 2: LSTM - Quantity Forecasting (Y1 + x2 + x3 -> Y2 TEXT)")
     print("="*70)
-    print("Server: http://localhost:5000")
+    print(f"Server: http://{FLASK_HOST}:{FLASK_PORT}")
     print("API Docs:")
     print("   POST /api/model1/detect     - Upload invoice image (CNN)")
     print("   POST /api/model2/forecast   - Get quantity forecast (LSTM)")
@@ -670,4 +658,4 @@ if __name__ == '__main__':
     print("   GET  /api/models/info       - Model information")
     print("="*70)
     
-    app.run(debug=False, port=5000, host='127.0.0.1', use_reloader=False)
+    app.run(debug=FLASK_DEBUG, port=FLASK_PORT, host=FLASK_HOST, use_reloader=False)

@@ -8,8 +8,9 @@ import sys
 # Add models to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'models'))
 
+# Import CONSOLIDATED models (no more duplicates!)
 from models.cnn_model import CNNInvoiceDetector
-from models.lstm_model import LSTMTextRecognizer
+from models.lstm_model import ImportForecastLSTM
 
 print("\n" + "="*70)
 print("🧪 TESTING DEEP LEARNING MODELS")

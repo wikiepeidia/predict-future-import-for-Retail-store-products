@@ -951,8 +951,8 @@ function displayModel1Result(data) {
     const resultBox = document.getElementById('model1Result');
     resultBox.innerHTML = `
         <div class="result-text">
-            <strong style="color: #667eea;">📊 Output 1:</strong> ${data.output1}<br>
-            <strong style="color: #f5576c;">📈 Output 2:</strong> ${data.output2}<br>
+            <strong style="color: #667eea;">Output 1:</strong> ${data.output1}<br>
+            <strong style="color: #f5576c;">Output 2:</strong> ${data.output2}<br>
             <div style="margin-top: 15px; padding: 10px; background: white; border-radius: 6px; font-size: 13px;">
                 <strong>Độ tin cậy:</strong> 
                 <span style="color: #28a745; font-weight: 600;">${(data.confidence * 100).toFixed(1)}%</span>
@@ -1224,7 +1224,7 @@ function editUser(userId) {
 }
 
 function deleteUser(userId, email) {
-    const confirmMsg = `⚠️ BẠN CÓ CHẮC CHẮN muốn XÓA người dùng ${email}?\n\nHành động này KHÔNG THỂ HOÀN TÁC!`;
+    const confirmMsg = `[WARNING] BẠN CÓ CHẮC CHẮN muốn XÓA người dùng ${email}?\n\nHành động này KHÔNG THỂ HOÀN TÁC!`;
     
     if (confirm(confirmMsg)) {
         // TODO: Implement actual API call

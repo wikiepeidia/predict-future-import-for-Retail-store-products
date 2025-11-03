@@ -12,8 +12,8 @@ from sklearn.model_selection import train_test_split
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.cnn_invoice_ocr import InvoiceOCRModel
-from models.lstm_forecast import ImportForecastLSTM, generate_sample_data, generate_invoice_based_data
+from models.cnn_model import CNNInvoiceDetector
+from models.lstm_model import ImportForecastLSTM, generate_sample_data, generate_invoice_based_data
 
 
 def train_lstm_model():
@@ -47,7 +47,7 @@ def train_lstm_model():
     available_features = [col for col in feature_columns if col in df.columns]
     
     if len(available_features) < 5:
-        print(f"   ⚠️  Warning: Only {len(available_features)} features available: {available_features}")
+        print(f"   [WARNING] Only {len(available_features)} features available: {available_features}")
         print(f"   Available columns: {list(df.columns)}")
         # Fallback: use whatever numeric columns we have
         numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
@@ -129,7 +129,9 @@ def train_cnn_model():
     
     # Initialize model
     print("\n1. Building CNN architecture...")
-    model = InvoiceOCRModel()
+    model = CNNInvoiceDetector()
+    model.build_model()
+    model.compile_model()
     
     print("\n2. Model architecture:")
     model.model.summary()
@@ -176,10 +178,9 @@ def main():
         print("[OK] ALL MODELS READY!")
         print("="*60)
         print("\nModel files saved to: saved_models/")
-        print("- lstm_text_recognizer.weights.h5  (LSTM forecasting model)")
-        print("- cnn_invoice_detector.weights.h5  (CNN invoice detector)")
-        print("- lstm_text_recognizer_scaler.pkl  (data scaler)")
-        print("- cnn_invoice_detector.h5  (CNN OCR model)")
+        print("- lstm_text_recognizer.h5  (LSTM forecasting model)")
+        print("- cnn_invoice_detector.h5  (CNN invoice detector)")
+        print("- lstm_text_recognizer.weights_scaler.pkl  (data scaler)")
         
         print("\nYou can now run the Flask app with:")
         print("  python app.py")

@@ -252,7 +252,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
-
+# MARKDOWN unnessary
 # Environment variables
 .env.local
 .env.*.local
