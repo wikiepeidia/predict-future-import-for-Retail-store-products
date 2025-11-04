@@ -263,11 +263,11 @@ def main():
         features=n_features
     )
     
-    print("\n[INFO] Training model...")
+    print("\n[INFO] Training model with extended epochs for better convergence...")
     history = model.train(
         train_data=(X_train, y_train),
         val_data=(X_val, y_val),
-        epochs=50,
+        epochs=100,  # Increased from 50 to 100 for better training
         batch_size=32
     )
     

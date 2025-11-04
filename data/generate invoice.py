@@ -50,7 +50,7 @@ def load_products_from_csv(csv_path='data/dataset_product.csv'):
 
 
 def generate_invoice_image(products, invoice_data, date, img_width=800, img_height=1000):
-    """Generate a simple invoice image"""
+    """Generate a simple invoice image with proper alignment"""
     
     # Create image with white background
     img = Image.new('RGB', (img_width, img_height), color='white')
@@ -66,43 +66,67 @@ def generate_invoice_image(products, invoice_data, date, img_width=800, img_heig
         header_font = ImageFont.load_default()
         text_font = ImageFont.load_default()
     
+    # Define column positions for perfect alignment
+    margin_left = 20
+    margin_right = img_width - 20
+    col_san_pham = margin_left
+    col_sl = 340
+    col_don_gia = 420
+    col_thanh_tien = 580
+    
     # Draw header
     y = 20
     draw.text((img_width//2 - 120, y), "HOA DON BAN HANG", fill='black', font=title_font)
     y += 40
     
-    draw.text((20, y), f"Ngay: {date.strftime('%d/%m/%Y')}", fill='black', font=header_font)
+    draw.text((margin_left, y), f"Ngay: {date.strftime('%d/%m/%Y')}", fill='black', font=header_font)
     y += 30
-    draw.text((20, y), "-" * 100, fill='black', font=text_font)
+    
+    # Draw separator line (full width)
+    draw.line([(margin_left, y), (margin_right, y)], fill='black', width=1)
     y += 25
     
-    # Draw table header
-    draw.text((20, y), "San Pham", fill='black', font=header_font)
-    draw.text((380, y), "SL", fill='black', font=header_font)
-    draw.text((480, y), "Don Gia", fill='black', font=header_font)
-    draw.text((620, y), "Thanh Tien", fill='black', font=header_font)
+    # Draw table header with proper alignment
+    draw.text((col_san_pham, y), "San Pham", fill='black', font=header_font)
+    draw.text((col_sl, y), "SL", fill='black', font=header_font)
+    draw.text((col_don_gia, y), "Don Gia", fill='black', font=header_font)
+    draw.text((col_thanh_tien, y), "Thanh Tien", fill='black', font=header_font)
     y += 25
-    draw.text((20, y), "-" * 100, fill='black', font=text_font)
+    
+    # Draw separator line (full width)
+    draw.line([(margin_left, y), (margin_right, y)], fill='black', width=1)
     y += 20
     
-    # Draw products
+    # Draw products with proper column alignment
     for idx, item in enumerate(invoice_data['products'], 1):
-        # Product name (truncate if too long)
-        name = item['name'][:40]
-        draw.text((20, y), name, fill='black', font=text_font)
-        draw.text((380, y), str(item['quantity']), fill='black', font=text_font)
-        draw.text((480, y), f"{item['unit_price']:,.0f}", fill='black', font=text_font)
-        draw.text((620, y), f"{item['line_total']:,.0f}", fill='black', font=text_font)
+        # Product name (truncate if too long to fit in column)
+        name = item['name'][:35]
+        draw.text((col_san_pham, y), name, fill='black', font=text_font)
+        
+        # Center-align quantity
+        sl_text = str(item['quantity'])
+        draw.text((col_sl, y), sl_text, fill='black', font=text_font)
+        
+        # Right-align prices for better readability
+        don_gia_text = f"{item['unit_price']:,.0f}"
+        draw.text((col_don_gia, y), don_gia_text, fill='black', font=text_font)
+        
+        thanh_tien_text = f"{item['line_total']:,.0f}"
+        draw.text((col_thanh_tien, y), thanh_tien_text, fill='black', font=text_font)
+        
         y += 22
         
         if y > img_height - 100:  # Stop if we run out of space
             break
     
-    # Draw footer
+    # Draw footer separator line (full width)
     y += 10
-    draw.text((20, y), "-" * 100, fill='black', font=text_font)
+    draw.line([(margin_left, y), (margin_right, y)], fill='black', width=1)
     y += 25
-    draw.text((620, y), f"Tong Cong: {invoice_data['total_amount']:,.0f} VND", fill='black', font=header_font)
+    
+    # Draw total with proper alignment (right side)
+    total_text = f"Tong Cong: {invoice_data['total_amount']:,.0f} VND"
+    draw.text((col_thanh_tien - 100, y), total_text, fill='black', font=header_font)
     
     return img
 

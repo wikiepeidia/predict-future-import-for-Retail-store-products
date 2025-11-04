@@ -148,7 +148,7 @@ def train_cnn_model():
             X_train,
             {'invoice_features': y_features_train, 'invoice_type': y_types_train},
             validation_data=(X_val, {'invoice_features': y_features_val, 'invoice_type': y_types_val}),
-            epochs=48,
+            epochs=80,  # Increased from 48 to 80 for better convergence
             batch_size=12,
             callbacks=callbacks,
             verbose=1
@@ -157,7 +157,7 @@ def train_cnn_model():
         history = model.model.fit(
             X_train,
             {'invoice_features': y_features_train, 'invoice_type': y_types_train},
-            epochs=48,
+            epochs=80,  # Increased from 48 to 80 for better convergence
             batch_size=12,
             validation_split=0.2,
             callbacks=callbacks,
