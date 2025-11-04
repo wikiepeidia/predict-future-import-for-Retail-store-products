@@ -17,19 +17,18 @@ from models.lstm_model import ImportForecastLSTM, generate_sample_data, generate
 
 
 def train_lstm_model():
-    """Train LSTM forecasting model"""
+    """Train LSTM forecasting model on QUANTUNG + QUANSON datasets"""
     print("="*60)
     print("Training LSTM Model for Import Quantity Forecasting")
     print("="*60)
     
-    # Load REAL datasets
-    print("\n1. Loading REAL datasets (QUANTUNG, QUANSON, HOADON)...")
+    # Load REAL datasets (QUANTUNG + QUANSON)
+    print("\n1. Loading warehouse datasets (QUANTUNG + QUANSON)...")
     
     # Try to load the 3 real datasets
     dataset_paths = [
         'data/QUANTUNG.csv',
-        'data/QUANSON.csv', 
-        'data/HOADON.csv'
+        'data/QUANSON.csv'
     ]
     
     dataframes = []
@@ -37,7 +36,8 @@ def train_lstm_model():
         if os.path.exists(path):
             try:
                 temp_df = pd.read_csv(path)
-                print(f"   ✅ Loaded {path}: {len(temp_df)} records")
+                warehouse_name = 'QUANTUNG' if 'QUANTUNG' in path else 'QUANSON'
+                print(f"   ✅ Loaded {path}: {len(temp_df)} products ({warehouse_name})")
                 dataframes.append(temp_df)
             except Exception as e:
                 print(f"   ❌ Error loading {path}: {e}")
@@ -47,14 +47,11 @@ def train_lstm_model():
     if len(dataframes) > 0:
         # Combine all real datasets
         df = pd.concat(dataframes, ignore_index=True)
-        print(f"\n   ✅ Combined {len(dataframes)} datasets: {len(df)} total records")
+        print(f"\n   ✅ Combined {len(dataframes)} warehouse datasets: {len(df)} total products")
         print(f"   Columns: {list(df.columns)}")
     else:
-        print("\n   ⚠️  NO REAL DATASETS FOUND!")
-        print("   Please provide these files in data/ folder:")
-        print("   - data/QUANTUNG.csv (Tung warehouse quantities)")
-        print("   - data/QUANSON.csv (Son warehouse quantities)")
-        print("   - data/HOADON.csv (Invoice/sales data)")
+        print("\n   ⚠️  NO WAREHOUSE DATASETS FOUND!")
+        print("   Please provide QUANTUNG.csv and QUANSON.csv in data/ folder")
         print("\n   Falling back to synthetic data for now...")
         df = generate_sample_data(n_samples=500)
         print(f"   Columns: {list(df.columns)}")
@@ -63,25 +60,46 @@ def train_lstm_model():
     print("\n2. Initializing LSTM model...")
     model = ImportForecastLSTM(lookback=30, features=5)
     
-    # Preprocess data - SELECT EXACTLY 5 FEATURES
+    # Preprocess data - CREATE 5 FEATURES FROM CSV COLUMNS
     print("\n3. Preprocessing data...")
-    # 🔥 FIX: Select the 5 most important features for forecasting
-    feature_columns = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
     
-    # Check if we have all required columns
-    available_features = [col for col in feature_columns if col in df.columns]
+    # Map CSV columns to LSTM features
+    # CSV has: Tên sản phẩm, Loại sản phẩm, Mã SKU, LC_CN1_Tồn kho ban đầu, LC_CN1_Giá vốn khởi tạo, PL_Giá bán lẻ, PL_Giá nhập
     
-    if len(available_features) < 5:
-        print(f"   [WARNING] Only {len(available_features)} features available: {available_features}")
-        print(f"   Available columns: {list(df.columns)}")
-        # Fallback: use whatever numeric columns we have
-        numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns.tolist()
-        feature_columns = [col for col in numeric_cols if col != 'date'][:5]
-        print(f"   Using fallback features: {feature_columns}")
+    # Helper function to clean prices
+    def clean_price(val):
+        if pd.isna(val):
+            return 0
+        if isinstance(val, str):
+            return float(val.replace('.', '').replace(',', ''))
+        return float(val)
     
-    df_features = df[feature_columns]
+    # Create feature dataframe with proper numeric features
+    df_features = pd.DataFrame()
+    
+    # Feature 1: quantity (stock quantity)
+    df_features['quantity'] = df['LC_CN1_Tồn kho ban đầu'].apply(lambda x: max(0, int(x)) if pd.notna(x) else 1)
+    
+    # Feature 2: price (retail price)
+    df_features['price'] = df['PL_Giá bán lẻ'].apply(clean_price)
+    
+    # Feature 3: import_price (cost)
+    df_features['import_price'] = df['PL_Giá nhập'].apply(clean_price)
+    
+    # Feature 4: total_amount (quantity × retail price)
+    df_features['total_amount'] = df_features['quantity'] * df_features['price']
+    
+    # Feature 5: profit_margin (retail - import)
+    df_features['profit_margin'] = df_features['price'] - df_features['import_price']
+    
+    # Remove rows with zero prices (bad data)
+    df_features = df_features[(df_features['price'] > 0) & (df_features['import_price'] > 0)]
+    
+    print(f"   Created 5 features: {list(df_features.columns)}")
+    print(f"   Valid samples: {len(df_features)} (after removing zero prices)")
+    print(f"   Feature summary:")
+    print(df_features.describe())
     normalized_data = model.preprocess_data(df_features, fit_scaler=True)
-    print(f"   Selected features: {feature_columns}")
     print(f"   Normalized data shape: {normalized_data.shape}")
     
     # Create sequences
@@ -127,9 +145,9 @@ def train_lstm_model():
     model.save_model(save_path)
     print(f"   Saved to: {save_path}")
     
-    # Test prediction
+    # Test prediction with the feature dataframe (no 'date' column in our CSV data)
     print("\n9. Testing prediction...")
-    test_df = df.tail(50).drop('date', axis=1).copy()
+    test_df = df_features.tail(50).copy()
     result = model.predict_next_quantity(test_df)
     
     if result['success']:

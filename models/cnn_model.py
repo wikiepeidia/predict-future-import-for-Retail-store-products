@@ -69,7 +69,7 @@ class CNNInvoiceDetector:
     def compile_model(self):
         """Compile model with optimizer and loss - NO MAPE"""
         self.model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=0.0005, clipnorm=1.0),  # Lower LR + gradient clipping
+            optimizer=keras.optimizers.Adam(learning_rate=0.01, clipnorm=1.0),  # LR = 0.01 with gradient clipping
             loss={
                 'invoice_features': keras.losses.Huber(delta=1.0),  # Robust to outliers
                 'invoice_type': 'categorical_crossentropy'
@@ -290,7 +290,7 @@ class CNNInvoiceDetector:
     def _calculate_realistic_confidence(self, text_regions, detection_result):
         """
         Calculate realistic confidence based on multiple factors
-        This provides meaningful confidence even without training
+        
         """
         # Base confidence from text region detection quality
         if len(text_regions) >= 5:

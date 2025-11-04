@@ -67,7 +67,7 @@ class ImportForecastLSTM:
         
         # Use Huber loss instead of MSE - more robust to outliers
         model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=0.0005, clipnorm=1.0),  # Lower LR + gradient clipping
+            optimizer=keras.optimizers.Adam(learning_rate=0.01, clipnorm=1.0),  # LR = 0.01 with gradient clipping
             loss=keras.losses.Huber(delta=1.0),  # Robust to outliers
             metrics=['mae']  # Removed MAPE - it explodes with near-zero values
         )
@@ -106,12 +106,12 @@ class ImportForecastLSTM:
         Returns:
             Normalized array
         """
-        # 🔥 FIX: Select only NUMERIC columns, exclude strings like invoice_id, store_name
+        
         if isinstance(df, pd.DataFrame):
             # Get only numeric columns
             numeric_df = df.select_dtypes(include=[np.number])
             
-            # CRITICAL: Ensure we ALWAYS have exactly 5 features in the correct order
+            
             expected_features = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
             
             # Create a new DataFrame with exactly 5 columns

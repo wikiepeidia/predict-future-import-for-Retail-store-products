@@ -16,17 +16,17 @@
         <mxCell id="dataset_title" value="DATASET" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" parent="1" vertex="1">
           <mxGeometry x="90" y="130" width="300" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="PB4CUd_hOM1xwh0ePn2S-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="dataset_box" target="model2_box">
+        <mxCell id="PB4CUd_hOM1xwh0ePn2S-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fillColor=#dae8fc;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="dataset_box" target="model2_box" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="240" y="290" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PB4CUd_hOM1xwh0ePn2S-5" value="x2,x3: Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=light-dark(#0033ff, #006f6f);" vertex="1" connectable="0" parent="PB4CUd_hOM1xwh0ePn2S-4">
+        <mxCell id="PB4CUd_hOM1xwh0ePn2S-5" value="x2,x3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=light-dark(#0033ff, #006f6f);" parent="PB4CUd_hOM1xwh0ePn2S-4" vertex="1" connectable="0">
           <mxGeometry x="-0.0971" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="dataset_content" value="• Danh sách sản phẩm quán Sơn&lt;br&gt;• Danh sách sản phẩm quán Tùng&lt;br&gt;• Hóa đơn&lt;br&gt;&lt;br&gt;Inputs:&lt;br&gt;• x1: Hóa đơn giấy (Images)&lt;br&gt;• x2: Hóa đơn hiện tại&lt;br&gt;• x3: Hóa đơn lịch sử" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+        <mxCell id="dataset_content" value="• Son&#39;s shop product list&lt;br&gt;• Tung&#39;s shop product list&lt;br&gt;• Invoice&lt;br&gt;&lt;br&gt;Inputs:&lt;br&gt;• x1: Import Invoice (Images)&lt;br&gt;• x2: Electric Import Invoice (Output from model 1)=Y1&lt;br&gt;• x3: History of previous Import Invoices" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="100" y="160" width="280" height="105" as="geometry" />
         </mxCell>
         <mxCell id="model1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
@@ -92,7 +92,7 @@
         <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" source="db_box" target="model2_box" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="arrow3_label" value="Y1 + x2 + x3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=light-dark(#8a7a15, #252500);" parent="arrow3" vertex="1" connectable="0">
+        <mxCell id="arrow3_label" value="Y1=x2+x3" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontStyle=1;fontColor=light-dark(#8a7a15, #252500);" parent="arrow3" vertex="1" connectable="0">
           <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
             <mxPoint x="-40" as="offset" />
           </mxGeometry>

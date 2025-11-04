@@ -1,7 +1,5 @@
-# Deep Learning Project Report Final Examination Report
+# Predicting Future Imports Using Deep Learning on Retail Store Products
   
-**Topic:** Predicting Future Imports Using Deep Learning on Retail Store Products  
-
 ---
 
 ## Group Members

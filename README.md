@@ -1,3 +1,10 @@
+epoch batch size to 12
+generated invoice wrong folder
+epoch max to 48
+evaluation matplotlib
+get : Training: 35% son, 35% tung, valid 10% son, 10% tung; Test:5% son,5% tung (generate )
+ 2 scenario quanson: minimart(high people buy) high demand, quantung: souveibir(low demand)
+
 # 🏪 Dự Đoán Nhập Hàng Thông Minh
 
 **Hệ thống AI dự đoán số lượng nhập hàng cho cửa hàng bán lẻ sử dụng Deep Learning**
@@ -9,6 +16,7 @@
 ## 📋 Tổng Quan
 
 Dự án sử dụng 2 mô hình Deep Learning:
+
 - **Model 1 (CNN)**: Nhận diện hóa đơn giấy → Chuyển thành dữ liệu điện tử
 - **Model 2 (LSTM)**: Phân tích lịch sử → Dự đoán số lượng nhập hàng
 
@@ -58,11 +66,12 @@ python train_models.py
 python app.py
 ```
 
-Mở trình duyệt: **http://localhost:5000**
+Mở trình duyệt: **<http://localhost:5000>**
 
 ## 🎯 API Sử Dụng
 
 ### 1. Nhận diện hóa đơn (CNN)
+
 ```python
 import requests
 
@@ -73,6 +82,7 @@ print(response.json())
 ```
 
 ### 2. Dự đoán số lượng (LSTM)
+
 ```python
 url = "http://localhost:5000/api/model2/forecast"
 response = requests.post(url, json={})
@@ -84,11 +94,13 @@ Xem chi tiết: [docs/API_GUIDE.md](docs/API_GUIDE.md)
 ## 🧠 Kiến Trúc Models
 
 ### Model 1: CNN Invoice Detector
+
 - **Base**: MobileNetV2 (Transfer Learning)
 - **Input**: Image 224x224x3
 - **Output**: Structured invoice data (JSON)
 
 ### Model 2: LSTM Forecaster
+
 - **Architecture**: Stacked LSTM + Attention
 - **Input**: Sequence of 10 invoices (10, 5)
 - **Output**: Predicted quantity + recommendations
@@ -102,6 +114,7 @@ Xem chi tiết: [docs/API_GUIDE.md](docs/API_GUIDE.md)
 ## 🔧 Cấu Hình
 
 Chỉnh sửa `config.py`:
+
 ```python
 IMG_HEIGHT = 224
 IMG_WIDTH = 224
