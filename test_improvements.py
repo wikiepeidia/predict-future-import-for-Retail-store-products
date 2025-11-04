@@ -12,7 +12,7 @@ print("=" * 70)
 # Test 1: Check expanded product catalog
 print("\n📦 Test 1: Product Catalog Expansion")
 print("-" * 70)
-from data.generate_dataset import DatasetGenerator
+from backup.generate_dataset import DatasetGenerator
 gen = DatasetGenerator()
 
 son_count = len(gen.products_son)

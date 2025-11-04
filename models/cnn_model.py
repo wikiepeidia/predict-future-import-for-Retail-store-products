@@ -67,14 +67,15 @@ class CNNInvoiceDetector:
         return self.model
     
     def compile_model(self):
-        """Compile model with optimizer and loss"""
+        """Compile model with optimizer and loss - NO MAPE"""
         self.model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=0.001),
+            optimizer=keras.optimizers.Adam(learning_rate=0.0005, clipnorm=1.0),  # Lower LR + gradient clipping
             loss={
-                'invoice_features': 'mse',
+                'invoice_features': keras.losses.Huber(delta=1.0),  # Robust to outliers
                 'invoice_type': 'categorical_crossentropy'
             },
             metrics={
+                'invoice_features': ['mae'],  # NO MAPE - just MAE
                 'invoice_type': ['accuracy']
             }
         )

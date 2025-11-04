@@ -44,31 +44,32 @@ class ImportForecastLSTM:
             
             # LSTM Layer 1
             layers.LSTM(128, return_sequences=True, activation='tanh'),
-            layers.Dropout(0.2),
+            layers.Dropout(0.3),  # Increased from 0.2 to prevent overfitting
             layers.BatchNormalization(),
             
             # LSTM Layer 2
             layers.LSTM(64, return_sequences=True, activation='tanh'),
-            layers.Dropout(0.2),
+            layers.Dropout(0.3),
             layers.BatchNormalization(),
             
             # LSTM Layer 3
             layers.LSTM(32, return_sequences=False, activation='tanh'),
-            layers.Dropout(0.2),
+            layers.Dropout(0.3),
             
             # Dense layers
             layers.Dense(64, activation='relu'),
             layers.Dropout(0.2),
             layers.Dense(32, activation='relu'),
             
-            # Output layer (predicting single quantity value)
-            layers.Dense(1, activation='linear')
+            # Output layer with RELU to ensure positive predictions
+            layers.Dense(1, activation='relu')  # Changed from 'linear' to prevent negative values
         ])
         
+        # Use Huber loss instead of MSE - more robust to outliers
         model.compile(
-            optimizer=keras.optimizers.Adam(learning_rate=0.001),
-            loss='mse',
-            metrics=['mae', 'mape']
+            optimizer=keras.optimizers.Adam(learning_rate=0.0005, clipnorm=1.0),  # Lower LR + gradient clipping
+            loss=keras.losses.Huber(delta=1.0),  # Robust to outliers
+            metrics=['mae']  # Removed MAPE - it explodes with near-zero values
         )
         
         self.model = model
@@ -134,11 +135,18 @@ class ImportForecastLSTM:
                     else:
                         result_df[feature] = 0  # Last resort default
             
+            # Apply log transformation to handle wide ranges and prevent MAPE explosion
+            # Add small epsilon to avoid log(0)
+            epsilon = 1e-8
             data = result_df.values
+            
+            # Log transform all features to handle different scales (prices: 5,000-150,000)
+            data = np.log1p(data + epsilon)  # log1p = log(1 + x), safer than log(x)
+            
         else:
             data = df
         
-        # Normalize data
+        # Normalize data to [0, 1] range
         if fit_scaler:
             normalized_data = self.scaler.fit_transform(data)
         else:
@@ -211,19 +219,26 @@ class ImportForecastLSTM:
             temp[0, 0] = prediction_normalized
             prediction_denormalized = self.scaler.inverse_transform(temp)[0, 0]
             
+            # Reverse log transformation: expm1 is inverse of log1p
+            prediction_final = np.expm1(prediction_denormalized)  # expm1(x) = exp(x) - 1
+            
             # Calculate confidence based on recent trend
             recent_quantities = df['quantity'].tail(5).values
-            std_dev = np.std(recent_quantities)
-            mean_val = np.mean(recent_quantities)
+            std_dev = np.std(recent_quantities.astype(float))
+            mean_val = np.mean(recent_quantities.astype(float))
             
-            # Confidence: higher when std_dev is lower relative to mean
-            confidence = max(0.5, min(0.99, 1 - (std_dev / (mean_val + 1))))
+            # Improved confidence calculation - avoid division issues
+            if mean_val > 0:
+                cv = std_dev / mean_val  # Coefficient of variation
+                confidence = max(0.5, min(0.99, 1 - min(cv, 0.5)))  # Cap CV at 0.5
+            else:
+                confidence = 0.5  # Default confidence if mean is 0
             
             return {
                 'success': True,
-                'predicted_quantity': float(max(0, prediction_denormalized)),  # Ensure non-negative
+                'predicted_quantity': float(max(0, prediction_final)),  # Ensure non-negative
                 'confidence': float(confidence),
-                'trend': 'increasing' if prediction_denormalized > mean_val else 'decreasing',
+                'trend': 'increasing' if prediction_final > mean_val else 'decreasing',
                 'historical_mean': float(mean_val),
                 'historical_std': float(std_dev)
             }

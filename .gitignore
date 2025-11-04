@@ -8,7 +8,10 @@ __pycache__/
 #TRAINED STUFFS
 data/images/*
 data/invoices/*
-
+data/generated_invoices/*
+data/generated_invoices_quantung/*
+data/generated_invoices_quanson/*
+validation/*
 # Distribution / packaging
 .Python
 build/
