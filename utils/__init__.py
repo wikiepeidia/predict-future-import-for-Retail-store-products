@@ -6,7 +6,6 @@ from .data_processor import (
     extract_numbers_from_line,
     extract_quantity_from_line,
     extract_price_candidates,
-    detect_store_from_text,
     build_dataframe_from_invoices
 )
 
@@ -23,7 +22,6 @@ __all__ = [
     'extract_numbers_from_line',
     'extract_quantity_from_line',
     'extract_price_candidates',
-    'detect_store_from_text',
     'build_dataframe_from_invoices',
     'load_product_catalogs',
     'build_catalog_index',

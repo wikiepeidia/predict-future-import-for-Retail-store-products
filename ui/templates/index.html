@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Forecast - Deep Learning Demo</title>
+    <title>Predicting Future Imports Using Deep Learning on Retail Store Products</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/static/style.css">
     <link rel="icon" href="/static/images/webicon.svg" type="image/svg+xml">
@@ -17,8 +17,8 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🧠 Invoice Forecast - Deep Learning Demo</h1>
-            <p>Paper Invoice OCR → Import Quantity Prediction using CNN and LSTM</p>
+            <h1>Predicting Future Imports Using Deep Learning on Retail Store Products</h1>
+            <p>Paper Invoice → Import Quantity Prediction using CNN and LSTM</p>
         </div>
 
         <!-- Models Grid -->
@@ -130,27 +130,9 @@
             </div>
         </div>
 
-        <!-- Info Section -->
-        <div class="info-section">
-            <h3>ℹ️ How It Works</h3>
-            <ul>
-                <li><strong>Model 1 (CNN):</strong> Upload 2-3 paper invoice images → OCR extracts product lines as
-                    separate entries</li>
-                <li><strong>Product Extraction:</strong> Each product is parsed individually (name, quantity) and
-                    displayed in a table</li>
-                <li><strong>Model 2 (LSTM):</strong> Uses extracted products + historical data to predict future import
-                    quantities</li>
-                <li><strong>Data Flow:</strong> Multiple Paper Invoices (X1) → Electronic Products List (Y1=X2) →
-                    Predicted Quantities (Y2)</li>
-                <li><strong>Auto-populate:</strong> Extracted products automatically fill Model 2 input for seamless
-                    workflow</li>
-                <li><strong>Database Ready:</strong> Backend will store both invoice images and extracted product data
-                </li>
-            </ul>
-        </div>
-    </div>
 
-    <script src="/static/script.js"></script>
+
+        <script src="/static/script.js"></script>
 </body>
 
 </html>

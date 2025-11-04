@@ -1,228 +1,257 @@
-# 🚀 Quick Start Guide
+# Quick Reference Guide
 
-## Installation & Setup
+## 🚀 Quick Start
 
-### Step 1: Install Dependencies
+### Generate Dataset & Train Models (One Command)
 
-```bash
-# Install required Python packages
-pip install -r requirements.txt
+**Windows:**
+
+```batch
+run_complete_pipeline.bat
 ```
 
-**Note for Windows users:** You'll also need to install Tesseract OCR for the CNN model:
-1. Download from: https://github.com/UB-Mannheim/tesseract/wiki
-2. Install to: `C:\Program Files\Tesseract-OCR`
-3. Add to system PATH
-
-### Step 2: Train the Models
+**Linux/Mac:**
 
 ```bash
-# Train both CNN and LSTM models
+bash run_complete_pipeline.sh
+```
+
+---
+
+## 📋 Manual Workflow
+
+### Step 1: Generate Dataset (1000 images)
+
+```bash
+python data/generate_balanced_dataset.py
+```
+
+**Output:**
+
+- `data/generated_invoices/train/` - 700 images (350 QUANSON + 350 QUANTUNG)
+- `data/generated_invoices/valid/` - 200 images (100 QUANSON + 100 QUANTUNG)
+- `data/generated_invoices/test/` - 100 images (50 QUANSON + 50 QUANTUNG)
+
+### Step 2: Train Models
+
+```bash
 python train_models.py
 ```
 
-This will:
-- ✓ Generate sample time-series data (500 samples)
-- ✓ Train LSTM model for quantity forecasting
-- ✓ Initialize CNN model architecture
-- ✓ Save models to `models/saved/`
+**Configuration:**
 
-**Expected output:**
-```
-Training LSTM Model...
-  Train: 329 samples
-  Val:   47 samples
-  Test:  94 samples
-  
-Test MAE: ~0.05
-Test MAPE: ~2.5%
+- Epochs: 48
+- Batch Size: 12
+- Learning Rate: 0.01 (adaptive)
 
-✓ Models saved successfully!
-```
+**Output:**
 
-### Step 3: Run the Application
+- `saved_models/lstm_text_recognizer.weights.h5`
+- `saved_models/cnn_invoice_detector.weights.h5`
+- `saved_models/lstm_training_history.json`
+- `saved_models/cnn_training_history.json`
+
+### Step 3: Generate Evaluation Charts
 
 ```bash
-# Start Flask server
+python evaluate_models.py
+```
+
+**Output:**
+
+- `evaluation/dataset_distribution.png`
+- `evaluation/scenario_comparison.png`
+- `evaluation/lstm_training_history.png`
+- `evaluation/cnn_training_history.png`
+
+### Step 4: Run Flask App
+
+```bash
 python app.py
 ```
 
-Open browser: `http://localhost:5000`
+Open browser: <http://localhost:5000>
 
 ---
 
-## 🧪 Testing the Models
+## 📊 Dataset Details
 
-### Model 1: LSTM Forecasting (Text Input)
-1. Navigate to "Model 2: LSTM" section
-2. Enter invoice data (one number per line):
-   ```
-   100
-   120
-   135
-   150
-   ```
-3. Click "Predict Import Quantity"
-4. View prediction with confidence score
+### Business Scenarios
 
-### Model 2: CNN OCR (Image Upload)
-1. Navigate to "Model 1: CNN" section
-2. Upload an invoice image (JPG/PNG)
-3. Click "Extract Text"
-4. View extracted text and parsed data
+| Warehouse | Type | Demand | Products/Invoice | Images |
+|-----------|------|--------|-----------------|--------|
+| QUANSON | Minimart | High | 5-15 items | 500 |
+| QUANTUNG | Souvenir | Low | 2-6 items | 500 |
 
----
+### Split Distribution
 
-## 📊 Model Architecture
-
-### LSTM Model
-```
-Input: (30 timesteps, 5 features)
-  ↓
-LSTM(128) → Dropout → BatchNorm
-  ↓
-LSTM(64) → Dropout → BatchNorm
-  ↓
-LSTM(32) → Dropout
-  ↓
-Dense(64) → Dense(32) → Dense(1)
-  ↓
-Output: Predicted quantity
-```
-
-**Features used:**
-- Quantity (historical imports)
-- Price
-- Sales
-- Stock levels
-- Demand indicator
-
-### CNN Model
-```
-Input: (224x224x3) RGB Image
-  ↓
-Conv2D(32) → BatchNorm → MaxPool → Dropout
-  ↓
-Conv2D(64) → BatchNorm → MaxPool → Dropout
-  ↓
-Conv2D(128) → BatchNorm → MaxPool → Dropout
-  ↓
-Conv2D(256) → BatchNorm → MaxPool → Dropout
-  ↓
-Flatten → Dense(512) → Dense(256)
-  ↓
-Output: Invoice classification (10 classes)
-```
-
-**OCR Pipeline:**
-1. Image preprocessing (grayscale, denoising, thresholding)
-2. Tesseract OCR text extraction
-3. Text parsing for invoice details
-4. CNN classification (optional)
-
----
-
-## 🗂️ Project Structure
-
-```
-├── app.py                    # Flask application (updated with real models)
-├── train_models.py           # Training script
-├── requirements.txt          # Python dependencies
-│
-├── models/
-│   ├── __init__.py
-│   ├── cnn_invoice_ocr.py   # CNN model for OCR
-│   ├── lstm_forecast.py     # LSTM model for forecasting
-│   └── saved/               # Trained model files
-│       ├── lstm_forecast_model.h5
-│       ├── lstm_forecast_model_scaler.pkl
-│       └── cnn_invoice_model.h5
-│
-├── ui/templates/
-│   └── index.html           # Web interface
-├── static/
-│   └── style.css            # Styling
-│
-└── GUIDES/
-    ├── PROJECT_OUTLINE.md
-    └── SIMPLIFICATION_SUMMARY.md
-```
-
----
-
-## 🎯 For Deep Learning Exam
-
-### Key Points to Present:
-
-1. **Two-Model Pipeline**
-   - CNN for invoice OCR (Computer Vision)
-   - LSTM for time-series forecasting (Recurrent NN)
-
-2. **Data Strategy**
-   - Training: 70%
-   - Validation: 10%
-   - Testing: 20%
-
-3. **Model Performance**
-   - LSTM: ~2.5% MAPE on test set
-   - CNN: Uses pre-trained Tesseract + custom architecture
-
-4. **Real-World Application**
-   - Automates invoice processing
-   - Predicts inventory needs
-   - Reduces manual data entry
+| Split | QUANSON | QUANTUNG | Total | Percentage |
+|-------|---------|----------|-------|------------|
+| Train | 350 | 350 | 700 | 70% |
+| Valid | 100 | 100 | 200 | 20% |
+| Test | 50 | 50 | 100 | 10% |
+| **Total** | **500** | **500** | **1000** | **100%** |
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Import Errors
+### Issue: FileNotFoundError - No such file or directory
+
+**Problem:** Old folder structure referenced
+
+```
+FileNotFoundError: data\generated_invoices\train\invoice_0000.png
+```
+
+**Solution:** Run new dataset generator
+
 ```bash
-# If you see "Module not found"
-pip install --upgrade -r requirements.txt
+python data/generate_balanced_dataset.py
 ```
 
-### Tesseract Not Found
-```python
-# Edit models/cnn_invoice_ocr.py, line 15
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+New structure uses:
+
+- `data/generated_invoices/train/quanson_train_0000.png`
+- `data/generated_invoices/train/quantung_train_0000.png`
+
+### Issue: Model not training
+
+**Check:**
+
+1. Dataset generated? `ls data/generated_invoices/`
+2. Metadata files exist?
+   - `data/generated_invoices/train_metadata.json`
+   - `data/generated_invoices/valid_metadata.json`
+
+### Issue: Evaluation charts not generating
+
+**Requirements:**
+
+```bash
+pip install matplotlib numpy pandas
 ```
 
-### Model Training Slow
-- Reduce epochs in `train_models.py` (line 72): `epochs=20`
-- Reduce data samples (line 17): `n_samples=200`
+**Check training history exists:**
+
+- `saved_models/lstm_training_history.json`
+- `saved_models/cnn_training_history.json`
 
 ---
 
-## 📈 Next Steps
+## 📝 Configuration Files
 
-1. **Collect Real Data**
-   - Gather actual invoice images
-   - Label invoice types and fields
-   - Record historical import quantities
+### Training Parameters (train_models.py)
 
-2. **Fine-tune Models**
-   - Train CNN on labeled invoice dataset
-   - Adjust LSTM hyperparameters
-   - Experiment with different architectures
+```python
+# LSTM Training
+epochs=48
+batch_size=12
 
-3. **Deploy**
-   - Add authentication
-   - Database integration
-   - Production server (Gunicorn/uWSGI)
+# CNN Training
+epochs=48
+batch_size=12
+```
+
+### Dataset Generator (data/generate_balanced_dataset.py)
+
+```python
+# Total images per warehouse
+half_images = 500
+
+# Splits
+train: 350 (70%)
+valid: 100 (20%)
+test: 50 (10%)
+
+# QUANSON scenario
+num_products = random.randint(5, 15)  # High demand
+
+# QUANTUNG scenario
+num_products = random.randint(2, 6)   # Low demand
+```
+
+---
+
+## 📦 Project Structure
+
+```
+project/
+├── data/
+│   ├── QUANSON.csv                      # 14,142 products
+│   ├── QUANTUNG.csv                     # 959 products
+│   ├── invoice_image_generator.py       # Image generator class
+│   ├── generate_balanced_dataset.py     # NEW: Balanced generator
+│   └── generated_invoices/              # Generated dataset
+│       ├── train/                       # 700 images
+│       ├── valid/                       # 200 images
+│       ├── test/                        # 100 images
+│       └── *_metadata.json
+├── models/
+│   ├── lstm_model.py                    # LSTM forecaster
+│   └── cnn_model.py                     # CNN detector
+├── saved_models/                        # Trained weights
+├── evaluation/                          # Performance charts
+├── train_models.py                      # Training script
+├── evaluate_models.py                   # NEW: Evaluation script
+├── run_complete_pipeline.bat            # NEW: Windows automation
+├── run_complete_pipeline.sh             # NEW: Linux automation
+└── app.py                               # Flask web app
+```
+
+---
+
+## 🎯 Training Metrics
+
+### LSTM Model
+
+- **Loss**: Huber (robust to outliers)
+- **Metrics**: MAE (Mean Absolute Error)
+- **Target**: MAE < 0.1 (on normalized data)
+
+### CNN Model
+
+- **Loss**: Huber + CrossEntropy
+- **Architecture**: MobileNetV2 transfer learning
+- **Target**: High invoice detection accuracy
+
+---
+
+## 💡 Tips
+
+1. **GPU Training**: Models will automatically use GPU if available
+2. **Memory**: 1000 images require ~2GB RAM during training
+3. **Time**: Complete pipeline takes ~30-60 minutes
+4. **Charts**: Check `evaluation/` folder after training
+5. **History**: JSON files in `saved_models/` for custom analysis
+
+---
+
+## 📚 Documentation
+
+- `README.md` - Main documentation
+- `CHANGES_SUMMARY.md` - Recent updates
+- `QUICKSTART.md` - This file
+- API docs in `docs/` folder
 
 ---
 
 ## ✅ Checklist
 
-- [ ] Dependencies installed
-- [ ] Tesseract OCR installed (for Windows)
-- [ ] Models trained (`python train_models.py`)
-- [ ] Flask app running (`python app.py`)
-- [ ] Both models tested via web interface
-- [ ] Model architecture understood
-- [ ] Ready for exam presentation!
+Before training:
+
+- [ ] Install dependencies: `pip install -r requirements.txt`
+- [ ] CSV files exist: `data/QUANSON.csv`, `data/QUANTUNG.csv`
+- [ ] Run dataset generator
+
+After training:
+
+- [ ] Check saved models in `saved_models/`
+- [ ] Review evaluation charts in `evaluation/`
+- [ ] Test Flask app: `python app.py`
+- [ ] Verify predictions work
 
 ---
 
-**Happy Learning! 🎓**
+**Last Updated:** November 4, 2025
+**Version:** 2.0 (Balanced Dataset Update)

@@ -9,6 +9,12 @@ import sys
 import warnings
 import logging
 
+# Force UTF-8 encoding for Windows console
+if sys.platform == 'win32':
+ import codecs
+ sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+ sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 # Suppress TensorFlow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
@@ -19,7 +25,7 @@ logging.getLogger('keras').setLevel(logging.ERROR)
 
 from flask import Flask, render_template
 from config import (
-    TEMPLATE_DIR, STATIC_DIR, FLASK_DEBUG, FLASK_HOST, FLASK_PORT
+ TEMPLATE_DIR, STATIC_DIR, FLASK_DEBUG, FLASK_HOST, FLASK_PORT
 )
 
 # Import services
@@ -33,9 +39,9 @@ from api.history_routes import history_bp
 
 # Create Flask app
 app = Flask(
-    __name__,
-    template_folder=str(TEMPLATE_DIR),
-    static_folder=str(STATIC_DIR)
+ __name__,
+ template_folder=str(TEMPLATE_DIR),
+ static_folder=str(STATIC_DIR)
 )
 app.config['JSON_AS_ASCII'] = False
 app.config['ENCODING'] = 'utf-8'
@@ -43,8 +49,8 @@ app.config['ENCODING'] = 'utf-8'
 # Homepage route
 @app.route('/')
 def index():
-    """Main page"""
-    return render_template('index.html')
+ """Main page"""
+ return render_template('index.html')
 
 # Register blueprints
 app.register_blueprint(model1_bp)
@@ -58,18 +64,18 @@ init_database()
 initialize_models()
 
 if __name__ == '__main__':
-    print("\n" + "="*70)
-    print("INVOICE FORECAST SYSTEM - DEEP LEARNING DEMO")
-    print("="*70)
-    print("Model 1: CNN - Invoice Image Detection")
-    print("Model 2: LSTM - Quantity Forecasting")
-    print("="*70)
-    print(f"Server: http://{FLASK_HOST}:{FLASK_PORT}")
-    print("\nAPI Endpoints:")
-    print("   POST /api/model1/detect     - Upload invoice image")
-    print("   POST /api/model2/forecast   - Get quantity forecast")
-    print("   GET  /api/history           - View invoice history")
-    print("   POST /api/history/clear     - Clear history")
-    print("="*70 + "\n")
-    
-    app.run(debug=FLASK_DEBUG, port=FLASK_PORT, host=FLASK_HOST, use_reloader=False)
+ print("\n" + "="*70)
+ print("INVOICE FORECAST SYSTEM - DEEP LEARNING DEMO")
+ print("="*70)
+ print("Model 1: CNN - Invoice Image Detection")
+ print("Model 2: LSTM - Quantity Forecasting")
+ print("="*70)
+ print(f"Server: http://{FLASK_HOST}:{FLASK_PORT}")
+ print("\nAPI Endpoints:")
+ print(" POST /api/model1/detect - Upload invoice image")
+ print(" POST /api/model2/forecast - Get quantity forecast")
+ print(" GET /api/history - View invoice history")
+ print(" POST /api/history/clear - Clear history")
+ print("="*70 + "\n")
+
+ app.run(debug=FLASK_DEBUG, port=FLASK_PORT, host=FLASK_HOST, use_reloader=False)

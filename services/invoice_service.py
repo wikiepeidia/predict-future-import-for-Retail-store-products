@@ -1,7 +1,3 @@
-"""
-Invoice Service - Xử lý logic nghiệp vụ cho hóa đơn
-Theo FLOW CHART: DATASET → MODEL 1 (CNN) → Y1 Output → INVOICE HISTORY DATABASE
-"""
 from datetime import datetime
 from utils.invoice_processor import build_invoice_data
 from utils.database import save_invoice_to_db, get_invoices_from_db
@@ -10,75 +6,56 @@ from config import CATALOG_PATH, STORE_NAME_LOOKUP
 
 logger = get_logger(__name__)
 
-# Storage for invoice history (in-memory) - Giữ cho backward compatibility
+# Storage for invoice history (in-memory),backward compatibility
 invoice_history = []
 
 
 def process_invoice_image(image, cnn_model):
-    """
-    Xử lý ảnh hóa đơn và trích xuất dữ liệu
-    FLOW: x1 Images → MODEL 1 (CNN) → Y1 (Electronic Invoice JSON)
-    
-    Args:
-        image: numpy.ndarray - Image data (from cv2.imdecode)
-        cnn_model: CNN model instance (MobileNetV2 + Custom Detection Head)
-        
-    Returns:
-        dict: Y1 Output - Dữ liệu hóa đơn điện tử (JSON)
-    """
+   
     logger.info(f"[MODEL 1] Processing invoice image (shape: {image.shape})")
-    
+
     # MODEL 1: CNN Image Detection (Paper Invoice → Electric Invoice)
-    # Architecture: MobileNetV2 (Transfer Learning) + Custom Detection Head + OpenCV Text Extraction
+    
     invoice_data = cnn_model.predict_invoice_data(image)
     invoice_data['date'] = datetime.now().isoformat()
+
     
-    # Y1 OUTPUT → INVOICE HISTORY DATABASE
     # Store last 50 invoices + Create time-series sequences
     try:
         save_invoice_to_db(invoice_data)
         logger.info(f"[DATABASE] Saved Y1 output to INVOICE HISTORY DATABASE: {invoice_data['invoice_id']}")
     except Exception as e:
         logger.warning(f"[DATABASE] Failed to save to database: {e}")
-    
-    # Lưu vào memory history (backward compatibility)
+
+    # save to memory history (backward compatibility)
     invoice_history.append(invoice_data)
-    if len(invoice_history) > 50:  # Giữ 50 invoices gần nhất (theo flow chart)
+    if len(invoice_history) > 50:#Keep50 invoices
         invoice_history.pop(0)
-    
+
     logger.info(f"[MODEL 1] Invoice detection completed:")
-    logger.info(f"  - Invoice ID: {invoice_data['invoice_id']}")
-    logger.info(f"  - Store: {invoice_data['store_name']}")
-    logger.info(f"  - Products detected: {len(invoice_data['products'])}")
-    logger.info(f"  - Total amount: {int(invoice_data['total_amount']):,} VND")
-    logger.info(f"  - Confidence: {invoice_data['detection_confidence']:.3f}")
-    logger.info(f"  - Total in DATABASE: {len(get_invoices_from_db(limit=1000))}")
-    
+    logger.info(f" - Invoice ID: {invoice_data['invoice_id']}")
+    # Store name removed from logging
+    logger.info(f" - Products detected: {len(invoice_data['products'])}")
+    logger.info(f" - Total amount: {int(invoice_data['total_amount']):,} VND")
+    logger.info(f" - Confidence: {invoice_data['detection_confidence']:.3f}")
+    logger.info(f" - Total in DATABASE: {len(get_invoices_from_db(limit=1000))}")
+
     return invoice_data
 
 
 def format_invoice_response(invoice_data):
-    """
-    Format invoice data thành response cho API
-    
-    Args:
-        invoice_data: Dữ liệu hóa đơn
-        
-    Returns:
-        dict: Response formatted
-    """
+
     product_lines = [
         f"{product.get('product_name', 'Unknown')} - {product.get('quantity', 0)}"
         for product in invoice_data.get('products', [])
     ]
-    
+
     recognized_text = (
-        f"Invoice ID: {invoice_data['invoice_id']}\n"
-        f"Store: {invoice_data['store_name']}\n\n"
-        f"Products:\n" + "\n".join(product_lines) +
+        f"Invoice ID: {invoice_data['invoice_id']}\n\n"
+        f"Products:\n" + "\n".join(product_lines) + 
         f"\n\nTotal: {int(invoice_data['total_amount']):,} VND"
     )
-    
+
     return {
         'success': True,
         'recognized_text': recognized_text,
@@ -89,20 +66,11 @@ def format_invoice_response(invoice_data):
 
 
 def get_invoice_history(limit=10):
-    """
-    Lấy lịch sử hóa đơn từ INVOICE HISTORY DATABASE
-    FLOW CHART: Y1 + x2 + x3 (Combined) stored in database
     
-    Args:
-        limit: Số lượng hóa đơn trả về (mặc định 10 gần nhất)
-        
-    Returns:
-        dict: History data từ database
-    """
     try:
-        # Lấy từ database (primary source)
+        # Database
         db_invoices = get_invoices_from_db(limit=limit)
-        
+
         return {
             'success': True,
             'count': len(db_invoices),
@@ -121,19 +89,17 @@ def get_invoice_history(limit=10):
 
 
 def clear_invoice_history():
-    """
-    Xóa toàn bộ lịch sử hóa đơn (memory + database)
-    """
+    
     global invoice_history
     invoice_history = []
-    
+
     try:
         from utils.database import clear_database
         clear_database()
         logger.info("Cleared invoice history from database and memory")
     except Exception as e:
         logger.warning(f"Failed to clear database: {e}")
-    
+
     return {
         'success': True,
         'message': 'Invoice history cleared from database and memory'
@@ -141,5 +107,5 @@ def clear_invoice_history():
 
 
 def get_history_count():
-    """Lấy số lượng hóa đơn trong history"""
+    
     return len(invoice_history)

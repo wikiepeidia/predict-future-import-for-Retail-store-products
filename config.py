@@ -38,14 +38,14 @@ IMG_WIDTH = 224
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'pdf'}
 
 # Model Settings
-LSTM_SEQUENCE_LENGTH = 10
-LSTM_NUM_FEATURES = 5
+LSTM_SEQUENCE_LENGTH = 7  # Updated for time-series model (7-day history)
+LSTM_NUM_FEATURES = 7  # Updated: sale_qty, day_of_week, is_weekend, cumulative_sales, days_since_import, initial_stock, retail_price
 CNN_INPUT_SHAPE = (IMG_HEIGHT, IMG_WIDTH, 3)
 
 # Store Configuration
 STORE_NAME_LOOKUP = {
-    'son': 'Quán Sơn',
-    'tung': 'Quán Tùng'
+    'store1': 'Retail Store',
+    'store2': 'General Store'
 }
 
 # Training Settings

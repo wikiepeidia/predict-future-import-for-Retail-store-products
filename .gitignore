@@ -255,7 +255,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
-# MARKDOWN unnessary
+# MARKDOWN unnecessary
+MARKDOWN/
 # Environment variables
 .env.local
 .env.*.local
@@ -265,3 +266,4 @@ Thumbs.db
 *.h5
 *.pkl
 *.joblib
+saved_models/

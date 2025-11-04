@@ -140,14 +140,15 @@ def validate_store_key(store_key):
     Returns:
         str: Validated store key
     """
-    allowed_stores = ['son', 'tung']
+    # QUANTUNG/Tung scenario removed - only 'son' supported
+    allowed_stores = ['son']
     
     if not store_key:
         raise ValidationError("Store key is required")
     
     if store_key not in allowed_stores:
         raise ValidationError(
-            f"Invalid store '{store_key}'. Allowed: {', '.join(allowed_stores)}"
+            f"Invalid store '{store_key}'."
         )
     
     return store_key

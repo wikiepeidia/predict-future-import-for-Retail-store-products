@@ -1,10 +1,3 @@
-epoch batch size to 12
-generated invoice wrong folder
-epoch max to 48
-evaluation matplotlib
-get : Training: 35% son, 35% tung, valid 10% son, 10% tung; Test:5% son,5% tung (generate )
- 2 scenario quanson: minimart(high people buy) high demand, quantung: souveibir(low demand)
-
 # 🏪 Dự Đoán Nhập Hàng Thông Minh
 
 **Hệ thống AI dự đoán số lượng nhập hàng cho cửa hàng bán lẻ sử dụng Deep Learning**
@@ -18,52 +11,104 @@ get : Training: 35% son, 35% tung, valid 10% son, 10% tung; Test:5% son,5% tung 
 Dự án sử dụng 2 mô hình Deep Learning:
 
 - **Model 1 (CNN)**: Nhận diện hóa đơn giấy → Chuyển thành dữ liệu điện tử
-- **Model 2 (LSTM)**: Phân tích lịch sử → Dự đoán số lượng nhập hàng
+- **Model 2 (LSTM)**: Phân tích lịch sử nhập/bán → Dự đoán số lượng nhập hàng
+
+### 📊 Dataset
+
+**Dataset chính: dataset_product.csv**
+
+- 2000+ sản phẩm với thông tin:
+  - Tên sản phẩm
+  - Tồn kho ban đầu
+  - Giá nhập
+  - Giá bán lẻ
+
+**Timescale datasets (Oct 1 - Nov 1, 2025):**
+
+- **import_in_a_timescale.csv**: Số lượng nhập trong khoảng thời gian
+- **sale_in_a_timescale.csv**: Số lượng bán trong khoảng thời gian
+
+### 📊 Model Training
+
+**Model 1 (CNN):**
+
+- 400 synthetic invoice images từ dataset_product.csv
+- Training: 70% (280 images)
+- Validation: 20% (80 images)
+- Testing: 10% (40 images)
+- Date range: October 1 - November 1, 2025
+
+**Model 2 (LSTM):**
+
+- Training SEPARATE với dữ liệu timescale
+- Features: import_qty, sale_qty, initial_stock, retail_price, turnover_rate
+- Phân tích pattern giữa nhập và bán hàng
+- Dự đoán số lượng nhập tối ưu
+
+### ⚙️ Training Configuration
+
+- **Epochs**: 48
+- **Batch Size**: 12
+- **Loss**: Huber (robust to outliers)
+- **Metrics**: MAE (Mean Absolute Error)
+- **Learning Rate**: 0.01 with adaptive reduction
 
 ## 🗂️ Cấu Trúc Thư Mục
 
 ```
 predict-future-import-for-Retail-store-products/
-├── app.py                    # Flask web application
-├── config.py                 # Cấu hình tập trung
-├── train_models.py           # Script huấn luyện
-├── test.py                   # Script kiểm tra
+├── app_new.py                # Flask web application (new clean version)
+├── train_models.py           # CNN training script
+├── train_lstm_separately.py  # LSTM training script (NEW!)
+├── test.py                   # Testing script
 │
 ├── models/                   # Deep Learning Models
 │   ├── cnn_model.py         # CNN Invoice Detector
 │   ├── lstm_model.py        # LSTM Forecaster
-│   └── saved/               # Trained weights
+│   └── saved_models/        # Trained weights (.weights.h5)
+│
+├── data/                     # Data files
+│   ├── dataset_product.csv          # Main product database
+│   ├── import_in_a_timescale.csv   # Import data (Oct-Nov 2025)
+│   ├── sale_in_a_timescale.csv     # Sales data (Oct-Nov 2025)
+│   └── generate_balanced_dataset.py # Generate 400 invoice images
+│
+├── api/                      # API blueprints
+│   ├── model1.py            # CNN endpoints
+│   ├── model2.py            # LSTM endpoints
+│   └── history.py           # History endpoints
+│
+├── services/                 # Business logic
+│   └── model_loader.py      # Model initialization
 │
 ├── utils/                    # Utilities
 │   ├── data_processor.py    # Data processing
-│   └── invoice_processor.py # Invoice handling
+│   └── validators.py        # Input validation
 │
-├── data/                     # Data files
-│   ├── product_catalogs.json
-│   └── generate_dataset.py
-│
-├── ui/templates/             # Web UI
-├── static/                   # CSS, JS
-└── docs/                     # Documentation
-    ├── SETUP.md             # Setup guide
-    ├── API_GUIDE.md         # API documentation
-    └── MODEL_DOCS.md        # Model details
+└── ui/templates/             # Web UI
+    ├── index.html           # Homepage
+    └── dashboard.html       # Dashboard
 ```
 
 ## ⚡ Cài Đặt Nhanh
 
+### Manual Steps
+
 ```bash
-# 1. Cài đặt dependencies
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Tạo dataset mẫu
-python data/generate_dataset.py
+# 2. Generate invoice images (400 images from dataset_product.csv)
+python data/generate_balanced_dataset.py
 
-# 3. Train models (optional)
+# 3. Train CNN model (invoice detection)
 python train_models.py
 
-# 4. Chạy ứng dụng
-python app.py
+# 4. Train LSTM model separately (import forecasting)
+python train_lstm_separately.py
+
+# 5. Run Flask app
+python app_new.py
 ```
 
 Mở trình duyệt: **<http://localhost:5000>**
@@ -89,8 +134,6 @@ response = requests.post(url, json={})
 print(response.json())
 ```
 
-Xem chi tiết: [docs/API_GUIDE.md](docs/API_GUIDE.md)
-
 ## 🧠 Kiến Trúc Models
 
 ### Model 1: CNN Invoice Detector
@@ -98,35 +141,34 @@ Xem chi tiết: [docs/API_GUIDE.md](docs/API_GUIDE.md)
 - **Base**: MobileNetV2 (Transfer Learning)
 - **Input**: Image 224x224x3
 - **Output**: Structured invoice data (JSON)
+- **Training Data**: 400 synthetic invoices from dataset_product.csv
+- **Date Range**: October 1 - November 1, 2025
 
 ### Model 2: LSTM Forecaster
 
 - **Architecture**: Stacked LSTM + Attention
-- **Input**: Sequence of 10 invoices (10, 5)
-- **Output**: Predicted quantity + recommendations
-
-## 📚 Tài Liệu
-
-- [SETUP.md](docs/SETUP.md) - Hướng dẫn cài đặt chi tiết
-- [API_GUIDE.md](docs/API_GUIDE.md) - API documentation đầy đủ
-- [MODEL_DOCS.md](docs/MODEL_DOCS.md) - Chi tiết kiến trúc models
+- **Input**: Timescale features (10 sequences, 5 features)
+- **Features**:
+  1. import_qty (nhập trong timescale)
+  2. sale_qty (bán trong timescale)
+  3. initial_stock (tồn kho ban đầu)
+  4. retail_price (giá bán)
+  5. turnover_rate (tỷ lệ luân chuyển)
+- **Output**: Predicted import quantity + confidence + trend
+- **Training**: Separate script using timescale datasets
 
 ## 🔧 Cấu Hình
 
-Chỉnh sửa `config.py`:
+Chỉnh sửa `core/config.py`:
 
 ```python
 IMG_HEIGHT = 224
 IMG_WIDTH = 224
 LSTM_SEQUENCE_LENGTH = 10
-EPOCHS = 50
-BATCH_SIZE = 32
+LSTM_NUM_FEATURES = 5
+EPOCHS = 48
+BATCH_SIZE = 12
 ```
-
-## 📊 Dataset
-
-- **Product Catalogs**: 100+ sản phẩm từ 2 cửa hàng
-- **Sample Dataset**: 1000 bản ghi hóa đơn
 
 ## 📝 License
 

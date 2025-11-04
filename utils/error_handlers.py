@@ -1,6 +1,6 @@
 """
 Error Handlers
-Custom error handling for Flask app
+error handling for Flask app
 """
 from flask import jsonify
 from utils.logger import get_logger

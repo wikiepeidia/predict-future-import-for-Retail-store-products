@@ -60,16 +60,6 @@ def extract_price_candidates(line):
     return [value for value in numbers if value >= 1000]
 
 
-def detect_store_from_text(text):
-    """Detect store name from text"""
-    normalized = normalize_text(text)
-    if 'quan tung' in normalized or ('tung' in normalized and 'quan' in normalized):
-        return 'tung'
-    if 'quan son' in normalized or ('son' in normalized and 'quan' in normalized):
-        return 'son'
-    return None
-
-
 def build_dataframe_from_invoices(invoices):
     """Convert invoice history to DataFrame for LSTM"""
     import pandas as pd

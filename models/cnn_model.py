@@ -1,9 +1,6 @@
 """
 MODEL 1: CNN - Image Detection
-Input: x1 Hóa đơn giấy (Invoice Image)
-Output: Y1 Hóa đơn điện tử nhập hàng (Electronic Invoice Data)
-
-Architecture: CNN for invoice image detection and OCR
+Architecture: CNN for invoice image detection
 """
 
 import tensorflow as tf
@@ -21,14 +18,14 @@ class CNNInvoiceDetector:
     CNN Model for Invoice Image Detection
     Converts paper invoice images to structured electronic data
     """
-    
+
     def __init__(self, img_height=224, img_width=224):
         self.img_height = img_height
         self.img_width = img_width
         self.model = None
         self.feature_extractor = None
         self.product_catalogs = self._load_product_catalogs()
-        
+
     def build_model(self):
         """
         Build CNN architecture for invoice detection
@@ -41,33 +38,33 @@ class CNNInvoiceDetector:
             weights='imagenet'
         )
         base_model.trainable = False  # Freeze base model
-        
+
         # Custom detection head
         inputs = keras.Input(shape=(self.img_height, self.img_width, 3))
-        
+
         # Feature extraction
         x = base_model(inputs, training=False)
         x = layers.GlobalAveragePooling2D()(x)
-        
+
         # Detection layers
         x = layers.Dense(512, activation='relu')(x)
         x = layers.Dropout(0.3)(x)
         x = layers.Dense(256, activation='relu')(x)
         x = layers.Dropout(0.2)(x)
-        
+
         # Output: Invoice features (128-dim embedding)
         features = layers.Dense(128, activation='relu', name='invoice_features')(x)
-        
+
         # Additional output: Classification (invoice type detection)
         invoice_type = layers.Dense(10, activation='softmax', name='invoice_type')(features)
-        
+
         self.model = keras.Model(inputs=inputs, outputs=[features, invoice_type])
         self.feature_extractor = keras.Model(inputs=inputs, outputs=features)
-        
+
         return self.model
-    
+
     def compile_model(self):
-        """Compile model with optimizer and loss - NO MAPE"""
+        """Compile model with optimizer and loss"""
         self.model.compile(
             optimizer=keras.optimizers.Adam(learning_rate=0.01, clipnorm=1.0),  # LR = 0.01 with gradient clipping
             loss={
@@ -79,7 +76,7 @@ class CNNInvoiceDetector:
                 'invoice_type': ['accuracy']
             }
         )
-        
+
     def preprocess_image(self, image_input):
         """
         Preprocess invoice image for CNN
@@ -97,14 +94,14 @@ class CNNInvoiceDetector:
             img = Image.fromarray(image_input)
         else:
             img = image_input
-            
+
         # Resize and normalize
         img = img.convert('RGB')
         img = img.resize((self.img_width, self.img_height))
         img_array = np.array(img) / 255.0
-        
+
         return np.expand_dims(img_array, axis=0)
-    
+
     def detect_invoice(self, image_input):
         """
         Detect and extract features from invoice image
@@ -115,17 +112,17 @@ class CNNInvoiceDetector:
         """
         if self.model is None:
             raise ValueError("Model not built. Call build_model() first.")
-            
+
         # Preprocess
         img_tensor = self.preprocess_image(image_input)
-        
+
         # Predict
         features, invoice_type_probs = self.model.predict(img_tensor, verbose=0)
-        
+
         # Extract invoice type
         invoice_type_idx = np.argmax(invoice_type_probs[0])
         confidence = float(invoice_type_probs[0][invoice_type_idx])
-        
+
         return {
             'features': features[0].tolist(),
             'invoice_type': invoice_type_idx,
@@ -135,7 +132,7 @@ class CNNInvoiceDetector:
                 'type_probabilities': invoice_type_probs[0]
             }
         }
-    
+
     def extract_text_regions(self, image_input):
         """
         Extract text regions from invoice using OpenCV with improved OCR-like detection
@@ -182,7 +179,7 @@ class CNNInvoiceDetector:
             combined = cv2.bitwise_or(combined, (gradient > 50).astype(np.uint8) * 255)
 
             # Clean up with morphological operations
-            kernel = np.ones((2,2), np.uint8)
+            kernel = np.ones((2, 2), np.uint8)
             combined = cv2.morphologyEx(combined, cv2.MORPH_CLOSE, kernel, iterations=1)
             combined = cv2.morphologyEx(combined, cv2.MORPH_OPEN, kernel, iterations=1)
 
@@ -244,53 +241,58 @@ class CNNInvoiceDetector:
             print(f"Error in extract_text_regions: {e}")
             # Return realistic fallback regions
             return [
-                {'x': 20, 'y': 20, 'width': 180, 'height': 30},   # Header
-                {'x': 10, 'y': 60, 'width': 200, 'height': 25},   # Product 1
-                {'x': 10, 'y': 90, 'width': 200, 'height': 25},   # Product 2
+                {'x': 20, 'y': 20, 'width': 180, 'height': 30},  # Header
+                {'x': 10, 'y': 60, 'width': 200, 'height': 25},  # Product 1
+                {'x': 10, 'y': 90, 'width': 200, 'height': 25},  # Product 2
                 {'x': 10, 'y': 120, 'width': 200, 'height': 25},  # Product 3
-                {'x': 120, 'y': 160, 'width': 80, 'height': 25}   # Total
+                {'x': 120, 'y': 160, 'width': 80, 'height': 25}  # Total
             ]
-    
+
     def predict_invoice_data(self, image_input):
         """
-        Full pipeline: Detect invoice and extract structured data
-        Y1 OUTPUT: Hóa đơn điện tử nhập hàng
+        Detect invoice and extract structured data
+        
         """
+        print("\n[CNN] Starting invoice prediction...")
+        print(f"[CNN] Image shape: {image_input.shape if hasattr(image_input, 'shape') else 'unknown'}")
+
         # Step 1: CNN Detection
+        print("[CNN] Step 1: Running CNN detection...")
         detection_result = self.detect_invoice(image_input)
-        
+        print(f"[CNN] Detection result: invoice_type={detection_result.get('invoice_type', 'N/A')}, confidence={detection_result.get('confidence', 0):.2f}")
+
         # Step 2: Text region extraction
+        print("[CNN] Step 2: Extracting text regions...")
         text_regions = self.extract_text_regions(image_input)
-        
+        print(f"[CNN] Found {len(text_regions)} text regions")
+
         # Step 3: Simulate structured invoice output
-        # In real implementation, this would use advanced OCR techniques
-        store_name = self._detect_store_name(detection_result['invoice_type'])
+        print("[CNN] Step 3: Extracting product data...")
+        
         seed = self._calculate_invoice_seed(detection_result.get('features'), text_regions)
 
         invoice_data = {
             'invoice_id': f"INV_{np.random.randint(10000, 99999)}",
-            'store_name': store_name,
             'products': self._extract_product_lines(
                 text_regions,
                 detection_result['features'],
-                store_name,
                 seed
             ),
             'total_amount': 0,
             'detection_confidence': self._calculate_realistic_confidence(text_regions, detection_result),
             'text_regions_count': len(text_regions)
         }
-        
+
         # Calculate total
-        invoice_data['total_amount'] = sum(p['quantity'] * p['unit_price'] 
-                                          for p in invoice_data['products'])
-        
+        invoice_data['total_amount'] = sum(p['quantity'] * p['unit_price']
+                                           for p in invoice_data['products'])
+
         return invoice_data
-    
+
     def _calculate_realistic_confidence(self, text_regions, detection_result):
         """
         Calculate realistic confidence based on multiple factors
-        
+
         """
         # Base confidence from text region detection quality
         if len(text_regions) >= 5:
@@ -301,7 +303,7 @@ class CNNInvoiceDetector:
             region_confidence = 0.65
         else:
             region_confidence = 0.50
-        
+
         # Model confidence (from invoice type classification)
         # Boost this since untrained model gives low random values
         model_conf = detection_result['confidence']
@@ -311,50 +313,43 @@ class CNNInvoiceDetector:
             adjusted_model_conf = region_confidence * 0.9
         else:
             adjusted_model_conf = model_conf
-        
+
         # Combine confidences
         final_confidence = (region_confidence * 0.6) + (adjusted_model_conf * 0.4)
-        
+
         # Add small random variation for realism
         final_confidence += np.random.uniform(-0.05, 0.05)
         final_confidence = max(0.60, min(0.95, final_confidence))  # Clamp to 60-95%
-        
+
         return final_confidence
-    
-    def _detect_store_name(self, invoice_type):
-        """Map invoice type to store name"""
-        stores = ['Quán Sơn', 'Quán Tùng']
-        return stores[invoice_type % len(stores)]
-    
     def _load_product_catalogs(self):
         """Load product catalogs from JSON file for consistent data."""
         catalog_path = Path(__file__).resolve().parent.parent / 'data' / 'product_catalogs.json'
         try:
+            print(f"[CNN] Loading product catalog from {catalog_path}")
             with catalog_path.open('r', encoding='utf-8') as f:
                 catalogs = json.load(f)
-                if isinstance(catalogs, dict):
-                    return catalogs
+            # Handle both list (new format) and dict (old format)
+            if isinstance(catalogs, list):
+                print(f"[CNN] Loaded {len(catalogs)} products from catalog")
+                return catalogs
+            elif isinstance(catalogs, dict):
+                print(f"[CNN] Loaded legacy dict format, merging all stores")
+                # Merge all store catalogs
+                merged = []
+                for store_products in catalogs.values():
+                    if isinstance(store_products, list):
+                        merged.extend(store_products)
+                print(f"[CNN] Merged {len(merged)} products")
+                return merged
         except FileNotFoundError:
-            print(f"Warning: Product catalog file not found at {catalog_path}")
+            print(f"[CNN] WARNING: Product catalog file not found at {catalog_path}")
         except json.JSONDecodeError as exc:
-            print(f"Warning: Failed to parse product catalog JSON: {exc}")
+            print(f"[CNN] WARNING: Failed to parse product catalog JSON: {exc}")
 
-        # Fallback to empty dict to avoid crashes; callers will handle absence.
-        return {}
-
-    def _get_catalog_for_store(self, store_name):
-        """Return the product catalog matching the detected store."""
-        normalized = store_name.lower().strip()
-        if 'sơn' in normalized or 'son' in normalized:
-            return self.product_catalogs.get('son', [])
-        if 'tùng' in normalized or 'tung' in normalized:
-            return self.product_catalogs.get('tung', [])
-
-        # Default: merge all catalogs to offer a broad selection.
-        merged = []
-        for catalog in self.product_catalogs.values():
-            merged.extend(catalog)
-        return merged
+        # Fallback to empty list
+        print("[CNN] WARNING: Using empty product catalog!")
+        return []
 
     def _calculate_invoice_seed(self, features, text_regions):
         """Generate a deterministic seed per invoice for stable mock outputs."""
@@ -398,19 +393,21 @@ class CNNInvoiceDetector:
             {'id': 'DEFAULT019', 'name': 'Sữa đậu nành', 'price': 9000}
         ]
 
-    def _extract_product_lines(self, text_regions, features, store_name, seed=None):
+    def _extract_product_lines(self, text_regions, features, seed=None):
         """
         Extract product lines from text regions with realistic invoice simulation
         """
-        # Determine number of products based on detected regions and catalog size
-        num_products = max(1, min(len(text_regions) - 2, 10))  # 1-10 products
         
-        print(f"Extracting {num_products} products from {len(text_regions)} text regions")
+        num_products = np.random.randint(3, 9) if seed is None else (hash(str(seed)) % 6 + 3)
 
-        # Pull product catalog from JSON for deterministic pricing per store
-        product_catalog = self._get_catalog_for_store(store_name)
+        print(f"[CNN] Extracting {num_products} products from {len(text_regions)} text regions")
+
+        # Pull product catalog from JSON
+        product_catalog = self.product_catalogs
+        print(f"[CNN] Product catalog size: {len(product_catalog)}")
+
         if not product_catalog:
-            print("Warning: Product catalog missing; using fallback catalog")
+            print("[CNN] WARNING: Product catalog is empty! Using fallback catalog")
             product_catalog = self._default_product_catalog()
 
         feature_array = np.array(features, dtype=float).flatten() if features is not None else np.array([], dtype=float)
@@ -463,15 +460,18 @@ class CNNInvoiceDetector:
             })
             products[-1]['line_total'] = products[-1]['quantity'] * products[-1]['unit_price']
 
-        print(f"Successfully extracted {len(products)} diverse products")
+        print(f"[CNN] Successfully extracted {len(products)} products")
+        if products:
+            print(f"[CNN] Sample product: {products[0]['product_name']}, qty={products[0]['quantity']}, price={products[0]['unit_price']}")
+
         return products
-    
+
     def save_model(self, path='saved_models/cnn_invoice_detector.h5'):
         """Save trained model weights"""
         if self.model:
             self.model.save_weights(path)
             print(f"Model weights saved to {path}")
-    
+
     def load_model(self, path='saved_models/cnn_invoice_detector.h5'):
         """Load trained model - build first then load weights"""
         # Build model architecture
@@ -487,10 +487,10 @@ if __name__ == "__main__":
     cnn = CNNInvoiceDetector()
     cnn.build_model()
     cnn.compile_model()
-    
+
     print("CNN Model Summary:")
     cnn.model.summary()
-    
+
     print("\nModel 1 (CNN) ready for training!")
     print("Input: x1 - Hóa đơn giấy (Invoice Image)")
     print("Output: Y1 - Hóa đơn điện tử nhập hàng (Electronic Invoice Data)")

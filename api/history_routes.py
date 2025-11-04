@@ -3,6 +3,7 @@ History & Utility Routes
 History, model info, and utility API endpoints
 """
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 
 from services.invoice_service import get_invoice_history, clear_invoice_history, invoice_history
 from services.model_loader import get_models_info
@@ -12,7 +13,6 @@ from utils.database import (
     get_statistics,
     clear_database
 )
-from utils.export_utils import create_summary_report
 from utils.logger import get_logger
 
 # Create blueprint
@@ -114,34 +114,6 @@ def get_stats():
         
     except Exception as e:
         logger.error(f"Error getting statistics: {e}")
-        return jsonify({
-            'success': False,
-            'message': str(e)
-        }), 500
-
-
-@history_bp.route('/export/summary', methods=['GET'])
-def export_summary():
-    """Export complete summary report"""
-    try:
-        # Get all data
-        invoices = get_invoices_from_db(limit=10000)
-        forecasts = get_forecasts_from_db(limit=10000)
-        stats = get_statistics()
-        
-        # Create report
-        filepath = create_summary_report(invoices, forecasts, stats)
-        
-        logger.info(f"Created summary report: {filepath}")
-        
-        return jsonify({
-            'success': True,
-            'message': 'Summary report created',
-            'file': filepath
-        })
-        
-    except Exception as e:
-        logger.error(f"Error creating summary report: {e}")
         return jsonify({
             'success': False,
             'message': str(e)

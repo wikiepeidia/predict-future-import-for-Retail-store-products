@@ -5,9 +5,9 @@ Handles product extraction and invoice data building
 import json
 from datetime import datetime
 from pathlib import Path
-from .data_processor import (
+from utils.data_processor import (
     normalize_text, extract_quantity_from_line,
-    extract_price_candidates, detect_store_from_text
+    extract_price_candidates
 )
 
 
@@ -131,19 +131,11 @@ def build_invoice_data(ocr_result, catalog_index, product_catalogs, store_name_l
     parsed_data = ocr_result.get('parsed_data') or {}
     
     products, store_counts = extract_products_from_text(extracted_text, catalog_index)
-    store_key = detect_store_from_text(extracted_text)
     
-    if not store_key and store_counts:
-        try:
-            candidate_key, candidate_count = max(store_counts.items(), key=lambda item: item[1])
-            if candidate_count > 0:
-                store_key = candidate_key
-        except ValueError:
-            store_key = None
-    
+    # Use all products from catalog if no products detected
     if not products:
-        store_key = store_key or 'son'
-        catalog = product_catalogs.get(store_key, [])[:3]
+        # Get first catalog (they're all merged now anyway)
+        catalog = list(product_catalogs.values())[0][:3] if product_catalogs else []
         products = [{
             'product_id': p.get('id'),
             'product_name': p.get('name'),
@@ -152,15 +144,12 @@ def build_invoice_data(ocr_result, catalog_index, product_catalogs, store_name_l
             'line_total': p.get('price', 0)
         } for p in catalog]
     
-    store_name = store_name_lookup.get(store_key, 'Unknown Store')
     total_amount = sum(product.get('line_total', 0) for product in products)
     
     invoice_identifier = parsed_data.get('invoice_number') or f"INV_{int(datetime.now().timestamp())}"
     
     return {
         'invoice_id': invoice_identifier,
-        'store_name': store_name,
-        'store_key': store_key,
         'products': products,
         'total_amount': int(round(total_amount)),
         'detection_confidence': float(ocr_result.get('confidence', 0.85)),

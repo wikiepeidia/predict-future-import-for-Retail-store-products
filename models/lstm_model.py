@@ -20,11 +20,7 @@ class ImportForecastLSTM:
     def __init__(self, lookback=30, features=5, model_path=None):
         """
         Initialize LSTM model
-        
-        Args:
-            lookback: Number of past time steps to consider
-            features: Number of features per time step
-            model_path: Path to load pre-trained model
+    
         """
         self.lookback = lookback
         self.features = features
@@ -79,11 +75,6 @@ class ImportForecastLSTM:
         """
         Prepare time-series sequences for LSTM
         
-        Args:
-            data: Array of shape (n_samples, n_features)
-        
-        Returns:
-            X, y: Sequences and targets
         """
         X, y = [], []
         
@@ -97,14 +88,6 @@ class ImportForecastLSTM:
         """
         Preprocess dataframe for LSTM
         
-        Args:
-            df: Pandas DataFrame with numeric features
-                Can be either:
-                - OLD format: quantity, price, sales, stock, demand
-                - NEW format: quantity, price, total_amount, num_products, max_product_qty
-        
-        Returns:
-            Normalized array
         """
         
         if isinstance(df, pd.DataFrame):
@@ -136,7 +119,7 @@ class ImportForecastLSTM:
                         result_df[feature] = 0  # Last resort default
             
             # Apply log transformation to handle wide ranges and prevent MAPE explosion
-            # Add small epsilon to avoid log(0)
+            
             epsilon = 1e-8
             data = result_df.values
             
@@ -154,15 +137,95 @@ class ImportForecastLSTM:
         
         return normalized_data
     
+    def predict_from_timescale_data(self, product_name, product_info, imports_dict, sales_dict):
+        """
+        Predict import quantity using timescale data (NEW METHOD for timescale training)
+        
+        """
+        try:
+            import numpy as np
+            
+            # Extract features (same as training)
+            initial_stock = product_info.get('initial_stock', 0)
+            retail_price = product_info.get('retail_price', 0)
+            import_qty = imports_dict.get(product_name, 0)
+            sale_qty = sales_dict.get(product_name, 0)
+            
+            # Calculate turnover rate
+            denominator = initial_stock + import_qty + 1
+            turnover_rate = sale_qty / denominator
+            turnover_rate = min(max(turnover_rate, 0), 10)  # Clip to [0, 10]
+            
+            # Create feature array [import_qty, sale_qty, initial_stock, retail_price, turnover_rate]
+            features = np.array([[import_qty, sale_qty, initial_stock, retail_price, turnover_rate]])
+            
+            # Normalize using saved scaler
+            normalized_features = self.scaler.transform(features)
+            
+            # Create sequence by repeating features (padding)
+            sequence = np.repeat(normalized_features, self.lookback, axis=0).reshape(1, self.lookback, -1)
+            
+            # Predict
+            prediction_normalized = self.model.predict(sequence, verbose=0)[0][0]
+            
+            # DEBUG: Log raw prediction
+            if import_qty > 10 or sale_qty > 10:  # Only for active products
+                print(f"[DEBUG] Product with import={import_qty}, sales={sale_qty}")
+                print(f"[DEBUG]   Normalized features: {normalized_features[0]}")
+                print(f"[DEBUG]   Raw prediction (normalized): {prediction_normalized}")
+            
+            # Denormalize (inverse transform for first feature - import_qty)
+            temp = np.zeros((1, 5))
+            temp[0, 0] = prediction_normalized
+            prediction_denormalized = self.scaler.inverse_transform(temp)[0, 0]
+            
+            if import_qty > 10 or sale_qty > 10:
+                print(f"[DEBUG]   Denormalized prediction: {prediction_denormalized}")
+                print(f"[DEBUG]   Rounded prediction: {max(0, int(round(prediction_denormalized)))}")
+            
+            # Round to nearest integer (can't import fractional products)
+            predicted_qty = max(0, int(round(prediction_denormalized)))
+            
+            # Calculate confidence based on data availability
+            if import_qty > 0 or sale_qty > 0:
+                # More confidence if we have actual data
+                confidence = 0.75 + 0.2 * min(1.0, (import_qty + sale_qty) / 10)
+            else:
+                # Lower confidence for products with no history
+                confidence = 0.60
+            
+            # Determine trend
+            if predicted_qty > import_qty * 1.1:
+                trend = 'increasing'
+            elif predicted_qty < import_qty * 0.9:
+                trend = 'decreasing'
+            else:
+                trend = 'stable'
+            
+            return {
+                'success': True,
+                'predicted_quantity': predicted_qty,
+                'confidence': min(0.99, confidence),
+                'trend': trend,
+                'historical_import': import_qty,
+                'historical_sales': sale_qty,
+                'recommendation': 'increase' if predicted_qty > import_qty else ('decrease' if predicted_qty < import_qty else 'maintain')
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'message': f'Prediction error: {str(e)}',
+                'predicted_quantity': 0,
+                'confidence': 0.0,
+                'trend': 'unknown'
+            }
+    
     def predict_next_quantity(self, historical_data):
         """
         Predict next import quantity based on historical data
         
-        Args:
-            historical_data: DataFrame, dict, or list of dicts with historical data
         
-        Returns:
-            Dictionary with prediction results
         """
         try:
             # Convert to DataFrame based on input type
@@ -178,8 +241,7 @@ class ImportForecastLSTM:
                 # Already a DataFrame
                 df = historical_data.copy()
             
-            # 🔥 CRITICAL: Ensure df has the 5 required features BEFORE padding
-            # This creates missing columns with defaults
+            
             required_features = ['quantity', 'price', 'total_amount', 'num_products', 'max_product_qty']
             for feature in required_features:
                 if feature not in df.columns:
@@ -255,14 +317,6 @@ class ImportForecastLSTM:
         """
         Train the LSTM model
         
-        Args:
-            train_data: Tuple of (X_train, y_train)
-            val_data: Tuple of (X_val, y_val)
-            epochs: Number of training epochs
-            batch_size: Batch size
-        
-        Returns:
-            Training history
         """
         if self.model is None:
             self.build_model()
@@ -328,54 +382,8 @@ class ImportForecastLSTM:
         print(f"Model weights loaded from {path}")
 
 
-def generate_sample_data(n_samples=500):
-    """
-    DEPRECATED: Old function using synthetic sine waves
-    Use generate_invoice_based_data() instead for real invoice data
-    """
-    print("⚠️  WARNING: Using synthetic sine wave data (not realistic!)")
-    print("   Consider using generate_invoice_based_data() instead")
-    
-    np.random.seed(42)
-    
-    # Generate time-based features
-    dates = pd.date_range(start='2023-01-01', periods=n_samples, freq='D')
-    
-    # Simulate quantity with trend and seasonality
-    trend = np.linspace(100, 200, n_samples)
-    seasonality = 30 * np.sin(np.linspace(0, 8*np.pi, n_samples))
-    noise = np.random.normal(0, 10, n_samples)
-    quantity = trend + seasonality + noise
-    
-    # Generate related features
-    price = 50 + np.random.normal(0, 5, n_samples)
-    sales = quantity * 0.9 + np.random.normal(0, 10, n_samples)
-    stock = quantity * 1.2 + np.random.normal(0, 15, n_samples)
-    demand = sales / (stock + 1)  # Demand indicator
-    
-    df = pd.DataFrame({
-        'date': dates,
-        'quantity': np.maximum(0, quantity),
-        'price': np.maximum(10, price),
-        'sales': np.maximum(0, sales),
-        'stock': np.maximum(0, stock),
-        'demand': np.maximum(0, demand)
-    })
-    
-    return df
-
-
 def generate_invoice_based_data(invoice_json_path='data/invoices/train.json'):
-    """
-    🔥 IMPROVED: Generate time-series from ACTUAL invoice data
-    This fixes the critical data mismatch issue!
     
-    Args:
-        invoice_json_path: Path to invoice JSON file (train/valid/test)
-    
-    Returns:
-        DataFrame with daily aggregated invoice features
-    """
     import json
     from datetime import datetime
     
@@ -386,8 +394,7 @@ def generate_invoice_based_data(invoice_json_path='data/invoices/train.json'):
             invoices = json.load(f)
     except FileNotFoundError:
         print(f"[X] Invoice file not found: {invoice_json_path}")
-        print("   Falling back to synthetic data...")
-        return generate_sample_data()
+        raise FileNotFoundError(f"Required invoice file not found: {invoice_json_path}")
     
     print(f"   Loaded {len(invoices)} invoices")
     
@@ -451,9 +458,3 @@ if __name__ == "__main__":
     model = ImportForecastLSTM(lookback=30, features=5)
     print(f"Model summary:")
     model.model.summary()
-    
-    # Generate sample data
-    print("\nGenerating sample data...")
-    sample_data = generate_sample_data(500)
-    print(f"Sample data shape: {sample_data.shape}")
-    print(sample_data.head())

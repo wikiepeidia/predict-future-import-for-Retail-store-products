@@ -1,6 +1,3 @@
-"""
-Model Loader - Quản lý việc load và khởi tạo models
-"""
 import os
 from pathlib import Path
 
@@ -18,7 +15,7 @@ lstm_model = None
 
 
 def initialize_models():
-    """Khởi tạo models khi start app"""
+    
     print("\n" + "="*60)
     print("INITIALIZING DEEP LEARNING MODELS")
     print("="*60)
@@ -36,7 +33,8 @@ def initialize_models():
             cnn_model.compile_model()
             print("   [WARNING] Pre-trained CNN weights not found; using freshly initialized model")
     except Exception as exc:
-        print(f"   [WARNING] Unable to load CNNInvoiceDetector: {exc}")
+        error_msg = str(exc).encode('ascii', 'ignore').decode('ascii')
+        print(f"   [WARNING] Unable to load CNNInvoiceDetector: {error_msg}")
         cnn_model = CNNInvoiceDetector(img_height=224, img_width=224)
         cnn_model.build_model()
         cnn_model.compile_model()
@@ -53,7 +51,8 @@ def initialize_models():
             lstm_model.build_model()
             print("   [WARNING] Pre-trained LSTM weights not found; using freshly initialized model")
     except Exception as exc:
-        print(f"   [WARNING] Unable to load ImportForecastLSTM: {exc}")
+        error_msg = str(exc).encode('ascii', 'ignore').decode('ascii')
+        print(f"   [WARNING] Unable to load ImportForecastLSTM: {error_msg}")
         lstm_model = ImportForecastLSTM(lookback=LSTM_SEQUENCE_LENGTH, features=LSTM_NUM_FEATURES)
         lstm_model.build_model()
     
@@ -101,12 +100,12 @@ def get_lstm_model():
 
 
 def get_models_info():
-    """Lấy thông tin về models đã load"""
+    
     return {
         'model1_cnn': {
             'name': 'Invoice OCR Model (CNN + OCR)',
-            'input': 'x1 - Hóa đơn giấy (invoice image)',
-            'output': 'Y1 - Hóa đơn điện tử nhập hàng',
+            'input': 'x1 - invoice image',
+            'output': 'Y1 - electronic invoice for import',
             'architecture': 'MobileNetV2 Transfer Learning + Custom Detection Head',
             'status': 'Ready' if cnn_model and getattr(cnn_model, 'model', None) else 'Not loaded',
             'image_size': f"{cnn_model.img_height}x{cnn_model.img_width}" if cnn_model else 'Not loaded',
