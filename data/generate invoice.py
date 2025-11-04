@@ -253,7 +253,7 @@ def generate_balanced_dataset(total_images=400):
             if (i + 1) % 50 == 0:
                 print(f"  Generated {i + 1}/{num_images} images...")
         
-        print(f"  ✅ {split} complete: {num_images} images")
+        print(f"   {split} complete: {num_images} images")
     
     # ==========================================
     # Save metadata

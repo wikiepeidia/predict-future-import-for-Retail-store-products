@@ -257,6 +257,7 @@ Thumbs.db
 *~
 # MARKDOWN unnecessary
 MARKDOWN/
+evaluation/
 # Environment variables
 .env.local
 .env.*.local
@@ -267,3 +268,5 @@ MARKDOWN/
 *.pkl
 *.joblib
 saved_models/
+markdown/
+*.crswap
