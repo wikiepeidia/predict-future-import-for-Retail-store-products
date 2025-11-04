@@ -89,7 +89,7 @@ try:
         })
     
     # Predict
-    prediction = lstm.predict_quantity(dummy_history)
+    prediction = lstm.predict_next_quantity(dummy_history)
     
     print("   ✅ LSTM Prediction successful")
     print(f"   Predicted quantity: {prediction['predicted_quantity']} products")

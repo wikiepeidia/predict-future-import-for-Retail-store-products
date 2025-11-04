@@ -14,23 +14,23 @@ logger = get_logger(__name__)
 invoice_history = []
 
 
-def process_invoice_image(cnn_model, image_path):
+def process_invoice_image(image, cnn_model):
     """
     Xử lý ảnh hóa đơn và trích xuất dữ liệu
     FLOW: x1 Images → MODEL 1 (CNN) → Y1 (Electronic Invoice JSON)
     
     Args:
+        image: numpy.ndarray - Image data (from cv2.imdecode)
         cnn_model: CNN model instance (MobileNetV2 + Custom Detection Head)
-        image_path: Đường dẫn ảnh hóa đơn
         
     Returns:
         dict: Y1 Output - Dữ liệu hóa đơn điện tử (JSON)
     """
-    logger.info(f"[MODEL 1] Processing invoice image: {image_path}")
+    logger.info(f"[MODEL 1] Processing invoice image (shape: {image.shape})")
     
     # MODEL 1: CNN Image Detection (Paper Invoice → Electric Invoice)
     # Architecture: MobileNetV2 (Transfer Learning) + Custom Detection Head + OpenCV Text Extraction
-    invoice_data = cnn_model.predict_invoice_data(image_path)
+    invoice_data = cnn_model.predict_invoice_data(image)
     invoice_data['date'] = datetime.now().isoformat()
     
     # Y1 OUTPUT → INVOICE HISTORY DATABASE

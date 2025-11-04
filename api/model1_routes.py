@@ -8,10 +8,11 @@ import numpy as np
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import time
+import os
 
 from services.model_loader import get_cnn_model
 from services.invoice_service import process_invoice_image, format_invoice_response
-from config import ALLOWED_EXTENSIONS
+from config import ALLOWED_EXTENSIONS, UPLOAD_DIR
 from utils.validators import validate_image_file, ValidationError
 from utils.database import save_invoice_to_db
 from utils.logger import get_logger, log_api_request
@@ -26,20 +27,6 @@ def allowed_file(filename):
     """Check if file extension is allowed"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-from flask import Blueprint, request, jsonify
-from werkzeug.utils import secure_filename
-from datetime import datetime
-import os
-
-from services import get_cnn_model, process_invoice_image, format_invoice_response
-from config import UPLOAD_DIR, ALLOWED_EXTENSIONS
-
-model1_bp = Blueprint('model1', __name__, url_prefix='/api/model1')
-
-
-def allowed_file(filename):
-    """Kiểm tra file extension hợp lệ"""
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @model1_bp.route('/detect', methods=['POST'])
@@ -48,11 +35,14 @@ def detect_invoice():
     start_time = time.time()
     
     try:
-        # Validate file upload
-        if 'file' not in request.files:
-            raise ValidationError('No file provided')
-        
-        file = request.files['file']
+        # Validate file upload - check both 'image' and 'file' for compatibility
+        file = None
+        if 'image' in request.files:
+            file = request.files['image']
+        elif 'file' in request.files:
+            file = request.files['file']
+        else:
+            raise ValidationError('No file provided. Please upload an image.')
         
         # Validate file
         validate_image_file(file)

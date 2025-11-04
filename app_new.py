@@ -24,6 +24,7 @@ from config import (
 
 # Import services
 from services.model_loader import initialize_models
+from utils.database import init_database
 
 # Import API blueprints
 from api.model1_routes import model1_bp
@@ -49,6 +50,9 @@ def index():
 app.register_blueprint(model1_bp)
 app.register_blueprint(model2_bp)
 app.register_blueprint(history_bp)
+
+# Initialize database
+init_database()
 
 # Initialize models at startup
 initialize_models()

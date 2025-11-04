@@ -85,8 +85,9 @@ def save_invoice_to_db(invoice_data):
         with get_db_connection() as conn:
             cursor = conn.cursor()
             
+            # Use INSERT OR REPLACE to handle duplicates
             cursor.execute('''
-                INSERT INTO invoices 
+                INSERT OR REPLACE INTO invoices 
                 (invoice_id, store_name, store_key, total_amount, confidence, products, extracted_text)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             ''', (
