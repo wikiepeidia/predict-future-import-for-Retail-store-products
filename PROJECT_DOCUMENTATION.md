@@ -153,7 +153,7 @@ Product B             5   149,000      745,000
 
 ---
 
-## 4. Project Methodology Flow
+## 4. Project Flow
 
 Our system follows a simple 2-step pipeline:
 
@@ -185,7 +185,7 @@ Our system follows a simple 2-step pipeline:
 #### **Prerequisites:**
 
 - Python 3.8 or higher
-- pip package manager
+- `pip` package manager
 - 2GB RAM reserved for training
 
 #### **Step 1: Clone Repository**
@@ -198,7 +198,7 @@ cd predict-future-import-for-Retail-store-products
 #### **Step 2: Install Dependencies**
 
 ```bash
-pip install -r requirements.txt
+pip install DEPENDENCY_NAME==VERSION
 ```
 
 **Key Dependencies:**
@@ -214,7 +214,6 @@ pip install -r requirements.txt
 
 - You can download the pre-generated invoices from <https://www.kaggle.com/datasets/thminhphm/invoice-datasets>
 - Unzip the folder in `data/generated_invoices/`
--
 
 ---
 
@@ -248,9 +247,7 @@ python train_cnn_models.py
 
 **Output:**
 
-```bash
-Model saved to saved_models/cnn_invoice_detector.weights.h5
-```
+- Trained model saved to `saved_models/cnn_invoice_detector.weights.h5`
 
 ---
 
@@ -262,11 +259,8 @@ python train_lstm_model.py
 
 **Output:**
 
-```
-
-Model saved to saved_models/lstm_text_recognizer.weights.h5
-Scalers saved to saved_models/lstm_text_recognizer.weights_scaler.pkl
-```
+- Trained model will be saved to `saved_models/lstm_text_recognizer.weights.h5`
+- Scalers will be saved to `saved_models/lstm_text_recognizer.weights_scaler.pkl`
 
 ---
 
@@ -281,6 +275,60 @@ python app.py
 ---
 
 ### 5.3 Key Code Components
+
+#### **Frontend Interface**
+
+- The front end interface is built with HTML, CSS, and JavaScript to provide a simple two-step workflow for users.
+
+**HTML Structure: `ui/templates/index.html`**
+
+```html
+<div class="container">
+    <!-- Model 1: Invoice Detection (CNN) -->
+    <div class="model-card">
+        <div class="model-header">
+            <h2>Model 1: CNN</h2>
+            <p>Paper Invoice → Electronic Invoice (OCR)</p>
+        </div>
+        <button class="predict-btn" onclick="predictModel1()" id="predictBtn1">
+                Convert to Electronic Invoice (OCR)
+            </button>
+    </div>
+
+    <!-- Model 2: Quantity Forecasting -->
+    <div class="model-card">
+        <div class="model-header">
+            <h2>Model 2: LSTM</h2>
+            <p>Import Quantity Prediction</p>
+        </div>
+        <!-- Predict button -->
+            <button class="predict-btn" onclick="predictModel2()" id="predictBtn2">
+                Predict Next Import Quantities
+            </button>
+    </div>
+</div>
+```
+
+**CSS Styling: `ui/static/styles.css`**
+
+```css
+/* Modern gradient background */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    color: #333;
+    padding: 20px;
+    line-height: 1.6;
+}
+/* Animations*/
+@keyframes spin{}
+@keyframes fadeIn{}
+/*Hover effects*/
+.product-table tbody tr:hover {
+    background: #f8f9fa;
+}
+```
 
 #### **Backend API Structure**
 
@@ -367,13 +415,13 @@ def generate_forecast(current_invoice, history, model):
 
 ### 5.4 Usage
 
-**Start the system:**
+**Start the webserver:**
 
 ```bash
-python app.py
-# Opens at http://localhost:5000
+python app.py 
 ```
 
+- Access at: <http://localhost:5000>
 **Test via web interface:**
 
 1. Upload invoice image- up to 3 images.

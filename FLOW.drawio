@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36" version="28.2.9">
   <diagram id="InvoiceForecastFlow" name="Invoice Forecast System">
-    <mxGraphModel dx="1684" dy="941" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1381" dy="769" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -25,7 +25,7 @@
           <mxGeometry x="137.5" y="155" width="245" height="95" as="geometry" />
         </mxCell>
         <mxCell id="model1_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=3;" parent="1" vertex="1">
-          <mxGeometry x="680" y="120" width="330" height="230" as="geometry" />
+          <mxGeometry x="680" y="120" width="330" height="210" as="geometry" />
         </mxCell>
         <mxCell id="model1_title" value="MODEL 1: CNN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#2D7016;" parent="1" vertex="1">
           <mxGeometry x="690" y="130" width="300" height="30" as="geometry" />
@@ -33,7 +33,7 @@
         <mxCell id="model1_subtitle" value="Image Detection (Paper Invoice--&amp;gt;Electric Invoice)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;" parent="1" vertex="1">
           <mxGeometry x="690" y="160" width="300" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="model1_content" value="Input: x1 (Invoice Images Paper)&lt;br&gt;&lt;br&gt;Architecture:&lt;br&gt;• MobileNetV2 (Transfer Learning)&lt;br&gt;• Custom Detection Head&lt;br&gt;• OpenCV Text Extraction&lt;br&gt;&lt;br&gt;Output: Y1: Electronic Invoice (JSON)&lt;div&gt;&lt;br&gt;&lt;div&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+        <mxCell id="model1_content" value="Input:&lt;div&gt;&amp;nbsp;x1 (Invoice Images Paper)&lt;br&gt;Architecture:&lt;br&gt;• MobileNetV2 (Transfer Learning)&lt;br&gt;• Custom Detection Head&lt;br&gt;• OpenCV Text Extraction&lt;br&gt;&lt;br&gt;Output: Y1: Electronic Invoice (JSON)&lt;div&gt;&lt;br&gt;&lt;div&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="700" y="180" width="280" height="120" as="geometry" />
         </mxCell>
         <mxCell id="db_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;" parent="1" vertex="1">
@@ -46,7 +46,7 @@
           <mxGeometry x="705" y="475" width="280" height="50" as="geometry" />
         </mxCell>
         <mxCell id="model2_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" parent="1" vertex="1">
-          <mxGeometry x="80" y="330" width="320" height="200" as="geometry" />
+          <mxGeometry x="80" y="330" width="320" height="210" as="geometry" />
         </mxCell>
         <mxCell id="model2_title" value="MODEL 2: LSTM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#A02C2C;" parent="1" vertex="1">
           <mxGeometry x="90" y="340" width="300" height="30" as="geometry" />
@@ -54,7 +54,7 @@
         <mxCell id="model2_subtitle" value="Quantity Forecasting" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;" parent="1" vertex="1">
           <mxGeometry x="90" y="370" width="300" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="model2_content" value="Input:&amp;nbsp;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x2: output of Model 1&lt;div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x3:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product stock data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x4:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product import history data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x5:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product sales history data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;Architecture:&lt;/div&gt;&lt;span style=&quot;&quot;&gt;• 7-day time-series sequence&lt;/span&gt;&lt;br&gt;Output: Y2: Predict import quantities (JSON)&lt;/div&gt;&lt;div&gt;&lt;br&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+        <mxCell id="model2_content" value="Input:&amp;nbsp;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x2: Output of Model 1&lt;div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x3:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product stock data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x4:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product import history data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&amp;nbsp;&lt;/span&gt;x5:&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Product sales history data&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Architecture:&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;&quot;&gt;• 7-day time-series sequence&lt;/span&gt;&lt;br&gt;Output:&amp;nbsp;&lt;/div&gt;&lt;div&gt;Y2: Predict import quantities (JSON)&lt;/div&gt;&lt;div&gt;&lt;br&gt;Training: 70% , Testing&amp;nbsp; 10% , Validation: 20%&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
           <mxGeometry x="100" y="380" width="280" height="120" as="geometry" />
         </mxCell>
         <mxCell id="output_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;" parent="1" vertex="1">
@@ -82,7 +82,7 @@
         <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" source="model2_box" target="output_box" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="YYnc4gJhK31Mk2DLYcC2-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#d5e8d4;strokeColor=#82b366;entryX=1.001;entryY=0.453;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" target="model2_box">
+        <mxCell id="YYnc4gJhK31Mk2DLYcC2-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;fillColor=#d5e8d4;strokeColor=#82b366;entryX=1.001;entryY=0.453;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" parent="1" target="model2_box" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="680" y="290" as="sourcePoint" />
             <mxPoint x="401.9200000000001" y="410.70000000000005" as="targetPoint" />
