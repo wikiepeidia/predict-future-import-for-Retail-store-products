@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicting Future Imports Using Deep Learning on Retail Store Products</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="/static/images/webicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="/static/images/webicon.svg">
+    <link rel="apple-touch-icon" href="/static/images/webicon.svg">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Predicting Future Imports Using Deep Learning on Retail Store Products</h1>
+            <p>Paper Invoice → Import Quantity Prediction using YOLO Layout + OCR + LSTM</p>
+        </div>
+
+        <!-- Models Grid -->
+        <div class="models-grid">
+            <!-- Model 1: Image OCR (Paper Invoice → Electronic Invoice) -->
+            <div class="model-card">
+                <div class="model-header">
+                    <div class="model-title">
+                        <h2>Model 1: Layout + OCR</h2>
+                        <p>Paper Invoice → Electronic Invoice (OCR)</p>
+                    </div>
+                    <div class="model-icon">🖼️</div>
+                </div>
+
+                <div class="model-body">
+                    <div class="input-section">
+                        <label class="input-label">📤 Upload Paper Invoice Images (2-3 invoices)</label>
+                        <div class="file-upload-btn" id="fileUploadBtn">
+                            <i class="fas fa-cloud-upload-alt"></i> Click or drag multiple invoice images
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*,.pdf" multiple>
+                        <div class="file-name" id="fileName"></div>
+                        <div id="filePreview" style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        </div>
+                    </div>
+
+                    <button class="predict-btn" onclick="predictModel1()" id="predictBtn1">
+                        <i class="fas fa-magic"></i> Convert to Electronic Invoice (OCR)
+                    </button>
+
+                    <div class="loading" id="loading1">
+                        <div class="spinner"></div>
+                        <p class="spinner-text">Detecting layout and extracting text...</p>
+                    </div>
+
+                    <div class="results-section" id="results1">
+                        <div class="results-title">📄 Electronic Invoice (Y1) - Extracted Products</div>
+                        <div class="result-box" id="resultBox1">
+                            <div class="no-result">No results yet</div>
+                        </div>
+                        <div id="productList" style="margin-top: 15px;"></div>
+                        <div class="metrics-section" id="metricsSection">
+                            <div class="results-title">📊 Accuracy Metrics</div>
+                            <div class="metrics-grid" id="metricsGrid">
+                                <div class="no-result">Metrics will appear after processing.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Model 2: Quantity Prediction -->
+            <div class="model-card">
+                <div class="model-header">
+                    <div class="model-title">
+                        <h2>Model 2: LSTM</h2>
+                        <p>Import Quantity Prediction</p>
+                    </div>
+                    <div class="model-icon">🧠</div>
+                </div>
+
+                <div class="model-body">
+                    <div class="input-section">
+                        <label class="input-label">📊 Current Invoice Data (from Model 1 or manual input)</label>
+                        <textarea class="input-textarea" id="model2Input"
+                            placeholder="Enter structured invoice data (product names, quantities)...&#10;Example:&#10;Coca Cola - 50&#10;Pepsi - 30&#10;Water - 100"></textarea>
+                    </div>
+
+                    <button class="predict-btn" onclick="predictModel2()" id="predictBtn2">
+                        <i class="fas fa-chart-line"></i> Predict Next Import Quantities
+                    </button>
+
+                    <div class="loading" id="loading2">
+                        <div class="spinner"></div>
+                        <p class="spinner-text">Analyzing historical data with LSTM...</p>
+                    </div>
+
+                    <div class="results-section" id="results2">
+                        <div class="results-title">📈 Predicted Import Quantities (Y2)</div>
+                        <div class="result-box" id="resultBox2">
+                            <div class="no-result">No results yet</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recognized Products Area (Below Models Grid) -->
+        <div id="recognizedArea" class="recognized-area">
+            <div class="recognized-container">
+                <h3 class="recognized-title">
+                    <i class="fas fa-list-check"></i>
+                    Recognized Products (Extracted from Invoices)
+                </h3>
+
+                <div id="recognizedSummary" class="recognized-summary">
+                    <!-- Summary will be injected here -->
+                </div>
+
+                <div id="recognizedProductTable">
+                    <!-- Product table will be injected here -->
+                </div>
+
+                <div id="recognizedPagination" class="recognized-pagination">
+                    <!-- Pagination controls will be injected here -->
+                </div>
+
+                <div class="recognized-ready">
+                    <p>
+                        <i class="fas fa-check-circle"></i>
+                        Products ready for Model 2 prediction!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script src="/static/script.js"></script>
+</body>
+
+</html>
